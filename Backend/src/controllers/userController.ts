@@ -1,38 +1,16 @@
-import  { Request , Response , NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import UserService from "../services/implementations/UserService";
+import AuthService from "../services/implementations/AuthService";
 
- class UserController {
-    
-    private userService: UserService;
+class UserController {
+  private userService: UserService;
+  private AuthService: AuthService;
 
-    constructor() {
+  constructor() {
+    this.userService = new UserService();
+    this.AuthService = new AuthService();
+  }
 
-        this.userService = new UserService();
-    }
-
-    public createUser = async (req: Request , res: Response , next: NextFunction): Promise<void> =>{
-
-        try {
-
-            const user = req.body;
-
-            console.log('====================================');
-            console.log('user: ', user);
-            console.log('====================================');
-    
-            const result = await this.userService.createUser(user);
-    
-            res.send(result);
-            
-        } catch (error) {
-
-            next(error);
-            
-        }
-
-       
-    }
 }
 
-
-export default new UserController();;
+export default new UserController();

@@ -3,9 +3,8 @@ import { IUsers } from "../../entities/UserEntity";
 import { IUserService } from "../../services/interface/IUserService";
 import UserRepository from "../../repositories/implementations/UserRepository";
 
-
-
 export default class UserService implements IUserService {
+
   private userRepository: IUserRepository;
 
   constructor() {
@@ -16,7 +15,7 @@ export default class UserService implements IUserService {
 
     
     const result = await this.userRepository.createUser(user);
-
     return result;
   }
+
 }
