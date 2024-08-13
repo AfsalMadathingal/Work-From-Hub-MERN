@@ -1,27 +1,33 @@
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction } from "express";
 
+class ApiError extends Error {
+  statusCode: number;
+  message: string;
+  error: string;
+  stack?: string;
+  data: null;
+  success: boolean;
 
-class BookingError extends Error {
-  constructor(message: string) {
+  constructor(
+    statusCode: number,
+    error: string,
+    message: string = "Something Went Wrong",
+    stack: string = ""
+  ) {
     super(message);
-    this.name = 'BookingError';
+    this.statusCode = statusCode;
+    this.data = null;
+    this.message = message;
+    this.success = false;
+    this.error = error;
+
+    if (stack) {
+      this.stack = stack;
+    } else {
+      Error.captureStackTrace(this, this.constructor);
+    }
   }
 }
-
-class UserError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'UserError';
-  }
-}
-
-class AdminError extends Error {
-  constructor(message: string) {
-    super(message);
-    this.name = 'AdminError';
-  }
-}
-
 
 export function errorHandler(
   err: Error,
@@ -29,23 +35,7 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  if (err instanceof BookingError) {
-    return res.status(400).json({ error: err.message });
-  }
-
-  if (err instanceof UserError) {
-    return res.status(400).json({ error: err.message });
-  }
-
-  if (err instanceof AdminError) {
-    return res.status(403).json({ error: err.message });
-  }
-
-  console.log(err);
-  return res.status(500).json({ error: 'Internal Server Error' });
+  return res.status(500).json({error:err});
 }
 
-
-
-
-export { BookingError, UserError, AdminError };
+export { ApiError };

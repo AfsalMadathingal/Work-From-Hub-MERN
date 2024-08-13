@@ -9,7 +9,7 @@ import authRoute  from './routes/authRoute'
 import  { errorHandler } from './middleware/errorHandler';
 import logger from "../src/utils/logger";
 import morgan from "morgan";
-
+const morganFormat = ":method :url :status :response-time ms";
 
 
 const app = express();
@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-const morganFormat = ":method :url :status :response-time ms";
+
 
 app.use(
   morgan(morganFormat, {

@@ -1,5 +1,6 @@
 import { Request, Response ,NextFunction } from 'express';
 import  AuthService  from '../services/implementations/AuthService';
+import ApiResponse from '../utils/ApiResponse';
 
 
 
@@ -7,6 +8,7 @@ class AuthController {
 
 
   private authService: AuthService;
+  private ApiResponse : ApiResponse;
 
   constructor(){
     this.authService = new AuthService()
@@ -26,7 +28,7 @@ class AuthController {
 
   public refreshAccessToken = async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
-    const newAccessToken = await this.authService.refresh(refreshToken);
+    const newAccessToken = await this.authService.refreshAccessToken(refreshToken);
     if (newAccessToken) {
       res.json({ accessToken: newAccessToken });
     } else {
@@ -39,13 +41,32 @@ class AuthController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> => {
+  ): Promise<Response> => {
     try {
       const user = req.body;
 
       const result = await this.authService.register(user);
 
-      res.send(result);
+      const options ={
+        httpOnly: true,
+        secure: true
+      }
+
+     return res
+     .status(200)
+     .cookie('accessToken',result.accessToken,options)
+     .cookie('refreshToken',result.refreshToken,options)
+     .json(
+
+      new ApiResponse(
+        200,
+       {
+        data: result
+       },
+       "User Registration Success"
+
+      )
+     )
     } catch (error) {
       next(error);
     }

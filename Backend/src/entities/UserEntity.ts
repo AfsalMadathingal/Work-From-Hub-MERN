@@ -13,4 +13,5 @@ export interface IUsers extends Document {
   phone: Number | null;
   profilePic: String | null;
   role: String | null;
+  refreshToken: string | null;
 }

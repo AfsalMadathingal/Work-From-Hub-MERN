@@ -21,7 +21,6 @@ export default class AuthService implements IAuthService {
     const newUser = new UserModel({
       ...user,
       password: hashedPassword,
-      role: user.role,
     });
 
 
@@ -55,7 +54,7 @@ export default class AuthService implements IAuthService {
     return null;
   }
 
-  async refresh(refreshToken: string): Promise<string | null> {
+  async refreshAccessToken(refreshToken: string): Promise<string | null> {
     try {
 
       const payload = verifyRefreshToken(refreshToken);
