@@ -29,8 +29,9 @@ export default class AuthService implements IAuthService {
     if (createdUser) {
       const accessToken = generateAccessToken({ id: createdUser.id, role: createdUser.role });
       const refreshToken = generateRefreshToken({ id: createdUser.id, role: createdUser.role });
+      const userAfterSavedToken = await this.userRepository.saveRefreshToken(createdUser.id,refreshToken)
       return {
-        user: createdUser,
+        user: userAfterSavedToken,
         accessToken,
         refreshToken,
       };
@@ -39,20 +40,20 @@ export default class AuthService implements IAuthService {
     return null;
   }
 
-  async login(user: IUsers): Promise<{ accessToken: string; refreshToken: string } | null> {
-
-    const result = await this.userRepository.findByUsername(user.email.toString());
-
-    if (result && await bcrypt.compare(result.password.toString(), result.password.toString())) { 
-
-      const accessToken = generateAccessToken({ id: result.id, role: result.role });
-      const refreshToken = generateRefreshToken({ id: result.id, role: result.role });
-
-      return { accessToken, refreshToken };
+  async login(user: IUsers): Promise<{ accessToken: string; refreshToken: string; userFound: Omit<IUsers, 'password'> } | null> {
+    let userFound = await this.userRepository.findByUsername(user.email.toString());
+  
+    if (userFound && await bcrypt.compare(user.password.toString(), userFound.password.toString())) {
+      const accessToken = generateAccessToken({ id: userFound.id, role: userFound.role });
+      const refreshToken = generateRefreshToken({ id: userFound.id, role: userFound.role });
+     const userWithNewToken =  await this.userRepository.saveRefreshToken(userFound.id,refreshToken)
+      const { password, ...userWithoutPassword } = userFound.toObject();
+      return { accessToken, refreshToken, userFound: userWithNewToken };
     }
-
+  
     return null;
   }
+  
 
   async refreshAccessToken(refreshToken: string): Promise<string | null> {
     try {

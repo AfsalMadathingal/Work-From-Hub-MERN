@@ -35,7 +35,12 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  return res.status(500).json({error:err});
+  return res.status(500).json(
+    new ApiError(
+      500,
+      "Internal Server Error"
+    )
+  );
 }
 
 export { ApiError };

@@ -3,6 +3,8 @@ import { IUsers } from "entities/UserEntity";
 import  Users from "../../models/userModel";
 import { ApiError } from "../../middleware/errorHandler";
 
+
+
  export default class UserRepository implements IUserRepository {
 
     async createUser(user: IUsers): Promise<IUsers | null> {
@@ -26,8 +28,17 @@ import { ApiError } from "../../middleware/errorHandler";
 
     async findByUsername(email: string): Promise<IUsers | null> {
 
-        const result = await Users.findOne({ email: email });
-        return result;
+        const userData = await Users.findOne({ email: email })
+        return userData;
     }
-    
+
+    async saveRefreshToken(userId: string, refreshToken: string): Promise<IUsers | null> {
+        const userWithSavedToken = await Users.findByIdAndUpdate(
+          { _id: userId },
+          { $set: { refreshToken: refreshToken } }
+        ).select(
+            "-password -refreshToken"
+        );
+        return userWithSavedToken;
+      }
  }

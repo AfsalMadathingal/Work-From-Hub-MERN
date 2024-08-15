@@ -1,6 +1,7 @@
 import { Request, Response ,NextFunction } from 'express';
 import  AuthService  from '../services/implementations/AuthService';
 import ApiResponse from '../utils/ApiResponse';
+import { ApiError } from '../middleware/errorHandler';
 
 
 
@@ -8,21 +9,46 @@ class AuthController {
 
 
   private authService: AuthService;
-  private ApiResponse : ApiResponse;
 
   constructor(){
     this.authService = new AuthService()
+
   }
 
 
   public login = async (req: Request, res: Response) => {
 
-    const tokens = await this.authService.login(req.body);
-    if (tokens) { 
-      res.json(tokens);
+
+    const loginData = await this.authService.login(req.body);
+    
+
+    if (loginData) { 
+
+      const options ={
+        httpOnly: true,
+        secure: true
+      }
+      
+     return res.status(200)
+     .cookie(loginData.accessToken,options)
+     .cookie(loginData.refreshToken,options)
+     .json(
+      new ApiResponse(
+        200,
+        loginData
+      )
+     )
     } else {
-      res.status(400).json({ message: 'Invalid credentials' });
+      return res.status(400)
+      .json(
+        new ApiError(
+          400,
+          "Invalid Credentials"
+        )
+      )
     }
+
+
   }
 
 
