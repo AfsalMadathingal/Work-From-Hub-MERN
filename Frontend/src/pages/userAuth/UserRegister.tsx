@@ -14,10 +14,10 @@ const UserRegister: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#fcefe7] flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg shadow-lg flex max-w-4xl w-full">
+      <div className="bg-white rounded-lg shadow-lg  flex max-w-4xl w-full">
         <div className="w-full md:w-1/2 p-8">
-          <h1 className="text-2xl font-bold mb-2 text-center">LETS GET STARTED</h1>
-          <p className="text-gray-600 mb-6 text-center">Welcome! Please enter your details.</p>
+          <h1 className="text-1xl font-bold mb-1 text-center">LETS GET STARTED</h1>
+          <p className="text-gray-600 mb-2 text-center">Welcome! Please enter your details.</p>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
               <label htmlFor="fullName" className="block text-gray-700 mb-2">Full Name</label>

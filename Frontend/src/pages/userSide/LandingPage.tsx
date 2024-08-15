@@ -1,6 +1,7 @@
 import React from "react";
 import Footer from "../../components/userSide/Footer";
 import Navbar from "../../components/userSide/Navbar";
+import { Link } from "react-router-dom";
 
 const LandingPage: React.FC = () => {
   return (
@@ -17,9 +18,11 @@ const LandingPage: React.FC = () => {
               professionals and spark your social life!
             </p>
             <div className="mt-6 flex justify-center md:justify-start space-x-4">
-              <button className="bg-orange-500 text-white px-6 py-3 rounded-lg">
-                Book a seat
-              </button>
+              <Link to={"/login"}>
+                <button className="bg-orange-500 text-white px-6 py-3 rounded-lg">
+                  Book a seat
+                </button>
+              </Link>
               <button className="border border-orange-500 text-orange-500 px-6 py-3 rounded-lg">
                 Call Us
               </button>

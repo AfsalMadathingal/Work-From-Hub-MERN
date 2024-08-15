@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import loginSchema from '../../utils/userLoginValidator'
 
 const LoginPage: React.FC = () => {
     
@@ -8,11 +10,14 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const {error}= loginSchema.validate({email,password})
+    console.log(error);
+    
   };
 
   return (
     <div className="flex h-screen bg-[#fcefe7]">
-      <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
+      <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-3xl">
         <div className="w-1/2 p-8">
           <h2 className="text-2xl text-center font-bold mb-4">WELCOME BACK</h2>
           <p className="text-gray-600 text-center mb-6">Welcome back! Please enter your details.</p>
@@ -65,7 +70,7 @@ const LoginPage: React.FC = () => {
             </button>
           </div>
           <p className="text-center mt-6 text-sm text-gray-600">
-            Don't have an account? <a href="#" className="text-blue-500 hover:underline">Sign up for free</a>
+            Don't have an account? <Link to={'/sign-up'} className="text-blue-500 hover:underline">Sign up for free</Link>
           </p>
         </div>
         <div className="w-1/2">
