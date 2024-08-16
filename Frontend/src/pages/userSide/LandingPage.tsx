@@ -1,11 +1,30 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Footer from "../../components/userSide/Footer";
 import Navbar from "../../components/userSide/Navbar";
 import { Link } from "react-router-dom";
+import FAQAccordion from "../../components/userSide/Faq";
+import LoadingPageWithReactLoading from "../../components/lodiangPage/Loading";
+import { useDispatch, useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
+import { setLoading } from "../../redux/slices/userSlice";
 
 const LandingPage: React.FC = () => {
+  const dispatch = useDispatch();
+  const loading = useSelector((state: RootState) => state.user.loading);
+
+  useEffect(() => {
+    dispatch(setLoading(true));
+    const timer = setTimeout(() => {
+      dispatch(setLoading(false));
+    }, 1000); 
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <>
+      {loading ? <LoadingPageWithReactLoading type="bars" color="#ff6f00" />
+       :
+       <>
       <Navbar />
       <div className="bg-beige min-h-screen m-12">
         <section className="container  mx-auto flex flex-col md:flex-row items-center mt-12 space-y-6 md:space-y-0 md:space-x-12">
@@ -23,9 +42,11 @@ const LandingPage: React.FC = () => {
                   Book a seat
                 </button>
               </Link>
-              <button className="border border-orange-500 text-orange-500 px-6 py-3 rounded-lg">
-                Call Us
-              </button>
+              <a href="tel:+91123456789">
+                <button className="border border-orange-500 text-orange-500 px-6 py-3 rounded-lg">
+                  Call Us
+                </button>
+              </a>
             </div>
           </div>
           <div className="flex-1">
@@ -52,54 +73,12 @@ const LandingPage: React.FC = () => {
         </section>
 
         <section className="container mx-auto mt-12">
-          <h3 className="text-2xl font-bold text-gray-900 text-center">FAQ</h3>
-          <div className="mt-8">
-            <details className="bg-white p-4 rounded-lg shadow-md mb-4">
-              <summary className="text-gray-700 font-semibold">
-                What types of workspaces are available for booking?
-              </summary>
-              <p className="text-gray-600 mt-2">Answer to this question...</p>
-            </details>
-            <details className="bg-white p-4 rounded-lg shadow-md mb-4">
-              <summary className="text-gray-700 font-semibold">
-                How can I book a workspace?
-              </summary>
-              <p className="text-gray-600 mt-2">Answer to this question...</p>
-            </details>
-            <details className="bg-white p-4 rounded-lg shadow-md mb-4">
-              <summary className="text-gray-700 font-semibold">
-                Can I see the availability of workspaces in real-time?
-              </summary>
-              <p className="text-gray-600 mt-2">Answer to this question...</p>
-            </details>
-            <details className="bg-white p-4 rounded-lg shadow-md mb-4">
-              <summary className="text-gray-700 font-semibold">
-                What payment methods are accepted?
-              </summary>
-              <p className="text-gray-600 mt-2">Answer to this question...</p>
-            </details>
-            <details className="bg-white p-4 rounded-lg shadow-md mb-4">
-              <summary className="text-gray-700 font-semibold">
-                Can I cancel or modify my booking?
-              </summary>
-              <p className="text-gray-600 mt-2">Answer to this question...</p>
-            </details>
-            <details className="bg-white p-4 rounded-lg shadow-md mb-4">
-              <summary className="text-gray-700 font-semibold">
-                Is there a membership program?
-              </summary>
-              <p className="text-gray-600 mt-2">Answer to this question...</p>
-            </details>
-            <details className="bg-white p-4 rounded-lg shadow-md">
-              <summary className="text-gray-700 font-semibold">
-                Are there any discounts for long-term bookings?
-              </summary>
-              <p className="text-gray-600 mt-2">Answer to this question...</p>
-            </details>
-          </div>
+          <FAQAccordion />
         </section>
       </div>
       <Footer />
+      </>
+}
     </>
   );
 };

@@ -1,18 +1,20 @@
-import './App.css'
-import { Routes, Route } from 'react-router-dom';
-import UserRouter from './routes/userRouter';
+// App.tsx
+import "./App.css";
+import { Routes, Route, useLocation } from "react-router-dom";
+import { MuiThemeProvider } from "./utils/MuiTheme";
+import UserRouter from "./routes/UserRouter";
 
-function App() {
+
+const App: React.FC = () => {
 
 
   return (
-    <>
-     <Routes>
-      <Route path='/*' element={<UserRouter/>}/>
-      
-     </Routes>
-    </>
-  )
-}
+    <MuiThemeProvider>
+        <Routes>
+          <Route path="/*" element={<UserRouter />} />
+        </Routes>
+    </MuiThemeProvider>
+  );
+};
 
-export default App
+export default App;

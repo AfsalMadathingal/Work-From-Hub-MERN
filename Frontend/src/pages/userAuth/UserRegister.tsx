@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import registerSchema from '../../utils/userRegisterValidator';
+
 
 const UserRegister: React.FC = () => {
   const [fullName, setFullName] = useState('');
@@ -6,10 +8,27 @@ const UserRegister: React.FC = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Handle signup logic here
+
+    const {error } =registerSchema.validate({fullName,email,password,confirmPassword})
+
+
+    if (error) {
+      const formattedErrors: { [key: string]: string } = {};
+      error.details.forEach((detail) => {
+        formattedErrors[detail.path[0]] = detail.message;
+        console.log(detail.path[0]);
+        
+      });
+      setErrors(formattedErrors);
+    } else {
+      setErrors({});
+      // Proceed with form submission (e.g., API call)
+    }
+    
   };
 
   return (
@@ -29,6 +48,7 @@ const UserRegister: React.FC = () => {
                 value={fullName}
                 onChange={(e) => setFullName(e.target.value)}
               />
+               {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
             </div>
             <div className="mb-4">
               <label htmlFor="email" className="block text-gray-700 mb-2">Email</label>
@@ -40,6 +60,7 @@ const UserRegister: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
+                {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
             </div>
             <div className="mb-4">
               <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
@@ -52,6 +73,8 @@ const UserRegister: React.FC = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
             </div>
+            {errors.password && <p className="text-red-500 text-sm mt-1">{errors.password}</p>}
+
             <div className="mb-6">
               <label htmlFor="confirmPassword" className="block text-gray-700 mb-2">Confirm Password</label>
               <input
@@ -62,6 +85,8 @@ const UserRegister: React.FC = () => {
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
               />
+                      {errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{errors.confirmPassword}</p>}
+
             </div>
             <div className="flex items-center justify-between mb-6">
               <label className="flex items-center">

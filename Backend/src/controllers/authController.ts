@@ -73,6 +73,18 @@ class AuthController {
 
       const result = await this.authService.register(user);
 
+     
+      if(!result){
+        res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "Something Went Wrong Try Again"
+          )
+        )
+      }
+
+
       const options ={
         httpOnly: true,
         secure: true
@@ -94,6 +106,8 @@ class AuthController {
       )
      )
     } catch (error) {
+
+      
       next(error);
     }
   };

@@ -4,6 +4,7 @@ const initialState = {
   user: null,
   loading: false,
   error: null,
+  isAuthenticated:false,
 };
 
 const userSlice = createSlice({
@@ -13,6 +14,7 @@ const userSlice = createSlice({
 
 
   reducers: {
+
     setUser(state, action) {
       state.user = action.payload;
     },
@@ -22,6 +24,7 @@ const userSlice = createSlice({
     setError(state, action) {
       state.error = action.payload;
     },
+
   },
 
 

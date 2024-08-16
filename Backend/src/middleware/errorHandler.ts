@@ -35,6 +35,19 @@ export function errorHandler(
   res: Response,
   next: NextFunction
 ) {
+
+
+
+  console.log('Error type:', err.constructor.name); 
+  if (err instanceof ApiError) {
+    return res.status(err.statusCode).json({
+      success: err.success,
+      error: err.error,
+      message: err.message,
+      data: err.data,
+    });
+  }
+
   return res.status(500).json(
     new ApiError(
       500,
