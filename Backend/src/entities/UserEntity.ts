@@ -3,7 +3,7 @@ import mongoose, { Schema, Document, ObjectId } from 'mongoose';
 export interface IUsers extends Document {
   _id: ObjectId;
   email: string | null;
-  name: String | null;
+  fullName: String | null;
   password: String | null;
   date_of_birth: Date | null;
   pin_code: Number | null;

@@ -1,15 +1,14 @@
 import Joi from 'joi';
 
 const registerSchema = Joi.object({
-
-    fullName : Joi.string()
-  .pattern(/^[A-Za-z]+$/)
+  fullName: Joi.string()
+  .pattern(/^[A-Za-z\s]+$/)
   .min(3)
   .max(100)
   .required()
   .messages({
     'string.base': 'Full name must be a text.',
-    'string.pattern.base': 'Full name must consist of at least two words, each starting with an uppercase letter.',
+    'string.pattern.base': 'Full name must consist of at least two words.',
     'string.empty': 'Full name is required.',
     'string.min': 'Full name must be at least 3 characters long.',
     'string.max': 'Full name must be less than 100 characters long.',

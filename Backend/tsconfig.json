@@ -8,5 +8,5 @@
     "noImplicitAny": true,
 
   },
-  "include": ["./src/**/*"]
+  "include": ["./src/**/*", "../Frontend/src/utils/firebase.ts"]
 }

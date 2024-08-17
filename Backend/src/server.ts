@@ -5,15 +5,18 @@ import compression from 'compression';
 import 'dotenv/config'
 import { connectDatabase } from './config/database';
 // import  userRoute from './routes/userRoute';
-import authRoute  from './routes/authRoute'
-import  { errorHandler } from './middleware/errorHandler';
+import userAuthRoute  from './routes/userAuthRoute'
+import  { ApiError, errorHandler } from './middleware/errorHandler';
 import logger from "../src/utils/logger";
 import morgan from "morgan";
 const morganFormat = ":method :url :status :response-time ms";
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true,
+}));
 app.use(compression());
 app.use(cookieParser());
 app.use(express.json());
@@ -37,12 +40,17 @@ app.use(
   })
 );
 
-app.get("/" , (req , res) => {
-    res.send(process.env.MONGO_URI);
-})
 
 
-app.use('/',authRoute)
+
+
+app.use('/api/user/',userAuthRoute)
+
+
+
+
+
+
 
 
 app.use(errorHandler);

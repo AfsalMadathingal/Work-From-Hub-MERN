@@ -7,14 +7,16 @@ import { ApiError } from "../../middleware/errorHandler";
 
  export default class UserRepository implements IUserRepository {
 
-    async createUser(user: IUsers): Promise<IUsers | null> {
+    async createUser(user: IUsers , googleAuth: boolean = false): Promise<IUsers | null> {
 
 
         const isUserExists =  await Users.findOne({email:user.email})
 
-        if (isUserExists){
+        if (isUserExists && !googleAuth){
+          
             throw new ApiError(400,"User Already Exists")
         }
+        
 
         const newUser = new Users(user);
         const result = await newUser.save();

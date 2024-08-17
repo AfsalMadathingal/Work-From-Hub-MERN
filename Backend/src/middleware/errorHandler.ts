@@ -29,31 +29,21 @@ class ApiError extends Error {
   }
 }
 
+
 export function errorHandler(
   err: Error,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-
-
-
-  console.log('Error type:', err.constructor.name); 
-  if (err instanceof ApiError) {
-    return res.status(err.statusCode).json({
-      success: err.success,
-      error: err.error,
-      message: err.message,
-      data: err.data,
-    });
-  }
-
+  const errorString = JSON.parse( JSON.stringify(err))
   return res.status(500).json(
     new ApiError(
       500,
-      "Internal Server Error"
+      errorString.statusCode < 500 ? errorString.error : "Internal Server Error"
     )
   );
 }
+
 
 export { ApiError };

@@ -17,38 +17,33 @@ class AuthController {
 
 
   public login = async (req: Request, res: Response) => {
-
-
     const loginData = await this.authService.login(req.body);
-    
-
+  
     if (loginData) { 
-
-      const options ={
+      const options = {
         httpOnly: true,
-        secure: true
-      }
+        secure: process.env.NODE_ENV === 'production', // Use secure in production
+        sameSite: 'strict' as const,
+        maxAge: 24 * 60 * 60 * 1000 // 24 hours
+      };
       
-     return res.status(200)
-     .cookie(loginData.accessToken,options)
-     .cookie(loginData.refreshToken,options)
-     .json(
-      new ApiResponse(
-        200,
-        loginData
-      )
-     )
+      return res.status(200)
+        .cookie('accessToken', loginData.accessToken, options)
+        .json(
+          new ApiResponse(
+            200,
+            loginData
+          )
+        );
     } else {
       return res.status(400)
-      .json(
-        new ApiError(
-          400,
-          "Invalid Credentials"
-        )
-      )
+        .json(
+          new ApiError(
+            400,
+            "Invalid Credentials"
+          )
+        );
     }
-
-
   }
 
 
@@ -99,7 +94,7 @@ class AuthController {
       new ApiResponse(
         200,
        {
-        data: result
+       data:result
        },
        "User Registration Success"
 
@@ -112,6 +107,17 @@ class AuthController {
     }
   };
   
+  public googleSignIn = async (req:Request,res:Response,next:NextFunction)=>{
+    try {
+      
+
+      const {displayName,email,photoURL} = req.body;
+
+
+    } catch (error) {
+      
+    }
+  }
 
 }
 

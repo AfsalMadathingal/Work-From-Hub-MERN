@@ -23,9 +23,7 @@ export default class AuthService implements IAuthService {
     this.OTPRepository = new OTPRepository();
   }
 
-  async register(
-    user: IUsers
-  ): Promise<{
+  async register(user: IUsers): Promise<{
     user: IUsers;
     accessToken: string;
     refreshToken: string;
@@ -45,9 +43,9 @@ export default class AuthService implements IAuthService {
       otp: otpNumber,
       expirationTime,
       attempts: 1,
-      createdAt: new Date() // Manually setting the createdAt field
-    } 
-    
+      createdAt: new Date(), // Manually setting the createdAt field
+    };
+
     const savedOTP = await this.OTPRepository.saveOtp(OTPToSave as IOTP);
     const OtpDetails = await sendEmail(newUser.email, otpNumber);
 
@@ -80,9 +78,7 @@ export default class AuthService implements IAuthService {
     return null;
   }
 
-  async login(
-    user: IUsers
-  ): Promise<{
+  async login(user: IUsers): Promise<{
     accessToken: string;
     refreshToken: string;
     userFound: Omit<IUsers, "password">;
@@ -129,5 +125,17 @@ export default class AuthService implements IAuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  async googleSignIn(user: IUsers): Promise<{
+    user: IUsers;
+    accessToken: string;
+    refreshToken: string;
+  } | null> {
+
+    
+
+
+    return null;
   }
 }
