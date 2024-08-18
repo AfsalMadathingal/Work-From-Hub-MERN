@@ -127,15 +127,40 @@ export default class AuthService implements IAuthService {
     }
   }
 
-  async googleSignIn(user: IUsers): Promise<{
+  async googleSignIn(user: Partial<IUsers>): Promise<{
     user: IUsers;
     accessToken: string;
     refreshToken: string;
   } | null> {
+    try {
 
-    
+      const userAfterSuccess = await this.userRepository.googleSignIn(user);
+  
+      if (!userAfterSuccess) {
+        return null; 
+      }
 
+      const userId = userAfterSuccess.id || (userAfterSuccess.toObject && userAfterSuccess.toObject().id);
+  
+      if (!userId) {
+        throw new Error('User ID is not available');
+      }
 
-    return null;
+      const accessToken = generateAccessToken({ id: userId, role: userAfterSuccess.role });
+      const refreshToken = generateRefreshToken({ id: userId, role: userAfterSuccess.role });
+
+      const userAfterSavedToken = await this.userRepository.saveRefreshToken(userId, refreshToken);
+  
+
+      return {
+        user: userAfterSavedToken,
+        accessToken,
+        refreshToken
+      };
+    } catch (error) {
+      console.error('Error during Google sign-in:', error);
+      return null;
+    }
   }
+  
 }

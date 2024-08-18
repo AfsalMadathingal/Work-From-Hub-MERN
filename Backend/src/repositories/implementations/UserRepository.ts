@@ -7,12 +7,12 @@ import { ApiError } from "../../middleware/errorHandler";
 
  export default class UserRepository implements IUserRepository {
 
-    async createUser(user: IUsers , googleAuth: boolean = false): Promise<IUsers | null> {
+    async createUser(user: IUsers , ): Promise<IUsers | null> {
 
 
         const isUserExists =  await Users.findOne({email:user.email})
 
-        if (isUserExists && !googleAuth){
+        if (isUserExists ){
           
             throw new ApiError(400,"User Already Exists")
         }
@@ -42,5 +42,30 @@ import { ApiError } from "../../middleware/errorHandler";
             "-password -refreshToken"
         );
         return userWithSavedToken;
+      }
+
+
+      async googleSignIn (user : Partial<IUsers>):Promise <IUsers | null>{
+
+        try {
+
+            const isUserExists = await Users.findOne({email:user.email})
+
+            if(isUserExists){
+                return isUserExists
+            }
+
+            const newUser = new Users (user)
+
+            const userData = await newUser.save()
+
+            return userData
+     
+            
+        } catch (error) {
+            
+            return null
+        }
+       
       }
  }

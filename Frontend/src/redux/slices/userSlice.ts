@@ -5,6 +5,7 @@ const initialState = {
   loading: false,
   error: {},
   isAuthenticated:false,
+  accessToken: "",
 };
 
 const userSlice = createSlice({
@@ -26,6 +27,9 @@ const userSlice = createSlice({
     },
     setIsAuthenticated(state, action){
       state.isAuthenticated = action.payload;
+    },
+    setAccessToken(state,action){
+      state.accessToken = action.payload;
     }
 
   },
@@ -33,7 +37,7 @@ const userSlice = createSlice({
 
 });
 
-export const { setUser, setLoading, setError ,setIsAuthenticated } = userSlice.actions;
+export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken } = userSlice.actions;
 
 export default userSlice.reducer;
 

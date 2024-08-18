@@ -9,10 +9,11 @@ import {
   setError,
   setUser,
   setIsAuthenticated,
+  setAccessToken,
 } from "../../redux/slices/userSlice";
 import { RootState } from "../../redux/store/store";
 import validate from "../../utils/userLoginValidator";
-import { login } from "../../services/UserAuthService";
+import { login, signInWithGoogle } from "../../services/UserAuthService";
 import ReactLoading from "react-loading";
 
 const LoginPage: React.FC = () => {
@@ -52,6 +53,33 @@ const LoginPage: React.FC = () => {
       }
     }
   };
+
+
+  const handleGoogleSignIn = async ()=>{
+
+    try {
+      const response = await  signInWithGoogle()
+     
+      if(response.success){
+        const {user,accessToken} = response.data ;
+
+        dispatch(setUser(user))
+        dispatch(setIsAuthenticated(true))
+        dispatch(setLoading(false))
+        dispatch(setAccessToken(accessToken))
+       
+        
+      }
+
+    } catch (error) {
+      console.log(error);
+      
+    }
+   
+
+    
+  }
+
 
   return (
     <>
@@ -129,7 +157,9 @@ const LoginPage: React.FC = () => {
               </button>
             </form>
             <div className="mt-6  shadow-lg">
-              <button className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center">
+              <button 
+              onClick={handleGoogleSignIn}
+              className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center">
                 <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
                 Sign in with Google
               </button>

@@ -68,9 +68,11 @@ export const login = async (credential: Partial <IUsers>)=>{
 export const signInWithGoogle = async () => {
   try {
     const result = await signInWithPopup(auth, provider);
-    // The signed-in user info.
-    const user = result.user;
-    console.log("User Info:", user);
+    const {user} = result;
+    const response =  await api.post('/api/user//google-sign-in',user)
+
+    return response.data
+  
   } catch (error) {
     console.error("Error during sign-in:", error);
   }

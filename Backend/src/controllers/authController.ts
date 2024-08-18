@@ -10,6 +10,13 @@ class AuthController {
 
   private authService: AuthService;
 
+  options = {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production', 
+    sameSite: 'strict' as const,
+    maxAge: 24 * 60 * 60 * 1000 
+  };
+
   constructor(){
     this.authService = new AuthService()
 
@@ -28,7 +35,7 @@ class AuthController {
       };
       
       return res.status(200)
-        .cookie('accessToken', loginData.accessToken, options)
+        .cookie('accessToken', loginData.refreshToken, options)
         .json(
           new ApiResponse(
             200,
@@ -87,7 +94,6 @@ class AuthController {
 
      return res
      .status(200)
-     .cookie('accessToken',result.accessToken,options)
      .cookie('refreshToken',result.refreshToken,options)
      .json(
 
@@ -113,8 +119,23 @@ class AuthController {
 
       const {displayName,email,photoURL} = req.body;
 
+      const userAfterAuth = await this.authService.googleSignIn({fullName:displayName,email:email,profilePic:photoURL})
+
+      console.log(userAfterAuth);
+      
+      return res.status(200)
+      .cookie("refreshToken",userAfterAuth.refreshToken,this.options)
+      .json(
+        new ApiResponse(
+          200,
+          userAfterAuth,
+          "User authentication success"
+        )
+      )
 
     } catch (error) {
+
+      next(error)
       
     }
   }

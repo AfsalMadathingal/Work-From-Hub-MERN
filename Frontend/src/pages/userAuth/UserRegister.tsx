@@ -4,7 +4,7 @@ import { register, signInWithGoogle } from "../../services/UserAuthService";
 import { toast } from "react-toastify";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { setIsAuthenticated, setLoading, setUser } from "../../redux/slices/userSlice";
+import { setAccessToken, setIsAuthenticated, setLoading, setUser } from "../../redux/slices/userSlice";
 import ReactLoading from "react-loading";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -72,7 +72,27 @@ const UserRegister: React.FC = () => {
 
   const handleGoogleSignIn = async ()=>{
 
+    try {
+      const response = await  signInWithGoogle()
+     
+      if(response.success){
+        const {user,accessToken} = response.data ;
+
+        dispatch(setUser(user))
+        dispatch(setIsAuthenticated(true))
+        dispatch(setLoading(false))
+        dispatch(setAccessToken(accessToken))
+       
+        
+      }
+
+    } catch (error) {
+      console.log(error);
       
+    }
+   
+
+    
   }
 
   return (
