@@ -37,6 +37,10 @@ export function errorHandler(
   next: NextFunction
 ) {
   const errorString = JSON.parse( JSON.stringify(err))
+
+  console.log('====================================');
+  console.log(err);
+  console.log('====================================');
   return res.status(500).json(
     new ApiError(
       500,

@@ -2,7 +2,7 @@ import Joi from 'joi';
 
 const registerSchema = Joi.object({
   fullName: Joi.string()
-  .pattern(/^[A-Za-z\s]+$/)
+  .pattern(/^[A-Za-z]+(?:\s[A-Za-z]+)+$/)
   .min(3)
   .max(100)
   .required()

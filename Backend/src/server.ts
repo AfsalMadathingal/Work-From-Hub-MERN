@@ -6,6 +6,7 @@ import 'dotenv/config'
 import { connectDatabase } from './config/database';
 // import  userRoute from './routes/userRoute';
 import userAuthRoute  from './routes/userAuthRoute'
+import businessAuthRoute from './routes/businessAuthRoute';
 import  { ApiError, errorHandler } from './middleware/errorHandler';
 import logger from "../src/utils/logger";
 import morgan from "morgan";
@@ -14,7 +15,7 @@ const morganFormat = ":method :url :status :response-time ms";
 
 const app = express();
 app.use(cors({
-  origin: 'http://localhost:5173', 
+  origin: ['http://localhost:5173', "https://9clmkz9s-5173.inc1.devtunnels.ms"],
   credentials: true,
 }));
 app.use(compression());
@@ -44,7 +45,8 @@ app.use(
 
 
 
-app.use('/api/user/',userAuthRoute)
+app.use('/api/user/auth',userAuthRoute)
+app.use('/api/business/auth',businessAuthRoute)
 
 
 

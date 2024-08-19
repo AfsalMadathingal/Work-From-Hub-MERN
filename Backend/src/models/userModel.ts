@@ -13,7 +13,7 @@ const UsersSchema: Schema = new Schema({
   phone: { type: Number },
   profilePic: { type: String },
   refreshToken:{type:String},
-  role: {type:String , default:"user"}
+  role: {type:String , default:"user"},
 });
 
 const Users = mongoose.model<IUsers>("Users", UsersSchema);

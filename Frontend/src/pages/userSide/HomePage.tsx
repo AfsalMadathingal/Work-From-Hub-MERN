@@ -25,7 +25,7 @@ const HomePage = () => {
 
   return (
     <>
-    {loading ? <LoadingPageWithReactLoading type='bars' color={PRIMARY_COLOR}/> :
+    {loading ? <LoadingPageWithReactLoading transparent={false} type='bars' color={PRIMARY_COLOR}/> :
         <div className="min-h-screen flex flex-col">
         <Header />
         <main className="flex-grow">

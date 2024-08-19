@@ -2,6 +2,8 @@ import { Request, Response ,NextFunction } from 'express';
 import  AuthService  from '../services/implementations/AuthService';
 import ApiResponse from '../utils/ApiResponse';
 import { ApiError } from '../middleware/errorHandler';
+import OTPService from '../services/implementations/OTPService';
+import UserService from '../services/implementations/UserService';
 
 
 
@@ -9,6 +11,8 @@ class AuthController {
 
 
   private authService: AuthService;
+  private OTPService : OTPService;
+  private UserService : UserService;
 
   options = {
     httpOnly: true,
@@ -19,6 +23,9 @@ class AuthController {
 
   constructor(){
     this.authService = new AuthService()
+    this.OTPService = new OTPService()
+    this.UserService = new UserService()
+
 
   }
 
@@ -27,15 +34,10 @@ class AuthController {
     const loginData = await this.authService.login(req.body);
   
     if (loginData) { 
-      const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Use secure in production
-        sameSite: 'strict' as const,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      };
+
       
       return res.status(200)
-        .cookie('accessToken', loginData.refreshToken, options)
+        .cookie('refreshToken', loginData.refreshToken, this.options)
         .json(
           new ApiResponse(
             200,
@@ -71,7 +73,21 @@ class AuthController {
     next: NextFunction
   ): Promise<Response> => {
     try {
-      const user = req.body;
+      const {user,otp} = req.body;
+
+
+
+      const OTPVerification = await this.OTPService.verifyOTP(user,otp)
+
+      if(!OTPVerification){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "Entered Wrong OTP"
+          )
+        )
+      }
 
       const result = await this.authService.register(user);
 
@@ -87,14 +103,10 @@ class AuthController {
       }
 
 
-      const options ={
-        httpOnly: true,
-        secure: true
-      }
-
+  
      return res
      .status(200)
-     .cookie('refreshToken',result.refreshToken,options)
+     .cookie('refreshToken',result.refreshToken,this.options)
      .json(
 
       new ApiResponse(
@@ -108,7 +120,7 @@ class AuthController {
      )
     } catch (error) {
 
-      
+ 
       next(error);
     }
   };
@@ -137,6 +149,55 @@ class AuthController {
 
       next(error)
       
+    }
+  }
+
+  public sendOTP = async (req:Request, res:Response, next : NextFunction)=>{
+    try {
+
+      const user= req.body;
+
+      const otpExists = await this.OTPService.checkOTPExists(user)
+
+      if(otpExists){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "Please Wait 1 Minute. Before Trying to register again"
+          )
+        )
+      }
+
+      const isUserExists = await this.UserService.findUserWithEmail(user)
+
+      if(isUserExists){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "User Already Exists"
+          )
+        )
+      }
+
+      const response = await this.OTPService.sendOtp(user)
+
+      console.log(response);
+
+      return res.status(200)
+      .json(
+        new ApiResponse(
+          200,
+          user,
+          "otp sent successfully"
+        )
+      )
+      
+
+      
+    } catch (error) {
+      next(error)
     }
   }
 

@@ -17,7 +17,7 @@ import { login, signInWithGoogle } from "../../services/UserAuthService";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 
-const LoginPage: React.FC = () => {
+const BusinessLogin: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
@@ -27,6 +27,7 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    dispatch(setError({}));
     dispatch(setLoading(true));
     console.log(isAuthenticated);
     
@@ -47,6 +48,7 @@ const LoginPage: React.FC = () => {
         dispatch(setUser(user));
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));
+        dispatch(setError({}));
       }else{
         dispatch(setError({email:response.data.error,password:response.data.error}))
         dispatch(setLoading(false));
@@ -92,17 +94,33 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-   {loading && <LoadingPageWithReactLoading  transparent={true} type="spin" color={PRIMARY_COLOR}/>}
+    {loading ? <LoadingPageWithReactLoading type="spin" color={PRIMARY_COLOR}/> : 
       <div className="flex h-screen bg-[#fcefe7] transition ">
-        <div className="m-auto bg-white rounded-lg shadow-2xl flex max-w-3xl ">
-          <div className="  p-8">
+        <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
+          <div className="w-full p-8">
             <h2 className="text-2xl text-center font-bold mb-4">
-              WELCOME BACK
+              BUSINESS ACCOUNT REGISTER
             </h2>
             <p className="text-gray-600 text-center mb-6">
-              Welcome back! Please enter your details.
+              Please fill your details.
             </p>
             <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+                <label htmlFor="email" className="block text-gray-700 mb-2">
+                  Full Name
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                {error?.email && (
+                  <p className="text-red-500 text-sm mt-1  ">{error.email}</p>
+                )}
+              </div>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 mb-2">
                   Email
@@ -122,6 +140,22 @@ const LoginPage: React.FC = () => {
               <div className="mb-6">
                 <label htmlFor="password" className="block text-gray-700 mb-2">
                   Password
+                </label>
+                <input
+                  type="password"
+                  id="password"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                {error?.password && (
+                  <p className="text-red-500 text-sm mt-1">{error.password}</p>
+                )}
+              </div>
+              <div className="mb-6">
+                <label htmlFor="password" className="block text-gray-700 mb-2">
+                 Confirm Password
                 </label>
                 <input
                   type="password"
@@ -166,14 +200,6 @@ const LoginPage: React.FC = () => {
                 )}
               </button>
             </form>
-            <div className="mt-6  shadow-lg">
-              <button 
-              onClick={handleGoogleSignIn}
-              className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center">
-                <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
-                Sign in with Google
-              </button>
-            </div>
             <p className="text-center mt-6 text-sm text-gray-600">
               Don't have an account?{" "}
               <Link to={"/sign-up"} className="text-blue-500 hover:underline">
@@ -181,19 +207,11 @@ const LoginPage: React.FC = () => {
               </Link>
             </p>
           </div>
-          <div className="w-1/2 hidden lg:block">
-            <img
-              src="/loginpageimage.webp"
-              alt="Person working on laptop"
-              className="object-cover h-full w-full rounded-r-lg"
-              loading="lazy"
-            />
-          </div>
         </div>
       </div>
-      
+      }
     </>
   );
 };
 
-export default LoginPage;
+export default BusinessLogin;

@@ -13,4 +13,5 @@ export interface IBusinessUser {
     is_deleted: boolean;
     createdAt: Date;
     updatedAt: Date;
+    role:string
 }

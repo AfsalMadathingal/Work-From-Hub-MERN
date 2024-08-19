@@ -35,23 +35,8 @@ export default class AuthService implements IAuthService {
       password: hashedPassword,
     });
 
-    const otpNumber = Math.floor(100000 + Math.random() * 900000).toString();
-    const expirationTime = new Date(Date.now() + 10 * 60000);
-
-    const OTPToSave = {
-      email: newUser.email.toString(),
-      otp: otpNumber,
-      expirationTime,
-      attempts: 1,
-      createdAt: new Date(), // Manually setting the createdAt field
-    };
-
-    const savedOTP = await this.OTPRepository.saveOtp(OTPToSave as IOTP);
-    const OtpDetails = await sendEmail(newUser.email, otpNumber);
-
-    if (!OtpDetails) {
-      return null;
-    }
+   
+   
 
     const createdUser = await this.userRepository.createUser(newUser);
 

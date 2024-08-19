@@ -18,7 +18,8 @@ const userLoginSchema =Joi.object({
 
 
 export function validateRegistration(req: Request, res: Response, next: NextFunction) {
-  const { error } = userRegistration.validate(req.body, { abortEarly: false });
+  
+  const { error } = userRegistration.validate(req.body.user, { abortEarly: false });
 
   if (error) {
 

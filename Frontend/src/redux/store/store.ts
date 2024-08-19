@@ -6,7 +6,7 @@ import userReducer from '../slices/userSlice';
 const userPersistConfig = {
   key: 'user',
   storage,
-  blacklist: ['loading'], // This will prevent 'loading' from being persisted
+  blacklist: ['loading','error','modal'], // This will prevent 'loading' from being persisted
 };
 
 const persistedUserReducer = persistReducer(userPersistConfig, userReducer);

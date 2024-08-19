@@ -22,7 +22,7 @@ const LandingPage: React.FC = () => {
 
   return (
     <>
-      {loading ? <LoadingPageWithReactLoading type="bars" color="#ff6f00" />
+      {loading ? <LoadingPageWithReactLoading transparent={false} type="bars" color="#ff6f00" />
        :
        <>
       <Navbar />

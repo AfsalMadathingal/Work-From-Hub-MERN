@@ -6,6 +6,8 @@ const initialState = {
   error: {},
   isAuthenticated:false,
   accessToken: "",
+  modal:false,
+  formData:{}
 };
 
 const userSlice = createSlice({
@@ -30,6 +32,11 @@ const userSlice = createSlice({
     },
     setAccessToken(state,action){
       state.accessToken = action.payload;
+    },
+    setModal(state,action){
+      state.modal = action.payload
+    },setFormData(state,action){
+      state.formData = action.payload
     }
 
   },
@@ -37,7 +44,7 @@ const userSlice = createSlice({
 
 });
 
-export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken } = userSlice.actions;
+export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData } = userSlice.actions;
 
 export default userSlice.reducer;
 
