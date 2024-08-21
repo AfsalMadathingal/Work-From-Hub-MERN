@@ -2,13 +2,18 @@ import { Request, Response ,NextFunction } from 'express';
 import  BusinessAuthService  from '../services/implementations/BusinessAuthService';
 import ApiResponse from '../utils/ApiResponse';
 import { ApiError } from '../middleware/errorHandler';
+import OTPService from '../services/implementations/OTPService';
+import BusinessUserService from '../services/implementations/BusinessUserService';
 
 
 
 class AuthController {
 
 
-  private authService: BusinessAuthService;
+  private businessAuthService: BusinessAuthService;
+  private OTPService : OTPService;
+  private businessUserService: BusinessUserService
+  
 
   public options = {
     httpOnly: true,
@@ -18,13 +23,16 @@ class AuthController {
   };
 
   constructor(){
-    this.authService = new BusinessAuthService()
+    this.businessAuthService = new BusinessAuthService()
+    this.OTPService = new OTPService()
+    this.businessUserService = new BusinessUserService()
 
   }
 
 
   public login = async (req: Request, res: Response) => {
-    const loginData = await this.authService.login(req.body);
+    
+    const loginData = await this.businessAuthService.login(req.body);
   
     if (loginData) { 
       const options = {
@@ -56,7 +64,7 @@ class AuthController {
 
   public refreshAccessToken = async (req: Request, res: Response) => {
     const { refreshToken } = req.body;
-    const newAccessToken = await this.authService.refreshAccessToken(refreshToken);
+    const newAccessToken = await this.businessAuthService.refreshAccessToken(refreshToken);
     if (newAccessToken) {
       res.json({ accessToken: newAccessToken });
     } else {
@@ -71,9 +79,24 @@ class AuthController {
     next: NextFunction
   ): Promise<Response> => {
     try {
-      const user = req.body;
+      const {user,otp} = req.body;
 
-      const result = await this.authService.register(user);
+
+
+      
+      const OTPVerification = await this.OTPService.verifyOTP(user,otp)
+
+      if(!OTPVerification){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "Entered Wrong OTP"
+          )
+        )
+      }
+
+      const result = await this.businessAuthService.register(user);
 
      
       if(!result){
@@ -107,11 +130,60 @@ class AuthController {
       )
      )
     } catch (error) {
-
       
       next(error);
     }
   };
+
+
+  public sendOTP = async (req:Request, res:Response, next : NextFunction)=>{
+    try {
+
+      const user= req.body;
+
+      const otpExists = await this.OTPService.checkBusinessUserOTPExists(user)
+
+      if(otpExists){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "Please Wait 1 Minute. Before Trying to register again"
+          )
+        )
+      }
+
+      const isUserExists = await this.businessUserService.findUserWithEmail(user)
+
+      if(isUserExists){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "User Already Exists"
+          )
+        )
+      }
+
+      const response = await this.OTPService.sendBusinessUserOTP(user)
+
+      console.log(response);
+
+      return res.status(200)
+      .json(
+        new ApiResponse(
+          200,
+          user,
+          "otp sent successfully"
+        )
+      )
+      
+
+      
+    } catch (error) {
+      next(error)
+    }
+  }
   
 
 

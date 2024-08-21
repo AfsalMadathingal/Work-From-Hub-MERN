@@ -13,6 +13,7 @@ import { sendEmail } from "../../utils/emailService";
 import { IOTPRepository } from "../../repositories/interface/IOTPRepository";
 import OTPRepository from "../../repositories/implementations/OTPRepository";
 import { IOTP } from "../../entities/OTPEntity";
+import { Document } from "mongoose";
 
 export default class BusinessAuthService implements IBusinessAuthService {
   private BusinessRepository: IBusinessUserRepository;
@@ -28,6 +29,7 @@ export default class BusinessAuthService implements IBusinessAuthService {
     accessToken: string;
     refreshToken: string;
   } | null> {
+
     const hashedPassword = await bcrypt.hash(user.password.toString(), 10);
 
     const newUser = new BusinessUser({
@@ -35,26 +37,11 @@ export default class BusinessAuthService implements IBusinessAuthService {
       password: hashedPassword,
     });
 
-    const otpNumber = Math.floor(100000 + Math.random() * 900000).toString();
-    const expirationTime = new Date(Date.now() + 10 * 60000);
 
-    const OTPToSave = {
-      email: newUser.email.toString(),
-      otp: otpNumber,
-      expirationTime,
-      attempts: 1,
-      createdAt: new Date(), // Manually setting the createdAt field
-    };
-
-    const savedOTP = await this.OTPRepository.saveOtp(OTPToSave as IOTP);
-
-    const OtpDetails = await sendEmail(newUser.email, otpNumber);
-
-    if (!OtpDetails) {
-      return null;
-    }
 
     const createdUser = await this.BusinessRepository.createUser(newUser);
+
+
 
     if (createdUser) {
       const accessToken = generateAccessToken({
@@ -86,34 +73,38 @@ export default class BusinessAuthService implements IBusinessAuthService {
   } | null> {
 
 
-    let userFound = await this.BusinessRepository.findByUsername(
-      user.email.toString()
-    );
+    // Find the user by email
+  let userFound = await this.BusinessRepository.findByUsername(user.email.toString());
 
-    if (
-      userFound &&
-      (await bcrypt.compare(
-        user.password.toString(),
-        userFound.password.toString()
-      ))
-    ) {
-    //   const accessToken = generateAccessToken({
-    //     id: userFound.id,
-    //     role: userFound.role,
-    //   });
-    //   const refreshToken = generateRefreshToken({
-    //     id: userFound.id,
-    //     role: userFound.role,
-    //   });
-    //   const userWithNewToken = await this.BusinessRepository.saveRefreshToken(
-    //     userFound.id,
-    //     refreshToken
-    //   );
-    //   const { password, ...userWithoutPassword } = userFound.toObject();
-    //   return { accessToken, refreshToken, userFound: userWithNewToken };
-    }
+  // Check if user is found and password matches
+  if (
+    userFound &&
+    (await bcrypt.compare(user.password.toString(), userFound.password.toString()))
+  ) {
 
-    return null;
+    const userId = userFound._id?.toString();
+
+
+    const accessToken = generateAccessToken({
+      id: userId,
+      role: userFound.role,
+    });
+    const refreshToken = generateRefreshToken({
+      id: userId,
+      role: userFound.role,
+    });
+
+    // Save refresh token
+    await this.BusinessRepository.saveRefreshToken(userId, refreshToken);
+
+    // Exclude the password from the returned user object
+    const { password, ...userWithoutPassword } = userFound 
+
+    return { accessToken, refreshToken, userFound: userWithoutPassword };
+  }
+
+
+  return null;
   }
 
   async refreshAccessToken(refreshToken: string): Promise<string | null> {

@@ -1,6 +1,6 @@
 import axios, { AxiosError } from "axios";
 import { IUsers } from "../@types/user";
-import { Alert } from "../utils/aler";
+import { Alert } from "../utils/alert";
 import { auth, provider } from "../utils/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { IOTP } from "../@types/otp";

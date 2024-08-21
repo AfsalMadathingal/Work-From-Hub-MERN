@@ -1,4 +1,5 @@
 import Joi from 'joi';
+import { IUsers } from '../@types/user';
 
 const registerSchema = Joi.object({
   fullName: Joi.string()
@@ -36,5 +37,31 @@ const registerSchema = Joi.object({
     }),
 });
 
-export default registerSchema;
+
+export const validate = (data:  Partial<IUsers>,)   =>{
+
+  const {error  } = registerSchema.validate(data,{abortEarly:false})
+
+  if(error){
+
+    const formattedErrors: { [key: string]: string } = {};
+    error.details.forEach((detail) => {
+      formattedErrors[detail.path[0]] = detail.message;
+      console.log(detail.path[0]);
+      
+    });
+
+    return formattedErrors
+
+  }
+
+  return null
+  
+
+}
+
+
+
+
+export default validate;
 

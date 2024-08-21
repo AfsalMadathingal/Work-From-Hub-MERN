@@ -1,4 +1,4 @@
-import { IBusinessUser } from "entities/BusinessUserEntity";
+import { IBusinessUser } from "../../entities/BusinessUserEntity";
 
 export interface IBusinessUserRepository {
 

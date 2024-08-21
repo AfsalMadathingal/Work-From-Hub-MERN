@@ -10,10 +10,10 @@ import {
   setUser,
   setIsAuthenticated,
   setAccessToken,
-} from "../../redux/slices/userSlice";
+} from "../../redux/slices/businessUserSlice";
 import { RootState } from "../../redux/store/store";
 import validate from "../../utils/userLoginValidator";
-import { login, signInWithGoogle } from "../../services/UserAuthService";
+import { login } from "../../services/BUserAuthService";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 
@@ -22,14 +22,12 @@ const BusinessLogin: React.FC = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const { loading, error , isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { loading, error , } = useSelector((state: RootState) => state.businessUser);
   const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setLoading(true));
-    console.log(isAuthenticated);
-    
     const formattedErrors = validate({ email, password });
 
     if (formattedErrors) {

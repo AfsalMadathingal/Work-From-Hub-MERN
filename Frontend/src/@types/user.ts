@@ -12,4 +12,5 @@ export interface IUsers {
   profilePic?: string | null;
   role?: string | null;
   refreshToken?: string | null;
+  confirmPassword?: string | null;
 }

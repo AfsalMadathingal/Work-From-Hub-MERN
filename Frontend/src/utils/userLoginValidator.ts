@@ -22,7 +22,7 @@ const loginSchema = Joi.object({
 
 const validate = (data:  Partial<IUsers>)   =>{
 
-  const {error  } = loginSchema.validate(data)
+  const {error  } = loginSchema.validate(data,{abortEarly:false})
 
   if(error){
 

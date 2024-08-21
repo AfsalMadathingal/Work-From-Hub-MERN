@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import registerSchema from "../../utils/userRegisterValidator";
+import validate from "../../utils/userRegisterValidator";
 import {
   register,
   sendOTP,
@@ -10,6 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import {
   setAccessToken,
+  setError,
   setFormData,
   setIsAuthenticated,
   setLoading,
@@ -29,9 +30,8 @@ const UserRegister: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const dispatch = useDispatch();
-  const { loading , modal } = useSelector((state: RootState) => state.user);
+  const { loading , modal ,error } = useSelector((state: RootState) => state.user);
   const navigate = useNavigate();
 
 
@@ -40,45 +40,35 @@ const UserRegister: React.FC = () => {
     dispatch(setLoading(true));
 
     try {
-        const { error } = registerSchema.validate(
-            { fullName, email, password, confirmPassword },
-            { abortEarly: false }
-        );
-        if (error) {
-            const formattedErrors: { [key: string]: string } = {};
-            error.details.forEach((detail) => {
-                formattedErrors[detail.path[0]] = detail.message;
-                console.log(detail.path[0]);
-            });
+        const formattedErrors = validate({ fullName, email, password, confirmPassword });
+
+        if (formattedErrors) {
             setTimeout(() => {
-                setErrors(formattedErrors);
                 dispatch(setLoading(false));
+                dispatch(setError(formattedErrors));
             }, 1000);
-        } else {
-            setErrors({});
-
-            dispatch(setFormData({fullName, email, password}));
-
-            const otpResponse = await sendOTP({ fullName, email, password });
-
-
-            if (otpResponse?.status === 200) {  
-                dispatch(setFormData({fullName, email, password}));
-                dispatch(setModal(true));
-            } 
-
-            if(otpResponse?.error){
-              toast.error(otpResponse.error)
-            }
-
-            dispatch(setLoading(false));
+            return;
         }
+
+        dispatch(setError({}));
+        dispatch(setFormData({ fullName, email, password }));
+
+        const otpResponse = await sendOTP({ fullName, email, password });
+
+        if (otpResponse?.status === 200) {
+            dispatch(setModal(true));
+        } else if (otpResponse?.error) {
+            toast.error(otpResponse.error);
+        }
+
+        dispatch(setLoading(false));
     } catch (error) {
-        console.log(error);
+        console.error(error);
         dispatch(setLoading(false));
         toast.error("Something Went Wrong");
     }
 };
+
 
 
 
@@ -134,9 +124,9 @@ const UserRegister: React.FC = () => {
                       value={fullName}
                       onChange={(e) => setFullName(e.target.value)}
                     />
-                    {errors?.fullName && (
+                    {error?.fullName && (
                       <p className="text-red-500 text-sm mt-1">
-                        {errors.fullName}
+                        {error.fullName}
                       </p>
                     )}
                   </div>
@@ -152,9 +142,9 @@ const UserRegister: React.FC = () => {
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
                     />
-                    {errors?.email && (
+                    {error?.email && (
                       <p className="text-red-500 text-sm mt-1">
-                        {errors.email}
+                        {error.email}
                       </p>
                     )}
                   </div>
@@ -174,9 +164,9 @@ const UserRegister: React.FC = () => {
                       onChange={(e) => setPassword(e.target.value)}
                     />
                   </div>
-                  {errors?.password && (
+                  {error?.password && (
                     <p className="text-red-500 text-sm mt-1">
-                      {errors.password}
+                      {error.password}
                     </p>
                   )}
 
@@ -195,9 +185,9 @@ const UserRegister: React.FC = () => {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                     />
-                    {errors?.confirmPassword && (
+                    {error?.confirmPassword && (
                       <p className="text-red-500 text-sm mt-1">
-                        {errors.confirmPassword}
+                        {error.confirmPassword}
                       </p>
                     )}
                   </div>

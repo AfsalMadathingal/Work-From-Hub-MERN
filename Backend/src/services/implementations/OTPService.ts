@@ -4,6 +4,7 @@ import { IOTP } from "../../entities/OTPEntity";
 import OTPRepository from "../../repositories/implementations/OTPRepository";
 import { sendEmail } from "../../utils/emailService";
 import { IUsers } from "../../entities/UserEntity";
+import { IBusinessUser } from "entities/BusinessUserEntity";
 
 export default class OTPService implements IOTPSerivice {
     private OTPRepository: IOTPRepository;
@@ -13,6 +14,7 @@ export default class OTPService implements IOTPSerivice {
     }
 
     async sendOtp(user: IUsers): Promise<IOTP | null> {
+
         const otpNumber = Math.floor(1000 + Math.random() * 9000).toString();
         const expirationTime = new Date(Date.now() + 1 * 60000);
 
@@ -58,6 +60,61 @@ export default class OTPService implements IOTPSerivice {
     async checkOTPExists (user:IUsers): Promise <IOTP | null >{
 
         const OTPFound = await this.OTPRepository.findOTP(user)
+
+        if(!OTPFound){
+            return null
+        }
+
+        return OTPFound 
+    }
+
+
+    async sendBusinessUserOTP(user:IBusinessUser):Promise <IOTP | null >{
+
+        const otpNumber = Math.floor(1000 + Math.random() * 9000).toString();
+        const expirationTime = new Date(Date.now() + 1 * 60000);
+
+        const OTPToSave = {
+            email: user.email.toString(),
+            otp: otpNumber,
+            expirationTime,
+            attempts: 1,
+            createdAt: new Date(),
+            role:"businessUser"
+            
+        };
+
+        const savedOTP = await this.OTPRepository.saveBusinessUserOTP(OTPToSave as IOTP);
+        const OtpDetails = await sendEmail(user.email, otpNumber);
+
+        if (!OtpDetails) {
+            return null;
+        }
+
+        return savedOTP;
+    }
+
+    async verifyBusinessOTP(user:IBusinessUser,otp:IOTP) : Promise <IOTP | null>{
+
+        
+        const OTPFound = await this.OTPRepository.findBusinessUserOTP(user)
+
+        if(!OTPFound){
+            return null
+        }
+
+        if(OTPFound.otp == otp.otp){
+            return OTPFound
+        }
+
+
+
+        return null 
+    }
+
+    async checkBusinessUserOTPExists (user:IBusinessUser): Promise <IOTP | null >{
+
+        const OTPFound = await this.OTPRepository.findBusinessUserOTP(user)
 
         if(!OTPFound){
             return null

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import loginSchema from "../../utils/userLoginValidator";
 import LoadingPageWithReactLoading from "../../components/lodiangPage/Loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,52 +9,61 @@ import {
   setUser,
   setIsAuthenticated,
   setAccessToken,
-} from "../../redux/slices/userSlice";
+  setModal,
+  setFormData,
+} from "../../redux/slices/businessUserSlice";
 import { RootState } from "../../redux/store/store";
-import validate from "../../utils/userLoginValidator";
-import { login, signInWithGoogle } from "../../services/UserAuthService";
+import validate from "../../utils/userRegisterValidator";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
+import { register, sendOTP } from "../../services/BUserAuthService";
+import BusinessUserOTPForms from "../../components/businessUser/BusinessUserOTPForm";
 
 const BusinessLogin: React.FC = () => {
+  const [fullName,setFullName] = useState("")
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword,setConfirmPassword] = useState("")
   const [rememberMe, setRememberMe] = useState(false);
 
-  const { loading, error , isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { loading, error , modal } = useSelector((state: RootState) => state.businessUser);
   const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setError({}));
     dispatch(setLoading(true));
-    console.log(isAuthenticated);
-    
-    const formattedErrors = validate({ email, password });
-
+  
+    const formattedErrors = validate({ fullName, email, password, confirmPassword });
+  
     if (formattedErrors) {
-      setTimeout(() => {
-        dispatch(setLoading(false));
-        dispatch(setError(formattedErrors));
-      }, 1000);
-    } else {
-      dispatch(setError({}));
+      dispatch(setLoading(false));
+      dispatch(setError(formattedErrors));
+      return;
+    }
 
-      const response = await login({ email, password });
+    dispatch(setError({}));
+    dispatch(setFormData({ fullName, email, password }));
+  
+    try {
+      const otpResponse = await sendOTP({ fullName, email, password });
 
-      if (response.success) {
-        const { user, accessToken, refreshToken } = response;
-        dispatch(setUser(user));
-        dispatch(setIsAuthenticated(true));
-        dispatch(setLoading(false));
-        dispatch(setError({}));
-      }else{
-        dispatch(setError({email:response.data.error,password:response.data.error}))
-        dispatch(setLoading(false));
-        
-      }
+
+      
+      if (otpResponse?.status === 200) {
+        dispatch(setModal(true));
+    } else if (otpResponse?.error) {
+        toast.error(otpResponse.error);
+    }
+    dispatch(setLoading(false));
+
+    } catch (error) {
+      toast.error('Failed to submit. Please try again later.');
+    } finally {
+      dispatch(setLoading(false));
     }
   };
+  
 
 
   const handleGoogleSignIn = async ()=>{
@@ -94,7 +102,10 @@ const BusinessLogin: React.FC = () => {
 
   return (
     <>
-    {loading ? <LoadingPageWithReactLoading type="spin" color={PRIMARY_COLOR}/> : 
+    {loading && <LoadingPageWithReactLoading transparent={true} type="spin" color={PRIMARY_COLOR}/> }
+
+    {modal && <BusinessUserOTPForms />}
+
       <div className="flex h-screen bg-[#fcefe7] transition ">
         <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
           <div className="w-full p-8">
@@ -110,15 +121,15 @@ const BusinessLogin: React.FC = () => {
                   Full Name
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   id="email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
-                {error?.email && (
-                  <p className="text-red-500 text-sm mt-1  ">{error.email}</p>
+                {error?.fullName && (
+                  <p className="text-red-500 text-sm mt-1  ">{error.fullName}</p>
                 )}
               </div>
               <div className="mb-4">
@@ -162,11 +173,11 @@ const BusinessLogin: React.FC = () => {
                   id="password"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-                {error?.password && (
-                  <p className="text-red-500 text-sm mt-1">{error.password}</p>
+                {error?.confirmPassword && (
+                  <p className="text-red-500 text-sm mt-1">{error.confirmPassword}</p>
                 )}
               </div>
               <div className="flex items-center justify-between mb-6">
@@ -209,7 +220,7 @@ const BusinessLogin: React.FC = () => {
           </div>
         </div>
       </div>
-      }
+      
     </>
   );
 };

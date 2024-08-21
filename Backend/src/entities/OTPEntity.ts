@@ -6,6 +6,7 @@ export interface IOTP extends Document {
   expirationTime: Date;
   createdAt: Date;
   attempts: number;
+  role:string;
 }
 
 

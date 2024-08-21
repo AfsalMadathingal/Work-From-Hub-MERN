@@ -1,5 +1,5 @@
-import { IBusinessUserRepository } from "repositories/interface/IBusinessRepository";
-import { IBusinessUser } from "entities/BusinessUserEntity";
+import { IBusinessUserRepository } from "../../repositories/interface/IBusinessRepository";
+import { IBusinessUser } from "../../entities/BusinessUserEntity";
 import BusinessUser from "../../models/businessUserModel";
 import { ApiError } from "../../middleware/errorHandler";
 
@@ -38,8 +38,8 @@ import { ApiError } from "../../middleware/errorHandler";
 
     async saveRefreshToken(userId: string, refreshToken: string): Promise<IBusinessUser | null> {
 
-        const userWithSavedToken = await BusinessUser.findByIdAndUpdate(
-          { _id: userId },
+        const userWithSavedToken = await BusinessUser.findOneAndUpdate(
+          { email: userId },
           { $set: { refreshToken: refreshToken } }
         ).select(
             "-password -refreshToken"
