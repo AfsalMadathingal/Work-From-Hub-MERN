@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import LoadingPageWithReactLoading from "../../components/lodiangPage/Loading";
+import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { useDispatch, useSelector } from "react-redux";
 import {

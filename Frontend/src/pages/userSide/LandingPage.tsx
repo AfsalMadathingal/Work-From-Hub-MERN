@@ -3,7 +3,7 @@ import Footer from "../../components/userSide/Footer";
 import Navbar from "../../components/userSide/Navbar";
 import { Link } from "react-router-dom";
 import FAQAccordion from "../../components/userSide/Faq";
-import LoadingPageWithReactLoading from "../../components/lodiangPage/Loading";
+import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { setLoading } from "../../redux/slices/userSlice";

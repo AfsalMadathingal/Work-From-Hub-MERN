@@ -3,7 +3,6 @@ import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'reac
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { toast } from 'react-toastify';
-import { PRIMARY_COLOR } from '../../constant/colors';
 import { setAccessToken, setError, setFormData, setIsAuthenticated, setLoading, setModal, setUser } from '../../redux/slices/businessUserSlice';
 import { register, sendOTP } from '../../services/BUserAuthService';
 import { useNavigate } from 'react-router-dom';
@@ -71,7 +70,7 @@ const BusinessUserOTPForms: React.FC = () => {
         dispatch(setFormData({}));
         
         toast.success("Registered successfully");
-        navigate("/b/dashboard/");
+        navigate("/business/dashboard/");
       } else {
         dispatch(setLoading(false));
         dispatch(setError(apiResponse));

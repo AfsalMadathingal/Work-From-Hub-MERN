@@ -2,54 +2,45 @@ import React, { lazy, Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
-import PrivateRoute from '../components/auth/PrivateRoute';
-import PublicRoute from '../components/auth/PublicRoute';  // Import PublicRoute
+import PublicRoute from "../components/auth/AdminPublicRoute";
+import UserManagement from "../pages/admin/UserManagement";
+import PrivateRoute from "../components/auth/AdminPrivateRoute";
 
-// Lazy load all components
-const LoginPage = lazy(() => import('../pages/userAuth/UserLogin'));
-const UserRegister = lazy(() => import('../pages/userAuth/UserRegister'));
-const LandingPage = lazy(() => import('../pages/userSide/LandingPage'));
-const HomePage = lazy(() => import('../pages/userSide/HomePage'));
+const AdminLogin = lazy(() => import("../pages/adminAuth/AdminLogin"));
 
-const UserRouter = () => {
+
+const AdminRouter = () => {
   const location = useLocation();
 
   return (
     <Routes location={location} key={location.pathname}>
       <Route
-        path="/"
-        element={
-          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
-            <LandingPage />
-          </Suspense>
-        }
-      />
-      <Route
         path="/login"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
-            <PublicRoute element={LoginPage } />
+            <PublicRoute element={AdminLogin} />
           </Suspense>
         }
       />
       <Route
-        path="/sign-up"
+        path="/dashboard"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
-            <PublicRoute element={UserRegister} />
+            <PrivateRoute element={UserManagement} />
           </Suspense>
         }
       />
       <Route
-        path="/u/home"
+        path="/user-management"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
-            <PrivateRoute element={HomePage} />
+            <PrivateRoute element={UserManagement} />
           </Suspense>
         }
       />
+     
     </Routes>
   );
 };
 
-export default UserRouter;
+export default AdminRouter;

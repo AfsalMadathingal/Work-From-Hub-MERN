@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import loginSchema from "../../utils/userLoginValidator";
-import LoadingPageWithReactLoading from "../../components/lodiangPage/Loading";
+import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -90,7 +90,7 @@ const BusinessLogin: React.FC = () => {
 
   return (
     <>
-    {loading ? <LoadingPageWithReactLoading type="spin" color={PRIMARY_COLOR}/> : 
+    {loading ? <LoadingPageWithReactLoading transparent={true} type="spin" color={PRIMARY_COLOR}/> : 
       <div className="flex h-screen bg-[#fcefe7] transition ">
         <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
           <div className="w-full p-8">

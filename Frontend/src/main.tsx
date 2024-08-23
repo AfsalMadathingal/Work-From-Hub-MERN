@@ -7,6 +7,7 @@ import App from "./App";
 import store, { persistor } from "./redux/store/store";
 import GlobalTransitionWrapper from "./components/userSide/PageTransition ";
 import { PersistGate } from "redux-persist/integration/react";
+import {NextUIProvider} from '@nextui-org/react'
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <React.StrictMode>
@@ -14,7 +15,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <PersistGate loading={null} persistor={persistor}>
         <BrowserRouter>
           <GlobalTransitionWrapper>
+            <NextUIProvider>
             <App />
+            </NextUIProvider>
           </GlobalTransitionWrapper>
         </BrowserRouter>
       </PersistGate>

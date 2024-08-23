@@ -35,15 +35,10 @@ class AuthController {
     const loginData = await this.businessAuthService.login(req.body);
   
     if (loginData) { 
-      const options = {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production', // Use secure in production
-        sameSite: 'strict' as const,
-        maxAge: 24 * 60 * 60 * 1000 // 24 hours
-      };
+      
       
       return res.status(200)
-        .cookie('accessToken', loginData.refreshToken, options)
+        .cookie('refreshToken', loginData.refreshToken, this.options)
         .json(
           new ApiResponse(
             200,

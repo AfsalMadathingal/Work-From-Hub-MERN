@@ -1,11 +1,9 @@
 import React, { lazy, Suspense } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
-import LoadingPageWithReactLoading from "../components/lodiangPage/Loading";
+import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
-import BusinessLogin from "../pages/BuisinessUserAuth/BusinessUserLogin";
-import BusinessUserRegister from "../pages/BuisinessUserAuth/BusinessUserRegister";
-
-
+const BusinessLogin = lazy(() => import("../pages/BusinessUserAuth/BusinessUserLogin"));
+const BusinessUserRegister = lazy(() => import("../pages/BusinessUserAuth/BusinessUserRegister"));
 
 const BusinessUser = () => {
   const location = useLocation();
@@ -15,7 +13,7 @@ const BusinessUser = () => {
       <Route
         path="/login"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <BusinessLogin />
           </Suspense>
         }
@@ -23,35 +21,11 @@ const BusinessUser = () => {
       <Route
         path="/register"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <BusinessUserRegister />
           </Suspense>
         }
       />
-      {/* <Route
-        path="/login"
-        element={
-          <Suspense fallback={<LoadingPageWithReactLoading type="bars" color={PRIMARY_COLOR} />}>
-            <PublicRoute element={LoginPage } />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/sign-up"
-        element={
-          <Suspense fallback={<LoadingPageWithReactLoading type="bars" color={PRIMARY_COLOR} />}>
-            <PublicRoute element={UserRegister} />
-          </Suspense>
-        }
-      />
-      <Route
-        path="/dashboard"
-        element={
-          <Suspense fallback={<LoadingPageWithReactLoading type="bars" color={PRIMARY_COLOR} />}>
-            <PrivateRoute element={HomePage} />
-          </Suspense>
-        }
-      /> */}
     </Routes>
   );
 };

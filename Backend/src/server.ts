@@ -10,6 +10,7 @@ import businessAuthRoute from './routes/businessAuthRoute';
 import  { ApiError, errorHandler } from './middleware/errorHandler';
 import logger from "../src/utils/logger";
 import morgan from "morgan";
+import adminAuthRoute from './routes/adminAuthRoute';
 const morganFormat = ":method :url :status :response-time ms";
 
 
@@ -44,7 +45,7 @@ app.use(
 
 
 
-
+app.use('/api/admin/auth/',adminAuthRoute)
 app.use('/api/user/auth',userAuthRoute)
 app.use('/api/business/auth',businessAuthRoute)
 

@@ -6,7 +6,7 @@ import FeatureSection from '../../components/userSide/FeatureSection'
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { setLoading } from "../../redux/slices/userSlice";
-import LoadingPageWithReactLoading from '../../components/lodiangPage/Loading'
+import LoadingPageWithReactLoading from '../../components/loadingPage/Loading'
 import { PRIMARY_COLOR } from '../../constant/colors'
 
 

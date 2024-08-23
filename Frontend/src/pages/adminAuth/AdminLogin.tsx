@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import loginSchema from "../../utils/userLoginValidator";
-import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
-import { PRIMARY_COLOR } from "../../constant/colors";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setLoading,
@@ -10,27 +7,27 @@ import {
   setUser,
   setIsAuthenticated,
   setAccessToken,
-} from "../../redux/slices/userSlice";
+} from "../../redux/slices/adminSlice";
 import { RootState } from "../../redux/store/store";
-import validate from "../../utils/userLoginValidator";
-import { login, signInWithGoogle } from "../../services/UserAuthService";
+import { login } from "../../services/adminAuth";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
+import loginValidate from "../../utils/adminValidator";
 
-const LoginPage: React.FC = () => {
-  const [email, setEmail] = useState("");
+const AdminLogin: React.FC = () => {
+
+  const [userId, setUserId] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const { loading, error , isAuthenticated } = useSelector((state: RootState) => state.user);
+  const { loading, error , } = useSelector((state: RootState) => state.admin);
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setLoading(true));
-    console.log(isAuthenticated);
-    
-    const formattedErrors = validate({ email, password });
+    const formattedErrors = loginValidate({ userId, password });
 
     if (formattedErrors) {
       setTimeout(() => {
@@ -40,13 +37,16 @@ const LoginPage: React.FC = () => {
     } else {
       dispatch(setError({}));
 
-      const response = await login({ email, password });
+      const response = await login({ userId, password });
 
       if (response.success) {
         const { user, accessToken, refreshToken } = response;
         dispatch(setUser(user));
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));
+        dispatch(setAccessToken(accessToken));
+        toast.success("Welcome");
+        navigate('/admin/dashboard')
       }else{
         dispatch(setError({email:response.data.error,password:response.data.error}))
         dispatch(setLoading(false));
@@ -92,12 +92,12 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-   {loading && <LoadingPageWithReactLoading  transparent={true} type="spin" color={PRIMARY_COLOR}/>}
+    
       <div className="flex h-screen bg-[#fcefe7] transition ">
-        <div className="m-auto bg-white rounded-lg shadow-2xl flex max-w-3xl ">
-          <div className="  p-8">
+        <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
+          <div className="w-full p-8">
             <h2 className="text-2xl text-center font-bold mb-4">
-              WELCOME BACK
+              ADMIN LOGIN
             </h2>
             <p className="text-gray-600 text-center mb-6">
               Welcome back! Please enter your details.
@@ -105,18 +105,18 @@ const LoginPage: React.FC = () => {
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
                 <label htmlFor="email" className="block text-gray-700 mb-2">
-                  Email
+                  User Id
                 </label>
                 <input
-                  type="email"
+                  type="text"
                   id="email"
                   className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder="Enter your user Id"
+                  value={userId}
+                  onChange={(e) => setUserId(e.target.value)}
                 />
-                {error?.email && (
-                  <p className="text-red-500 text-sm mt-1  ">{error.email}</p>
+                {error?.userId && (
+                  <p className="text-red-500 text-sm mt-1  ">{error.userId}</p>
                 )}
               </div>
               <div className="mb-6">
@@ -166,14 +166,6 @@ const LoginPage: React.FC = () => {
                 )}
               </button>
             </form>
-            <div className="mt-6  shadow-lg">
-              <button 
-              onClick={handleGoogleSignIn}
-              className="w-full border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center">
-                <img src="/google.png" alt="Google" className="w-5 h-5 mr-2" />
-                Sign in with Google
-              </button>
-            </div>
             <p className="text-center mt-6 text-sm text-gray-600">
               Don't have an account?{" "}
               <Link to={"/sign-up"} className="text-blue-500 hover:underline">
@@ -181,19 +173,11 @@ const LoginPage: React.FC = () => {
               </Link>
             </p>
           </div>
-          <div className="w-1/2 hidden lg:block">
-            <img
-              src="/loginpageimage.webp"
-              alt="Person working on laptop"
-              className="object-cover h-full w-full rounded-r-lg"
-              loading="lazy"
-            />
-          </div>
         </div>
       </div>
-      
+    
     </>
   );
 };
 
-export default LoginPage;
+export default AdminLogin;

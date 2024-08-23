@@ -2,9 +2,9 @@ import React from 'react';
 
 const Navbar: React.FC = () => {
   return (
-    <header className="bg-white py-4 shadow-md px-12">
+    <header className="sticky top-0 bg-white/70 backdrop-blur-sm py-4 shadow-md px-12 z-50">
       <div className="container mx-auto flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-orange-500">Work From Hub</h1>
+        <img className='h-14' src="/logo.png" alt="" />
         <nav className="space-x-6">
           <a href="#" className="text-gray-700 hover:text-orange-500">Work Spaces</a>
           <a href="#" className="text-gray-700 hover:text-orange-500">Pricing</a>
