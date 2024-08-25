@@ -2,6 +2,7 @@ import React from 'react';
 import Sidebar from '../../components/admin/Sidebar';
 import AdminLayout from '../../components/admin/AdminLayout';
 import UserManagementTable from '../../components/admin/UserManagement';
+import Checkout from '../Checkout';
 
 
 const UserManagement = () => {
@@ -11,6 +12,7 @@ const UserManagement = () => {
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
         <AdminLayout component={<UserManagementTable />} />
+        <Checkout/>
       </div>
     </div>
   );

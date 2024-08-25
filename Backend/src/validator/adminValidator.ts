@@ -10,6 +10,11 @@ const adminLoginSchema =Joi.object({
   
 });
 
+const planSchema = Joi.object({
+  price: Joi.number().integer().min(1).max(1000).required(),
+  discount: Joi.number().integer().min(1).max(100).required(),
+});
+
 
 
 
@@ -27,4 +32,20 @@ export function validateLoginDetails(req:Request , res: Response , next: NextFun
 
   }
     next()
+}
+
+export function validatePlanDetails (req:Request, res:Response, next:NextFunction){
+
+  const {error } = planSchema.validate(req.body)
+
+  if(error){
+    return  res.status(400).json(new ApiError(
+      400,
+      error.details[0].message
+    ))
+  }
+
+  next()
+
+
 }

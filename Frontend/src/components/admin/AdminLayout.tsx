@@ -72,7 +72,7 @@ export default function ResponsiveDrawer(props: Props) {
             icon: <PeopleIcon />,
           },
           {
-            text: "Membership",
+            text: "Membership Plan",
             link: "/admin/membership",
             icon: <FaMoneyBill />,
           },

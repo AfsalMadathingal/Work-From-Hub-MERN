@@ -5,6 +5,7 @@ import { PRIMARY_COLOR } from "../constant/colors";
 import PublicRoute from "../components/auth/AdminPublicRoute";
 import UserManagement from "../pages/admin/UserManagement";
 import PrivateRoute from "../components/auth/AdminPrivateRoute";
+import MembershipPlan from "../pages/admin/MembershipPlan";
 
 const AdminLogin = lazy(() => import("../pages/adminAuth/AdminLogin"));
 
@@ -35,6 +36,14 @@ const AdminRouter = () => {
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PrivateRoute element={UserManagement} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/membership"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={MembershipPlan} />
           </Suspense>
         }
       />

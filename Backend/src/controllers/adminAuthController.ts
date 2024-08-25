@@ -8,7 +8,7 @@ import AdminAuthService from '../services/implementations/AdminAuthService';
 class AdminAuthController {
 
 
-    private AdminAuthService : AdminAuthService;
+    private adminAuthService : AdminAuthService;
 
     public options = {
         httpOnly: true,
@@ -18,13 +18,13 @@ class AdminAuthController {
       };
 
       constructor() {
-        this.AdminAuthService = new AdminAuthService()
+        this.adminAuthService = new AdminAuthService()
       }
 
 
       public login = async (req:Request,res:Response)=>{
 
-        const loginData = await this.AdminAuthService.login(req.body);
+        const loginData = await this.adminAuthService.login(req.body);
 
         if(loginData){
             

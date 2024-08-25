@@ -19,7 +19,7 @@ const businessUserPersistConfig = {
 
 
 const adminPersistConfig = {
-  key: 'businessUser',
+  key: 'admin',
   storage,
   blacklist: ['loading','error','modal'], 
 };

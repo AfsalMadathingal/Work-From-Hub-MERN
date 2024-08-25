@@ -1,5 +1,5 @@
 import { IUsers } from "entities/UserEntity";
-import { NullExpression } from "mongoose";
+
 
 
 export interface IUserService {

@@ -6,6 +6,8 @@
     "outDir": "dist",
     "sourceMap": true,
     "noImplicitAny": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "types": ["node", "express"],
 
   },
   "include": ["./src/**/*", "../Frontend/src/utils/firebase.ts"]
