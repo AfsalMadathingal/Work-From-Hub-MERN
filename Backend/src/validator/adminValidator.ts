@@ -36,6 +36,9 @@ export function validateLoginDetails(req:Request , res: Response , next: NextFun
 
 export function validatePlanDetails (req:Request, res:Response, next:NextFunction){
 
+  console.log('====================================');
+  console.log(req.body);
+  console.log('====================================');
   const {error } = planSchema.validate(req.body)
 
   if(error){
