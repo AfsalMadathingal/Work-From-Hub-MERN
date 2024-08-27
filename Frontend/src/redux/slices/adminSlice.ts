@@ -37,14 +37,15 @@ const adminSlice = createSlice({
       state.modal = action.payload
     },setFormData(state,action){
       state.formData = action.payload
-    }
+    },
+    resetAdmin:(state) =>initialState,
 
   },
 
 
 });
 
-export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData } = adminSlice.actions;
+export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData , resetAdmin} = adminSlice.actions;
 
 export default adminSlice.reducer;
 

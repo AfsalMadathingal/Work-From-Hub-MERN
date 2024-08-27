@@ -1,15 +1,10 @@
 import axios from "axios";
-import { Alert } from "../utils/alert";
 import { IAdmin } from "../@types/admin";
+import { adminAxiosInstance } from "./instance/adminInstance";
 
 
 
-const api = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-});
-
-
+const api = adminAxiosInstance;
 
 
 
@@ -18,11 +13,13 @@ export const login = async (credential: Partial <IAdmin>)=>{
   
   try {
     
-      const loginResponse = await api.post('/api/admin/auth/login',credential)
+      const response = await api.post('/api/admin/auth/login',credential)
+
 
       
-      if(loginResponse.data.success){
-        return loginResponse.data
+      if(response.data.success){
+        localStorage.setItem('accessToken',response.data.data.accessToken)
+        return response.data
       }
 
       return null
@@ -40,6 +37,27 @@ export const login = async (credential: Partial <IAdmin>)=>{
 
 
 export const logout = async ()=>{
+
+  try {
+    const response = await api.patch('/api/admin/auth/logout',null,{
+      withCredentials:true
+    });
+
+    localStorage.removeItem('accessToken')
+
+    if(response.data.success){
+     
+      return response.data
+    }
+
+    
+    return null
+
+  } catch (error) {
+
+    return null
+
+  }
 
 
 }

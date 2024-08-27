@@ -5,7 +5,7 @@ import mongoose, { model, Schema } from "mongoose";
 const AdminSchema: Schema = new Schema({
   userId: { type: String },
   password: { type: String },
-  refreshToken:{type:String},
+  refreshToken:{type:Array},
   role: {type:String , default:"admin"},
 });
 

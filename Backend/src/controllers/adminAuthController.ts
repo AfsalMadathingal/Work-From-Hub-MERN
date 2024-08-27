@@ -48,6 +48,56 @@ class AdminAuthController {
 
       }
 
+      public logout = async (req:Request & {user: {rawToken: string, id: string}},res:Response)=>{
+
+  
+          const {user} = req;
+
+          const logoutData = await this.adminAuthService.logout(user.rawToken,user.id)
+
+          if(logoutData){
+            return res.status(200)
+            .clearCookie('refreshToken')
+            .json(
+                new ApiResponse(
+                    200,
+                    {message:"successfully cleared the token"},
+                    "logout success"
+                )
+            )
+          }
+
+          return res.status(500)
+          .json(new ApiResponse(
+            500,
+            null,
+            "Something Went Wrong Clear your Browser Cookies"
+          ))
+
+      }
+
+      public refreshAccessToken = async (req:Request & {user: {rawToken: string, id: string}} ,res:Response)=>{
+
+        const {user} = req
+
+ 
+
+        const accessToken = await this.adminAuthService.refreshAccessToken(user.id)
+
+        if(accessToken){
+          return res.status(200)
+          .json(
+            new ApiResponse(
+              200,
+              {accessToken},
+              "token Created Successfully"
+            )
+          )
+        }
+
+        
+      }
+
 }
 
 

@@ -1,25 +1,54 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { setModal } from "../../redux/slices/adminSlice";
+import { resetAdmin, setModal } from "../../redux/slices/adminSlice";
+import { getPlans } from "../../services/adminService";
+import { toast } from "react-toastify";
+import { logout } from "../../services/adminAuth";
+import {
+  Dropdown,
+  DropdownTrigger,
+  DropdownMenu,
+  DropdownItem,
+  Button,
+} from "@nextui-org/react";
 
 const MembershipTable = () => {
   const dispatch = useDispatch();
-  const {modal} = useSelector((state: RootState) => state.admin);
-  
+  const [plans, setPlans] = useState<any>([]);
+  const { modal, accessToken } = useSelector((state: RootState) => state.admin);
 
   const openModal = () => {
     dispatch(setModal(true));
-  
   };
 
   const closeModal = () => {
     dispatch(setModal(false));
-
   };
+
+  const fetchPlanData = async () => {
+    const response = await getPlans(accessToken);
+
+    if (response.status === 200) {
+      setPlans(response.data.data);
+      console.log("====================================");
+      console.log(response.data.data);
+      console.log("====================================");
+    } else {
+      await logout();
+      toast.error("session expired");
+      dispatch(resetAdmin());
+    }
+  };
+
+  useEffect(() => {
+    fetchPlanData();
+  }, []);
 
   return (
     <>
+      
+      <div className="w-full bg-white border shadow-xl rounded-md h-full p-4">
       <div className="flex justify-end m-1">
         <button
           className="bg-orange-500 hover:bg-orange-700 text-white font-bold py-2 px-4 rounded-md"
@@ -29,7 +58,6 @@ const MembershipTable = () => {
           Create Plan
         </button>
       </div>
-      <div className="w-full bg-white border shadow-xl rounded-md h-full p-6">
         <table className="table-auto w-full text-center rounded-lg">
           <thead className="bg-gray-200">
             <tr>
@@ -41,48 +69,47 @@ const MembershipTable = () => {
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td className="p-2">1</td>
-              <td className="p-2">$20</td>
-              <td className="p-2">
-                <button className="bg-green-300 rounded-full w-20">Active</button>
-              </td>
-              <td className="p-2">10%</td>
-              <td className="p-2">
-                <div className="dropdown relative">
-                  <button className="bg-white rounded p-2">
-                    <i className="fa fa-bars"></i>
+            {plans.map((plan) => (
+              <tr key={plan.id}>
+                <td className="p-2">{plan.stripeId}</td>
+                <td className="p-2">&#x20B9;{plan.price}</td>
+                <td className="p-2">
+                  <button
+                    className={`${
+                      plan.status === "active" ? "bg-green-300" : "bg-red-200"
+                    } rounded-full w-20`}
+                  >
+                    {plan.status}
                   </button>
-                  <ul className="dropdown-menu hidden absolute transition duration-150 ease-in-out text-gray-700 pt-1">
-                    <li>
-                      <a
-                        className="rounded-t bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
+                </td>
+                <td className="p-2">&#x20B9;{plan.discount}</td>
+                <td className="p-2">
+                  <Dropdown>
+                    <DropdownTrigger>
+                      <i className="fa fa-bars mr-2 hover:cursor-pointer" aria-hidden="true"></i>
+                    </DropdownTrigger>
+                    <DropdownMenu aria-label="Static Actions">
+                      <DropdownItem key="new">New file</DropdownItem>
+                      <DropdownItem key="copy">Copy link</DropdownItem>
+                      <DropdownItem key="edit">Edit file</DropdownItem>
+                      <DropdownItem
+                        key="delete"
+                        className="text-danger"
+                        color="danger"
                       >
-                        Edit
-                      </a>
-                    </li>
-                    <li>
-                      <a
-                        className="bg-gray-200 hover:bg-gray-400 py-2 px-4 block whitespace-no-wrap"
-                        href="#"
-                      >
-                        Delete
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </td>
-            </tr>
+                        Delete file
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
 
       {modal && (
-        <div
-          className="fixed z-10 inset-0 overflow-y-auto"
-          id="modal"
-        >
+        <div className="fixed z-10 inset-0 overflow-y-auto" id="modal">
           <div
             className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
             onClick={closeModal}

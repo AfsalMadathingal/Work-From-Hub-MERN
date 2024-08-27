@@ -7,6 +7,7 @@ const planSchema: Schema = new Schema({
   stripeId:{type:String},
   price:{type:Number},
   discount:{type:Number},
+  status:{type:String , default:"paused"},
   createdAt:{type:Date , default: new Date()}
 });
 

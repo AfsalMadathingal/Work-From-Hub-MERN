@@ -21,11 +21,14 @@ import BookIcon from "@mui/icons-material/Book";
 import WorkIcon from "@mui/icons-material/Work";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import SupportIcon from "@mui/icons-material/Support";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { Button } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
 import { FaMoneyBill } from "react-icons/fa";
+import { logout } from "../../services/adminAuth";
+import { useDispatch, useSelector } from "react-redux";
+import { resetAdmin } from "../../redux/slices/adminSlice";
 const drawerWidth = 240;
 
 interface Props {
@@ -36,6 +39,10 @@ export default function ResponsiveDrawer(props: Props) {
   const { component } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -51,6 +58,14 @@ export default function ResponsiveDrawer(props: Props) {
       setMobileOpen(!mobileOpen);
     }
   };
+
+  const handleLogout = async () => {
+
+    await logout();
+    dispatch(resetAdmin())
+    navigate("/admin/login");
+
+  }
   const drawer = (
     <div>
       <div className="flex flex-col items-center justify-center">
@@ -129,7 +144,7 @@ export default function ResponsiveDrawer(props: Props) {
             color="inherit"
             startIcon={<LogoutIcon />}
             sx={{ ml: "auto" }} // Position it to the left
-            onClick={() => console.log("Logout clicked")}
+            onClick={handleLogout}
           >
             Logout
           </Button>

@@ -5,5 +5,5 @@ export interface IAdmin extends Document {
   userId: string | null;
   password: String | null;
   role: String | null;
-  refreshToken: string | null;
+  refreshToken: string [] | null;
 }

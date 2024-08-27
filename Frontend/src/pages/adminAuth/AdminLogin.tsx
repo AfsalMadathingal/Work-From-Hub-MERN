@@ -40,7 +40,7 @@ const AdminLogin: React.FC = () => {
       const response = await login({ userId, password });
 
       if (response.success) {
-        const { user, accessToken, refreshToken } = response;
+        const { user, accessToken, refreshToken } = response.data;
         dispatch(setUser(user));
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));

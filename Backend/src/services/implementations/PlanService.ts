@@ -1,3 +1,4 @@
+import { Document } from "mongoose";
 import { IPlan } from "../../entities/PlanEntity";
 import PlanRepository from "../../repositories/implementations/PlanRepository";
 import { IPlanRepository } from "../../repositories/interface/IPlanRepository";
@@ -36,5 +37,14 @@ export default class PlanService implements IPlanService {
     const planObj = await this.planRepository.createPlan(bodyObj);
 
     return planObj
+  }
+
+
+  async getAllPlan(): Promise<Document[] | null> {
+
+      const allPlans = await this.planRepository.getAllPlans()
+
+      return allPlans
+
   }
 }

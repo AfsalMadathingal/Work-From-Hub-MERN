@@ -15,9 +15,38 @@ class  PlanController {
 
     public createPlan = async (req:Request,res:Response)=>{
 
-        const paln = this.planService.createPlan(req.body)
+        const plan = await this.planService.createPlan(req.body)
 
-        return res.json(paln)
+        if(plan){
+            return res.status(200)
+            .json(new ApiResponse(
+                200,
+                plan,
+                "plan created successfully"
+            ))
+
+        }
+
+        return res.status(500)
+        .json(new ApiError(
+            500,
+            "Something Went Wrong While Creating Plan"
+        ))
+
+  
+    }
+
+    public getPlans = async (req:Request,res:Response)=>{
+
+        const plans = await this.planService.getAllPlan()
+
+        return res.status(200)
+        .json(new ApiResponse(
+            200,
+            plans,
+            "fetched successfully"
+        ))
+
     }
 }
 

@@ -1,8 +1,12 @@
-import { Request, Response, NextFunction } from 'express';
-import { verifyAccessToken } from '../utils/jwt';
+import { Request, Response, NextFunction, response } from 'express';
+import { decodeToken, verifyAccessToken, verifyRefreshToken } from '../utils/jwt';
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import ApiResponse from '../utils/ApiResponse';
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const token = req.headers['authorization']?.split(' ')[1];
+export const authenticate = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
+  const token = req.headers['authorization']?.split(' ')[1] || req.header('authorization');
+  
+
   if (!token) {
     return res.status(401).send('Access denied');
   }
@@ -10,8 +14,120 @@ export const authenticate = (req: Request, res: Response, next: NextFunction) =>
   try {
     const decoded = verifyAccessToken(token);
     req.user = decoded;
+
+
+    if(decoded.role != "admin"){
+      res.status(401).json(
+        new ApiResponse(
+          401,
+          null,
+          "you are not authorized"
+        )
+      )
+    } 
+
     next();
   } catch (err) {
-    res.status(401).send('Invalid access token');
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid Token or Expired"
+    ))
   }
+};
+
+
+export const verifyRefreshTokenMiddleware = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
+  const refreshToken = req.cookies['refreshToken'] || req.header('refreshtoken');
+
+  if (!refreshToken) {
+    return res.status(401)
+    .json(new ApiResponse(
+      401,
+      null,
+      "Access Denied"
+    ))
+  }
+
+  try {
+    const decoded = verifyRefreshToken(refreshToken);
+
+    req.user = { ...decoded, rawToken: refreshToken };
+
+
+
+    next();
+  } catch (err) {
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid Token or Expired"
+    ))
+  }
+
+};
+
+export const decodedRefreshToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
+  const refreshToken = req.cookies['refreshToken'] || req.header('refreshtoken');
+
+  if (!refreshToken) {
+    return res.status(401)
+    .json(new ApiResponse(
+      401,
+      null,
+      "Access Denied"
+    ))
+  }
+
+  try {
+    const decoded = decodeToken(refreshToken);
+
+    req.user = { ...decoded, rawToken: refreshToken };
+
+    next();
+  } catch (err) {
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid "
+    ))
+  }
+
+};
+
+
+export const refreshAccessToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
+  const refreshToken = req.cookies['refreshToken'] || req.header('refreshtoken');
+
+  
+
+  if (!refreshToken) {
+    return res.status(401)
+    .json(new ApiResponse(
+      401,
+      null,
+      "Access Denied"
+    ))
+  }
+
+  try {
+    const decoded = verifyRefreshToken(refreshToken);
+
+    req.user = { ...decoded, rawToken: refreshToken };
+
+
+
+    next();
+  } catch (err) {
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid Token or Expired"
+    ))
+  }
+
 };
