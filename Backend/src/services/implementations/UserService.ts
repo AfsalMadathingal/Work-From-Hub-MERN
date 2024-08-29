@@ -1,6 +1,6 @@
 import { IUserRepository } from "../../repositories/interface/IUserRepository";
 import { IUsers } from "../../entities/UserEntity";
-import { IUserService } from "../../services/interface/IUserService";
+import { GetAllUsers, IUserService } from "../../services/interface/IUserService";
 import UserRepository from "../../repositories/implementations/UserRepository";
 
 export default class UserService implements IUserService {
@@ -27,6 +27,15 @@ export default class UserService implements IUserService {
     }
 
     return null 
+  }
+
+  async getAllUsers(page: number, limit: number): Promise<GetAllUsers | null> {
+
+    const allUsers = await this.userRepository.getAllUsers(page,limit)
+
+
+    return allUsers;
+      
   }
 
 }

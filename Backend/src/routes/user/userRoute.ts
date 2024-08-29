@@ -6,6 +6,7 @@ const userRouter = Router();
 
 
 userRouter.use('/auth',userAuthRoute)
+userRouter.post('/subscribe',)
 
 
 

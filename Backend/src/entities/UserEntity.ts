@@ -14,4 +14,5 @@ export interface IUsers extends Document {
   profilePic: String | null;
   role: String | null;
   refreshToken: string | null;
+  isBlocked: Boolean | null;
 }

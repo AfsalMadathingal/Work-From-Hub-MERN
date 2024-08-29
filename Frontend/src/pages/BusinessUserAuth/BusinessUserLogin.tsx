@@ -166,7 +166,7 @@ const BusinessLogin: React.FC = () => {
             </form>
             <p className="text-center mt-6 text-sm text-gray-600">
               Don't have an account?{" "}
-              <Link to={"/sign-up"} className="text-blue-500 hover:underline">
+              <Link to={"/business/register"} className="text-blue-500 hover:underline">
                 Sign up for free
               </Link>
             </p>

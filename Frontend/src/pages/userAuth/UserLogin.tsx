@@ -43,8 +43,8 @@ const LoginPage: React.FC = () => {
       const response = await login({ email, password });
 
       if (response.success) {
-        const { user, accessToken, refreshToken } = response;
-        dispatch(setUser(user));
+        const { userFound, accessToken, refreshToken } = response.data;
+        dispatch(setUser(userFound));
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));
       }else{
@@ -64,6 +64,7 @@ const LoginPage: React.FC = () => {
      
       if(response?.success){
         const {user,accessToken} = response.data ;
+
 
         dispatch(setUser(user))
         dispatch(setIsAuthenticated(true))

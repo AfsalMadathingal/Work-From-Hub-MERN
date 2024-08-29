@@ -247,7 +247,7 @@ const UserRegister: React.FC = () => {
               </div>
               <div className="hidden md:block md:w-1/2">
                 <img
-                  src="/loginpageimage.jpg"
+                  src="/loginpageimage.webp"
                   alt="Person working on laptop"
                   className="object-cover h-full w-full rounded-r-lg"
                 />

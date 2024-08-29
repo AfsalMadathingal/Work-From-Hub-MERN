@@ -1,23 +1,32 @@
 import { Document } from "mongoose";
 import { IPlan } from "../../entities/PlanEntity";
 import Plans from "../../models/planModel";
-import { IPlanRepository } from "../../repositories/interface/IPlanRepository";
+import {
+  GetAllPlansResponse,
+  IPlanRepository,
+} from "../../repositories/interface/IPlanRepository";
 
-export default class PlanRepository implements IPlanRepository{
+export default class PlanRepository implements IPlanRepository {
+  async createPlan(plan: IPlan): Promise<IPlan | null> {
 
-    async createPlan(plan: IPlan): Promise<IPlan | null> {
+    const newPlan = new Plans(plan);
 
-        const newPlan = new Plans(plan)
+    const savedPlan = await newPlan.save();
 
-        const savedPlan = await newPlan.save()
+    return savedPlan;
+  }
 
-        return savedPlan
-    }
+  async getAllPlans(
+    page: number,
+    limit: number
+  ): Promise<GetAllPlansResponse | null> {
+    
+    const allPlans = await Plans.find()
+      .skip((page - 1) * limit)
+      .limit(limit);
+    const totalPlans = await Plans.countDocuments();
+    const totalPages = Math.ceil(totalPlans / limit);
 
-    async getAllPlans(): Promise<Document[] | null> {
-        
-        const allPlans = await Plans.find({})
-
-        return allPlans
-    }
+    return { allPlans, totalPages };
+  }
 }

@@ -1,7 +1,7 @@
 import { Document } from "mongoose";
 import { IPlan } from "../../entities/PlanEntity";
 import PlanRepository from "../../repositories/implementations/PlanRepository";
-import { IPlanRepository } from "../../repositories/interface/IPlanRepository";
+import { GetAllPlansResponse, IPlanRepository } from "../../repositories/interface/IPlanRepository";
 import { IPlanService } from "../../services/interface/IPlanService";
 import Stripe from "stripe";
 
@@ -40,11 +40,12 @@ export default class PlanService implements IPlanService {
   }
 
 
-  async getAllPlan(): Promise<Document[] | null> {
 
-      const allPlans = await this.planRepository.getAllPlans()
+  async getAllPlan(page: number, limit: number): Promise<GetAllPlansResponse | null> {
 
-      return allPlans
 
+    const allPlans = await this.planRepository.getAllPlans(page,limit)
+
+    return allPlans
   }
 }

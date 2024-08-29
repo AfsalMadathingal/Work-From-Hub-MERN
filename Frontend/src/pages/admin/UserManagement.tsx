@@ -12,7 +12,6 @@ const UserManagement = () => {
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
         <AdminLayout component={<UserManagementTable />} />
-        <Checkout/>
       </div>
     </div>
   );

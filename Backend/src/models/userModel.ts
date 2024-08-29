@@ -3,7 +3,7 @@ import { IUsers } from "entities/UserEntity";
 
 const UsersSchema: Schema = new Schema({
   email: { type: String }, 
-  name: { type: String },
+  fullName: { type: String },
   password: { type: String },
   date_of_birth: { type: Date },
   pin_code: { type: Number },
@@ -14,6 +14,7 @@ const UsersSchema: Schema = new Schema({
   profilePic: { type: String },
   refreshToken:{type:String},
   role: {type:String , default:"user"},
+  isBlocked:{type:Boolean , default:false}
 });
 
 const Users = mongoose.model<IUsers>("Users", UsersSchema);

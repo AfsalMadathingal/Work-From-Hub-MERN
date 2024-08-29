@@ -1,16 +1,23 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
-import Checkout from '../Checkout';
-import MembershipTable from '../../components/admin/MembershipTable';
+import PlansTable from '../../components/admin/plansTable';
+import { useDispatch } from 'react-redux';
+import { setPageTitle } from '../../redux/slices/adminSlice';
 
 
 const MembershipPlan = () => {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(setPageTitle("Membership Plan Management"));
+  }, []);
 
 
   return (
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
-        <AdminLayout component={<MembershipTable />} />
+        <AdminLayout component={<PlansTable />} />
       </div>
     </div>
   );

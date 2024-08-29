@@ -5,13 +5,11 @@ import CssBaseline from "@mui/material/CssBaseline";
 import Divider from "@mui/material/Divider";
 import Drawer from "@mui/material/Drawer";
 import IconButton from "@mui/material/IconButton";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
 import List from "@mui/material/List";
 import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import MailIcon from "@mui/icons-material/Mail";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
@@ -29,6 +27,7 @@ import { FaMoneyBill } from "react-icons/fa";
 import { logout } from "../../services/adminAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { resetAdmin } from "../../redux/slices/adminSlice";
+import { RootState } from "../../redux/store/store";
 const drawerWidth = 240;
 
 interface Props {
@@ -39,6 +38,7 @@ export default function ResponsiveDrawer(props: Props) {
   const { component } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
+  const {pageTitle} = useSelector((state:RootState) => state.admin)
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -138,7 +138,7 @@ export default function ResponsiveDrawer(props: Props) {
             <MenuIcon />
           </IconButton>
           <Typography variant="h6" noWrap component="div">
-            Responsive drawer
+          {pageTitle}
           </Typography>
           <Button
             color="inherit"
