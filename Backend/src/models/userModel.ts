@@ -14,7 +14,8 @@ const UsersSchema: Schema = new Schema({
   profilePic: { type: String },
   refreshToken:{type:String},
   role: {type:String , default:"user"},
-  isBlocked:{type:Boolean , default:false}
+  isBlocked:{type:Boolean , default:false},
+  createdAt:{type:Date , default : new Date()}
 });
 
 const Users = mongoose.model<IUsers>("Users", UsersSchema);

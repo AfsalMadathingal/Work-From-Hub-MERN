@@ -7,20 +7,21 @@ import App from "./App";
 import store, { persistor } from "./redux/store/store";
 import GlobalTransitionWrapper from "./components/userSide/PageTransition ";
 import { PersistGate } from "redux-persist/integration/react";
-import {NextUIProvider} from '@nextui-org/react'
+import { NextUIProvider } from "@nextui-org/react";
+
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <Provider store={store}>
+    <PersistGate loading={null} persistor={persistor}>
+      <BrowserRouter>
+        <GlobalTransitionWrapper>
 
-    <Provider store={store}>
-      <PersistGate loading={null} persistor={persistor}>
-        <BrowserRouter>
-          <GlobalTransitionWrapper>
             <NextUIProvider>
-            <App />
+              <App />
             </NextUIProvider>
-          </GlobalTransitionWrapper>
-        </BrowserRouter>
-      </PersistGate>
-    </Provider>
 
+        </GlobalTransitionWrapper>
+      </BrowserRouter>
+    </PersistGate>
+  </Provider>
 );

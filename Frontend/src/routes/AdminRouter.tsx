@@ -6,6 +6,7 @@ import PublicRoute from "../components/auth/AdminPublicRoute";
 import UserManagement from "../pages/admin/UserManagement";
 import PrivateRoute from "../components/auth/AdminPrivateRoute";
 import MembershipPlan from "../pages/admin/MembershipPlan";
+import BusinessUserManage from "../pages/admin/BusinessUserManage";
 
 const AdminLogin = lazy(() => import("../pages/adminAuth/AdminLogin"));
 
@@ -47,6 +48,15 @@ const AdminRouter = () => {
           </Suspense>
         }
       />
+      <Route
+        path="/business-user-management"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={BusinessUserManage} />
+          </Suspense>
+        }
+      />
+      
      
     </Routes>
   );

@@ -1,7 +1,7 @@
 import { IBusinessUser } from "../../entities/BusinessUserEntity";
 import BusinessRepository from "../../repositories/implementations/BusinessRepository";
 import { IBusinessUserRepository } from "../../repositories/interface/IBusinessRepository";
-import { IBusinessUserService } from "../../services/interface/IBusinessUserService";
+import { GetAllBUsers, IBusinessUserService } from "../../services/interface/IBusinessUserService";
 
 
 export default class BusinessUserService implements IBusinessUserService {
@@ -29,5 +29,32 @@ export default class BusinessUserService implements IBusinessUserService {
 
     return null 
   }
+
+
+  async  getBusinessUsers(page: number, limit: number): Promise<GetAllBUsers | null> {
+      
+    const allUsers = await this.businessUserRepository.getBusinessUsers(page,limit)
+
+    return allUsers
+  }
+
+  async blockUser(id: string): Promise<IBusinessUser | null> {
+      
+    const userAfterUpdate= await this.businessUserRepository.blockUser(id);
+
+    return userAfterUpdate
+
+  }
+
+  async editUser(user: IBusinessUser): Promise<IBusinessUser | { emailExists: boolean; } | null> {
+
+    const userAfterEdit = await this.businessUserRepository.editUser(user)
+
+
+
+      return userAfterEdit
+      
+  }
+  
 
 }

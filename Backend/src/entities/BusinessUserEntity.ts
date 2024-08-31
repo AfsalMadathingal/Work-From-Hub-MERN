@@ -1,17 +1,18 @@
-import mongoose,{ObjectId} from "mongoose";
+import mongoose,{Document, ObjectId} from "mongoose";
 
 
-export interface IBusinessUser {
-    _id: ObjectId;
-    name: string;
-    email: string;
-    phone: string;
-    gender: string;
-    state: string;
-    password: string;
-    is_blocked: boolean;
-    is_deleted: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-    role:string
+export interface IBusinessUser  extends Document{
+    _id: ObjectId ;
+    fullName: string | null;
+    email: string | null;
+    phone: string | null;
+    gender: string | null;
+    state: string | null;
+    password: string | null;
+    isBlocked: boolean | null;
+    is_deleted: boolean | null;
+    createdAt: Date | null;
+    updatedAt: Date | null;
+    role:string | null
+
 }

@@ -12,7 +12,7 @@ import { RootState } from "../../redux/store/store";
 import { login } from "../../services/adminAuth";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
-import loginValidate from "../../utils/adminValidator";
+import {loginValidate} from "../../utils/adminValidator";
 
 const AdminLogin: React.FC = () => {
 
@@ -56,38 +56,7 @@ const AdminLogin: React.FC = () => {
   };
 
 
-  const handleGoogleSignIn = async ()=>{
 
-    try {
-      dispatch(setLoading(true))
-      const response = await  signInWithGoogle()
-     
-      if(response?.success){
-        const {user,accessToken} = response.data ;
-
-        dispatch(setUser(user))
-        dispatch(setIsAuthenticated(true))
-        dispatch(setLoading(false))
-        dispatch(setAccessToken(accessToken))
-        toast.success("Welcome")
-        
-      }else{
-  
-        dispatch(setLoading(false))
-        toast.success("something Went Wrong")
-
-      }
-
-    } catch (error) {
-      dispatch(setLoading(false))
-      toast.error("Something went Wrong!")
-      console.log(error);
-      
-    }
-   
-
-    
-  }
 
 
   return (

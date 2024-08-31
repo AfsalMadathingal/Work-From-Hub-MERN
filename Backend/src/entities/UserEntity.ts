@@ -15,4 +15,5 @@ export interface IUsers extends Document {
   role: String | null;
   refreshToken: string | null;
   isBlocked: Boolean | null;
+  createdAt: Date | null;
 }

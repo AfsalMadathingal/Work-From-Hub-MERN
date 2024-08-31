@@ -68,4 +68,62 @@ export default class UserRepository implements IUserRepository {
     return { allUsers, totalPages };
 
   }
+
+  async blockUser(id: string): Promise<IUsers | null> {
+
+    try {
+      const user = await Users.findOne({_id:id})
+      
+      const userAfterUpdate = await Users.findByIdAndUpdate(id,{$set:{isBlocked:!user.isBlocked}})
+  
+      if(!userAfterUpdate){
+  
+        return null
+  
+      }
+  
+      return userAfterUpdate
+    } catch (error) {
+
+      return null
+      
+    }
+
+   
+  }
+
+
+
+  async editUser(user: IUsers): Promise<IUsers | { emailExists: boolean } | null> {
+    try {
+      const emailExists = await Users.findOne({ email: user.email });
+      
+  
+      if (emailExists && emailExists._id.toString() !== user.id) {
+        return { emailExists: true };
+      }
+  
+     
+      const updateResult = await Users.updateOne(
+        { _id: user.id },
+        { $set: { fullName: user.fullName, email: user.email } }
+      );
+  
+
+
+      
+    
+      if (updateResult.modifiedCount > 0) {
+       
+        const updatedUser = await Users.findById(user.id);
+        return updatedUser; 
+      }
+  
+      return null; 
+    } catch (error) {
+      return null;
+    }
+  }
+  
+
 }

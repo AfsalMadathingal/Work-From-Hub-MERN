@@ -2,15 +2,13 @@ import { IBusinessUserRepository } from "../../repositories/interface/IBusinessR
 import { IBusinessUser } from "../../entities/BusinessUserEntity";
 import BusinessUser from "../../models/businessUserModel";
 import { ApiError } from "../../middleware/errorHandler";
+import { GetAllBUsers } from "services/interface/IBusinessUserService";
 
 
 
  export default class BusinessRepository implements IBusinessUserRepository {
 
     async createUser(user: IBusinessUser , ): Promise<IBusinessUser | null> {
-
-        console.log(user);
-        
 
         const isUserExists =  await BusinessUser.findOne({email:user.email})
 
@@ -46,6 +44,75 @@ import { ApiError } from "../../middleware/errorHandler";
         );
         return userWithSavedToken;
       }
+
+
+    async getBusinessUsers(page: number, limit: number): Promise<GetAllBUsers | null> {
+        
+        const allUsers = await BusinessUser.find()
+        .skip((page - 1) * limit)
+        .limit(limit).select(
+          "-password -refreshToken"
+        );
+      const totalUser = await BusinessUser.countDocuments();
+      const totalPages = Math.ceil(totalUser / limit);
+  
+      return { allUsers, totalPages };
+
+    }
+
+    async blockUser(id: string): Promise<IBusinessUser | null> {
+
+        try {
+            const user = await BusinessUser.findOne({_id:id})
+            
+            const userAfterUpdate = await BusinessUser.findByIdAndUpdate(id,{$set:{isBlocked:!user.isBlocked}})
+        
+            if(!userAfterUpdate){
+        
+              return null
+        
+            }
+        
+            return userAfterUpdate
+
+          } catch (error) {
+      
+            return null
+            
+          }
+        
+    }
+
+    async editUser(user: IBusinessUser): Promise<IBusinessUser | { emailExists: boolean; } | null> {
+        try {
+            const emailExists = await BusinessUser.findOne({ email: user.email });
+            
+        
+            if (emailExists && emailExists._id.toString() !== user.id) {
+              return { emailExists: true };
+            }
+        
+           
+            const updateResult = await BusinessUser.updateOne(
+              { _id: user.id },
+              { $set: { fullName: user.fullName, email: user.email } }
+            );
+        
+      
+      
+            
+          
+            if (updateResult.modifiedCount > 0) {
+             
+              const updatedUser = await BusinessUser.findById(user.id);
+              return updatedUser; 
+            }
+        
+            return null; 
+          } catch (error) {
+            return null;
+          }
+    }
 
 
  }

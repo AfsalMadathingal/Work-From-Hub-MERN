@@ -13,4 +13,5 @@ export interface IUsers {
   role?: string | null;
   refreshToken?: string | null;
   confirmPassword?: string | null;
+  isBlocked?: boolean | null ;
 }

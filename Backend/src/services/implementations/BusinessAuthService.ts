@@ -69,43 +69,41 @@ export default class BusinessAuthService implements IBusinessAuthService {
   async login(user: IBusinessUser): Promise<{
     accessToken: string;
     refreshToken: string;
-    userFound: Omit<IBusinessUser, "password">;
+    userFound: Omit<IBusinessUser, 'password'>; 
   } | null> {
-
-
-    // Find the user by email
-  let userFound = await this.BusinessRepository.findByUsername(user.email.toString());
-
-  // Check if user is found and password matches
-  if (
-    userFound &&
-    (await bcrypt.compare(user.password.toString(), userFound.password.toString()))
-  ) {
-
-    const userId = userFound._id?.toString();
-
-
-    const accessToken = generateAccessToken({
-      id: userId,
-      role: userFound.role,
-    });
-    const refreshToken = generateRefreshToken({
-      id: userId,
-      role: userFound.role,
-    });
-
-    // Save refresh token
-    await this.BusinessRepository.saveRefreshToken(userId, refreshToken);
-
-    // Exclude the password from the returned user object
-    const { password, ...userWithoutPassword } = userFound 
-
-    return { accessToken, refreshToken, userFound: userWithoutPassword };
+  
+    
+    const userFounded = await this.BusinessRepository.findByUsername(user.email.toString());
+  
+   
+    if (userFounded && await bcrypt.compare(user.password.toString(), userFounded.password.toString())) {
+  
+      const userId = userFounded._id?.toString();
+  
+    
+      const accessToken = generateAccessToken({
+        id: userId,
+        role: userFounded.role,
+      });
+  
+      const refreshToken = generateRefreshToken({
+        id: userId,
+        role: userFounded.role,
+      });
+  
+      
+      await this.BusinessRepository.saveRefreshToken(userId, refreshToken);
+  
+      
+      const { password, ...userFound } = userFounded.toObject();
+  
+      
+      return { accessToken, refreshToken, userFound };
+    }
+ 
+    return null;
   }
-
-
-  return null;
-  }
+  
 
   async refreshAccessToken(refreshToken: string): Promise<string | null> {
     try {

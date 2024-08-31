@@ -8,8 +8,10 @@ import "react-toastify/dist/ReactToastify.css";
 import BusinessUser from "./routes/BusinessUser";
 import AdminRouter from "./routes/AdminRouter";
 
+
 const App: React.FC = () => {
   return (
+    
     <MuiThemeProvider>
       <ToastContainer />
       <Routes>

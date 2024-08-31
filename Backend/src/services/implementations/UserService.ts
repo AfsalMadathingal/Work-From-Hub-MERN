@@ -38,4 +38,26 @@ export default class UserService implements IUserService {
       
   }
 
+  async blockUser(id: string): Promise<IUsers | null> {
+
+
+
+    const userAfterUpdate= await this.userRepository.blockUser(id);
+
+    return userAfterUpdate
+      
+  }
+
+  async editUser(user:IUsers ): Promise<IUsers | {emailExists:boolean} | null> {
+
+
+      const userAfterEdit = await this.userRepository.editUser(user)
+
+
+
+      return userAfterEdit
+  }
+
+
+
 }

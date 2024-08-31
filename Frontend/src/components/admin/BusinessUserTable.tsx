@@ -11,10 +11,12 @@ import {
   Tooltip,
 } from "@nextui-org/react";
 import { EditIcon } from "./Editicon";
-import { DeleteIcon } from "./DeleteIcon";
 import { EyeIcon } from "./EyeIcon";
 import {
+    blockAndUnblockBUser,
+  editBusinessUser,
   EditUser,
+  getAllBusinessUsers,
   getAllUsers,
   manageBlockAndUnblock,
 } from "../../services/adminService";
@@ -22,10 +24,9 @@ import { toast } from "react-toastify";
 import { logout } from "../../services/adminAuth";
 import { IUsers } from "../../@types/user";
 import { FaBan } from "react-icons/fa";
-import ModalForConfirmation from "./ModalForConfirmation";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { setModal, setModalConfig } from "../../redux/slices/adminSlice";
+import { setModal } from "../../redux/slices/adminSlice";
 import Dialog from "./Dialog";
 import UserProfileDialog from "./UserProfileDialog";
 import EditUserProfile from "./EditUserProfile";
@@ -37,7 +38,7 @@ const columns = [
   { name: "ACTIONS", uid: "actions" },
 ];
 
-export default function UserManagementTable() {
+export default function BusinessUserTable() {
   const [users, setUsers] = useState([]);
   const [itemsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
@@ -56,7 +57,8 @@ export default function UserManagementTable() {
   };
 
   const fetchUsers = async (page: number, itemsPerPage: number) => {
-    const response = await getAllUsers(page, itemsPerPage);
+
+    const response = await getAllBusinessUsers(page, itemsPerPage);
 
     if (response.status === 200) {
       setUsers(response.data.data.allUsers);
@@ -73,7 +75,7 @@ export default function UserManagementTable() {
 
  
     try {
-      const response = await manageBlockAndUnblock(selectedUser);
+      const response = await blockAndUnblockBUser(selectedUser);
 
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -114,7 +116,7 @@ export default function UserManagementTable() {
 
   const saveEditedUser = async (user: Partial<IUsers>) => {
 
-    const response = await EditUser(user);
+    const response = await editBusinessUser(user);
 
     if (response.status === 200  ) {
       toast.info(response.data.message);

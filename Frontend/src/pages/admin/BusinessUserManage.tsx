@@ -1,26 +1,26 @@
 import React, { useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
-import PlansTable from '../../components/admin/plansTable';
+import BusinessUserTable from '../../components/admin/BusinessUserTable';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/adminSlice';
 
 
-const MembershipPlan = () => {
 
+const BusinessUserManage = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle("Plan Management"));
+    dispatch(setPageTitle("Business User Management"));
   }, []);
 
 
   return (
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
-        <AdminLayout component={<PlansTable />} />
+        <AdminLayout component={<BusinessUserTable />} />
       </div>
     </div>
   );
 };
 
-export default MembershipPlan;
+export default BusinessUserManage;

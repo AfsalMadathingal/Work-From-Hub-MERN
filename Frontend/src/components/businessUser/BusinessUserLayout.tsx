@@ -14,7 +14,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import DashboardIcon from "@mui/icons-material/Dashboard";
-import PeopleIcon from "@mui/icons-material/People";
 import BookIcon from "@mui/icons-material/Book";
 import WorkIcon from "@mui/icons-material/Work";
 import AssignmentIcon from "@mui/icons-material/Assignment";
@@ -23,10 +22,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { Button } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { FaMoneyBill } from "react-icons/fa";
 import { logout } from "../../services/adminAuth";
 import { useDispatch, useSelector } from "react-redux";
-import { resetAdmin, setModal, setModalConfig } from "../../redux/slices/adminSlice";
+import { resetAdmin, setModal, setModalConfig } from "../../redux/slices/businessUserSlice";
 import { RootState } from "../../redux/store/store";
 
 
@@ -40,7 +38,7 @@ export default function ResponsiveDrawer(props: Props) {
   const { component } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-  const { pageTitle, modal , modalConfig } = useSelector((state: RootState) => state.admin);
+  const { pageTitle,  } = useSelector((state: RootState) => state.businessUser);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -76,7 +74,7 @@ export default function ResponsiveDrawer(props: Props) {
     <div>
       <div className="flex flex-col items-center justify-center">
         <img src="/logo.png" className="h-20 " alt="" />
-        <p className="text-md font-bold">Admin Panel</p>
+        <p className="text-md font-bold">Business Panel</p>
       </div>
 
       <Divider />
@@ -84,32 +82,17 @@ export default function ResponsiveDrawer(props: Props) {
         {[
           {
             text: "Dashboard",
-            link: "/admin/dashboard",
+            link: "/business/dashboard",
             icon: <DashboardIcon />,
           },
-          {
-            text: "Users",
-            link: "/admin/user-management",
-            icon: <PeopleIcon />,
-          },
-          {
-            text: "Business Users",
-            link: "/admin/business-user-management",
-            icon: <PeopleIcon />,
-          },
-          {
-            text: "Membership Plan",
-            link: "/admin/membership",
-            icon: <FaMoneyBill />,
-          },
-          { text: "Booking", link: "/admin/booking", icon: <BookIcon /> },
-          { text: "Workspace", link: "/admin/workspace", icon: <WorkIcon /> },
+          { text: "Booking", link: "/business/booking", icon: <BookIcon /> },
+          { text: "Workspace", link: "/business/workspace", icon: <WorkIcon /> },
           {
             text: "Workspace Submission",
-            link: "/admin/workspace-submission",
+            link: "/business/workspace-submission",
             icon: <AssignmentIcon />,
           },
-          { text: "Support", link: "/admin/support", icon: <SupportIcon /> },
+          { text: "Support", link: "/business/support", icon: <SupportIcon /> },
         ].map((item) => (
           <Link to={`${item.link.toLowerCase()}`} key={item.text}>
             <ListItem disablePadding>
