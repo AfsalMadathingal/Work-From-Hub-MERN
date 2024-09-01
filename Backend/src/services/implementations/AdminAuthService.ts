@@ -57,13 +57,7 @@ import { JwtPayload } from 'jsonwebtoken';
 
         const admin = await this.AdminRepository.removeRefreshToken(id,token)
         
-
-        if(admin){
-            return admin
-        }
-
-        return null
-
+        return admin ? admin : null
     }
 
     async refreshAccessToken(userId:string): Promise <string| null> {

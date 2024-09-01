@@ -22,10 +22,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { Button } from "@mui/material";
 import LogoutIcon from "@mui/icons-material/Logout";
-import { logout } from "../../services/adminAuth";
 import { useDispatch, useSelector } from "react-redux";
-import { resetAdmin, setModal, setModalConfig } from "../../redux/slices/businessUserSlice";
 import { RootState } from "../../redux/store/store";
+import { resetBUser } from "../../redux/slices/businessUserSlice";
+import { logout } from "../../services/BUserAuthService";
 
 
 const drawerWidth = 240;
@@ -65,8 +65,8 @@ export default function ResponsiveDrawer(props: Props) {
   const handleLogout = async () => {
    
         await logout();
-        dispatch(resetAdmin());
-        navigate("/admin/login");
+        dispatch(resetBUser());
+        navigate("/business/login");
 
   };
 

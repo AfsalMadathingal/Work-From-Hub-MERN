@@ -8,5 +8,6 @@ export interface IBusinessUserRepository {
    findByUsername(email: string): Promise<IBusinessUser | null>;
    getBusinessUsers(page:number,limit:number) : Promise <GetAllBUsers | null>
    blockUser(id:string):Promise <IBusinessUser| null>;
+   removeRefreshToken(userId:string,refreshToken:string):Promise<IBusinessUser | null>;
    editUser(user:IBusinessUser):Promise <IBusinessUser | {emailExists:boolean} |null >;
 }

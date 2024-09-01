@@ -70,7 +70,8 @@ export const verifyRefreshTokenMiddleware = (req: Request  & Partial<{ user: str
 };
 
 export const decodedRefreshToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
-  const refreshToken = req.cookies['refreshToken'] || req.header('refreshtoken');
+  
+  const refreshToken = req.cookies['adminRefreshToken'] || req.header('adminRefreshToken');
 
   if (!refreshToken) {
     return res.status(401)
@@ -131,3 +132,35 @@ export const refreshAccessToken = (req: Request  & Partial<{ user: string | jwt.
   }
 
 };
+
+
+export const decodedBUserRefreshToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
+  
+  const refreshToken = req.cookies['BusinessUserRefreshToken'] || req.header('BusinessUserRefreshToken');
+
+  if (!refreshToken) {
+    return res.status(401)
+    .json(new ApiResponse(
+      401,
+      null,
+      "Access Denied"
+    ))
+  }
+
+  try {
+    const decoded = decodeToken(refreshToken);
+
+    req.user = { ...decoded, rawToken: refreshToken };
+
+    next();
+  } catch (err) {
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid "
+    ))
+  }
+
+};
+

@@ -10,7 +10,7 @@ const BusinessUserSchema: Schema = new Schema({
   address: { type: String },
   phone: { type: Number },
   profilePic: { type: String , default:"https://www.svgrepo.com/show/192247/man-user.svg"},
-  refreshToken:{type:String},
+  refreshToken:{type:Array},
   role: {type:String , default:"businessUser"},
   createdAt:{type:Date , default : new Date()},
   isBlocked:{type:Boolean, default:false}

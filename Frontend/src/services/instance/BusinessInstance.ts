@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL = import.meta.env.VITE_API_URL;
-export const adminAxiosInstance = axios.create({
+export const businessUserApi = axios.create({
   baseURL: API_URL,
   withCredentials: true,
 });
@@ -9,8 +9,8 @@ export const adminAxiosInstance = axios.create({
 const cancelTokenMap = new Map();
 
 //request interceptor
-adminAxiosInstance.interceptors.request.use(async (config) => {
-  const token = localStorage.getItem("adminAccessToken");
+businessUserApi.interceptors.request.use(async (config) => {
+  const token = localStorage.getItem("businessAccessToken");
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -23,7 +23,7 @@ adminAxiosInstance.interceptors.request.use(async (config) => {
 });
 
 //response interceptor
-adminAxiosInstance.interceptors.response.use(
+businessUserApi.interceptors.response.use(
   (response) => {
     cancelTokenMap.delete(response.config.url);
     return response;
@@ -37,9 +37,9 @@ adminAxiosInstance.interceptors.response.use(
       try {
         const newAccessToken = await getNewAccessToken();
 
-        localStorage.setItem("adminAccessToken", newAccessToken);
+        localStorage.setItem("businessAccessToken", newAccessToken);
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return adminAxiosInstance(originalRequest);
+        return businessUserApi(originalRequest);
       } catch (error) {
         return Promise.reject(error);
       }
@@ -51,7 +51,7 @@ adminAxiosInstance.interceptors.response.use(
 
 async function getNewAccessToken() {
   const response = await axios.get(
-    `${API_URL}api/admin/auth/refresh-token`,
+    `${API_URL}api/business/auth/refresh-token`,
     { withCredentials: true }
   );
 

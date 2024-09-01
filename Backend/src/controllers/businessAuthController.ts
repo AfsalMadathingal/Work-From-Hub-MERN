@@ -38,7 +38,7 @@ class AuthController {
       
       
       return res.status(200)
-        .cookie('refreshToken', loginData.refreshToken, this.options)
+        .cookie('BusinessUserRefreshToken', loginData.refreshToken, this.options)
         .json(
           new ApiResponse(
             200,
@@ -112,7 +112,7 @@ class AuthController {
 
      return res
      .status(200)
-     .cookie('refreshToken',result.refreshToken,options)
+     .cookie('BusinessUserRefreshToken',result.refreshToken,options)
      .json(
 
       new ApiResponse(
@@ -180,7 +180,33 @@ class AuthController {
     }
   }
   
+  public logout = async (req:Request & {user: {rawToken: string, id: string}},res:Response)=>{
 
+  
+    const {user} = req;
+
+    const logoutData = await this.businessAuthService.logout(user.rawToken,user.id)
+
+    if(logoutData){
+      return res.status(200)
+      .clearCookie('BusinessUserRefreshToken')
+      .json(
+          new ApiResponse(
+              200,
+              {message:"successfully cleared the token"},
+              "logout success"
+          )
+      )
+    }
+
+    return res.status(500)
+    .json(new ApiResponse(
+      500,
+      null,
+      "Something Went Wrong Clear your Browser Cookies"
+    ))
+
+}
 
 }
 

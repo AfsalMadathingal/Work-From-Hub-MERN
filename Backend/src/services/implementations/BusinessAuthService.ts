@@ -120,5 +120,16 @@ export default class BusinessAuthService implements IBusinessAuthService {
   }
 
 
+  async logout(token: string , id:string): Promise<IBusinessUser | null> {
+
+    const user = await this.BusinessRepository.removeRefreshToken(id,token)
+    
+    return user ? user : null
+
+
+}
+
+
+
   
 }

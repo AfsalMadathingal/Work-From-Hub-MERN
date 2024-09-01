@@ -99,10 +99,11 @@ const BusinessLogin: React.FC = () => {
     
   }
 
+  useEffect(()=>{})
 
   return (
     <>
-    {loading && <LoadingPageWithReactLoading transparent={true} type="spin" color={PRIMARY_COLOR}/> }
+  
 
     {modal && <BusinessUserOTPForms />}
 
@@ -207,14 +208,14 @@ const BusinessLogin: React.FC = () => {
                     color="#ffffff"
                   />
                 ) : (
-                  "Sign in"
+                  "Sign up"
                 )}
               </button>
             </form>
             <p className="text-center mt-6 text-sm text-gray-600">
-              Don't have an account?{" "}
-              <Link to={"/sign-up"} className="text-blue-500 hover:underline">
-                Sign up for free
+             Already  have an account?{" "}
+              <Link to={"/business/login"} className="text-blue-500 hover:underline">
+                Sign in
               </Link>
             </p>
           </div>

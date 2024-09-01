@@ -7,7 +7,8 @@ const initialState = {
   isAuthenticated:false,
   accessToken: "",
   modal:false,
-  formData:{}
+  formData:{},
+  pageTitle:""
 };
 
 const businessUserSlice = createSlice({
@@ -37,14 +38,18 @@ const businessUserSlice = createSlice({
       state.modal = action.payload
     },setFormData(state,action){
       state.formData = action.payload
-    }
+    },
+    setPageTitle(state,action){
+      state.pageTitle = action.payload
+    },
+    resetBUser:(state)=>initialState,
 
   },
 
 
 });
 
-export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData } = businessUserSlice.actions;
+export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData ,resetBUser, setPageTitle } = businessUserSlice.actions;
 
 export default businessUserSlice.reducer;
 

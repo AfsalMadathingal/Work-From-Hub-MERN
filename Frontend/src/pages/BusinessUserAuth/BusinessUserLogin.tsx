@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import loginSchema from "../../utils/userLoginValidator";
 import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +20,7 @@ const BusinessLogin: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
+  const navigate = useNavigate();
   const { loading, error , } = useSelector((state: RootState) => state.businessUser);
   const dispatch = useDispatch();
 
@@ -34,63 +33,41 @@ const BusinessLogin: React.FC = () => {
       setTimeout(() => {
         dispatch(setLoading(false));
         dispatch(setError(formattedErrors));
-      }, 1000);
+      }, 300);
     } else {
       dispatch(setError({}));
 
       const response = await login({ email, password });
 
-      if (response.success) {
-        const { user, accessToken, refreshToken } = response;
-        dispatch(setUser(user));
+
+      if(response?.statusCode === 200){
+
+        const { userFound, accessToken } = response.data;
+        dispatch(setUser(userFound));
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));
+        dispatch(setAccessToken(accessToken));
+        localStorage.setItem("businessAccessToken", accessToken);
+        toast.success("Welcome");
+        navigate('/business/dashboard')
+
+
       }else{
         dispatch(setError({email:response.data.error,password:response.data.error}))
         dispatch(setLoading(false));
+
         
       }
     }
   };
 
 
-  const handleGoogleSignIn = async ()=>{
 
-    try {
-      dispatch(setLoading(true))
-      const response = await  signInWithGoogle()
-     
-      if(response?.success){
-        const {user,accessToken} = response.data ;
-
-        dispatch(setUser(user))
-        dispatch(setIsAuthenticated(true))
-        dispatch(setLoading(false))
-        dispatch(setAccessToken(accessToken))
-        toast.success("Welcome")
-        
-      }else{
-  
-        dispatch(setLoading(false))
-        toast.success("something Went Wrong")
-
-      }
-
-    } catch (error) {
-      dispatch(setLoading(false))
-      toast.error("Something went Wrong!")
-      console.log(error);
-      
-    }
-   
-
-    
-  }
 
 
   return (
     <>
-    {loading ? <LoadingPageWithReactLoading transparent={true} type="spin" color={PRIMARY_COLOR}/> : 
+  
       <div className="flex h-screen bg-[#fcefe7] transition ">
         <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
           <div className="w-full p-8">
@@ -173,7 +150,6 @@ const BusinessLogin: React.FC = () => {
           </div>
         </div>
       </div>
-      }
     </>
   );
 };

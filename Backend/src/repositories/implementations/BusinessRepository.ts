@@ -37,12 +37,14 @@ import { GetAllBUsers } from "services/interface/IBusinessUserService";
     async saveRefreshToken(userId: string, refreshToken: string): Promise<IBusinessUser | null> {
 
         const userWithSavedToken = await BusinessUser.findOneAndUpdate(
-          { email: userId },
-          { $set: { refreshToken: refreshToken } }
+          { _id: userId },
+          { $push:{refreshToken: refreshToken }  }
         ).select(
             "-password -refreshToken"
         );
         return userWithSavedToken;
+
+        
       }
 
 
@@ -112,6 +114,19 @@ import { GetAllBUsers } from "services/interface/IBusinessUserService";
           } catch (error) {
             return null;
           }
+    }
+
+    async removeRefreshToken(
+      userId: string,
+      refreshToken: string
+    ): Promise<IBusinessUser | null> {
+      const userWithRemovedToken = await BusinessUser.findOneAndUpdate(
+        { _id: userId },
+        { $pull: { refreshToken: refreshToken } },
+        { new: true }
+      ).select("-password -refreshToken");
+  
+      return userWithRemovedToken;
     }
 
 

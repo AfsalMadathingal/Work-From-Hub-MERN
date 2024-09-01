@@ -88,5 +88,28 @@ export const login = async (credential: Partial <IBUsers>)=>{
 
 export const logout = async ()=>{
 
+  try {
+    
+    const response = await api.patch('/api/business/auth/logout',null,{
+      withCredentials:true
+    });
+
+    localStorage.removeItem('businessAccessToken')
+
+    if(response.data.success){
+     
+      return response.data
+    }
+
+    
+    return null
+
+  } catch (error) {
+
+    return null
+
+  }
+
+
 
 }

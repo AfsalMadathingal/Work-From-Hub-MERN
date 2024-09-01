@@ -18,7 +18,7 @@ export const login = async (credential: Partial <IAdmin>)=>{
 
       
       if(response.data.success){
-        localStorage.setItem('accessToken',response.data.data.accessToken)
+        localStorage.setItem('adminAccessToken',response.data.data.accessToken)
         return response.data
       }
 

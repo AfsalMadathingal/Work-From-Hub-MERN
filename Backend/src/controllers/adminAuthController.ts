@@ -29,7 +29,7 @@ class AdminAuthController {
         if(loginData){
             
             return res.status(200)
-            .cookie('refreshToken',loginData.refreshToken,this.options)
+            .cookie('adminRefreshToken',loginData.refreshToken,this.options)
             .json(
                 new ApiResponse(
                     200,
@@ -57,7 +57,7 @@ class AdminAuthController {
 
           if(logoutData){
             return res.status(200)
-            .clearCookie('refreshToken')
+            .clearCookie('adminRefreshToken')
             .json(
                 new ApiResponse(
                     200,

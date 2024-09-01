@@ -3,6 +3,8 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import WorkplaceManage from "../pages/BusinessUserAuth/WorkplaceManage";
+import PublicRoute from "../components/auth/BUsesrPublicRoute";
+import PrivateRoute from "../components/auth/BUserPrivateRoute";
 const BusinessLogin = lazy(() => import("../pages/BusinessUserAuth/BusinessUserLogin"));
 const BusinessUserRegister = lazy(() => import("../pages/BusinessUserAuth/BusinessUserRegister"));
 
@@ -15,7 +17,7 @@ const BusinessUser = () => {
         path="/login"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
-            <BusinessLogin />
+           <PublicRoute element={BusinessLogin} />
           </Suspense>
         }
       />
@@ -23,7 +25,7 @@ const BusinessUser = () => {
         path="/register"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
-            <BusinessUserRegister />
+            <PublicRoute element={BusinessUserRegister} />
           </Suspense>
         }
       />
@@ -31,7 +33,7 @@ const BusinessUser = () => {
         path="/dashboard"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
-            <WorkplaceManage />
+           <PrivateRoute element={WorkplaceManage} />
           </Suspense>
         }
       />
