@@ -5,7 +5,7 @@ import ApiResponse from '../utils/ApiResponse';
 
 export const authenticate = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
   const token = req.headers['authorization']?.split(' ')[1] || req.header('authorization');
-  
+
 
   if (!token) {
     return res.status(401).send('Access denied');
@@ -14,7 +14,6 @@ export const authenticate = (req: Request  & Partial<{ user: string | jwt.JwtPay
   try {
     const decoded = verifyAccessToken(token);
     req.user = decoded;
-
 
     if(decoded.role != "admin"){
       res.status(401).json(
@@ -39,7 +38,8 @@ export const authenticate = (req: Request  & Partial<{ user: string | jwt.JwtPay
 
 
 export const verifyRefreshTokenMiddleware = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
-  const refreshToken = req.cookies['refreshToken'] || req.header('refreshtoken');
+  const refreshToken = req.cookies['adminRefreshToken'] || req.header('adminRefreshToken');
+
 
   if (!refreshToken) {
     return res.status(401)
@@ -52,6 +52,7 @@ export const verifyRefreshTokenMiddleware = (req: Request  & Partial<{ user: str
 
   try {
     const decoded = verifyRefreshToken(refreshToken);
+
 
     req.user = { ...decoded, rawToken: refreshToken };
 

@@ -38,6 +38,11 @@ const registerSchema = Joi.object({
 });
 
 
+
+
+
+
+
 export const validate = (data:  Partial<IUsers>,)   =>{
 
   const {error  } = registerSchema.validate(data,{abortEarly:false})

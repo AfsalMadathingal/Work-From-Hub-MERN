@@ -18,7 +18,6 @@ const App: React.FC = () => {
       <Route path="/admin/*" element={<AdminRouter />} />
         <Route path="/business/*" element={<BusinessUser />} />
         <Route path="/*" element={<UserRouter />} />
-        
       </Routes>
     </MuiThemeProvider>
   );

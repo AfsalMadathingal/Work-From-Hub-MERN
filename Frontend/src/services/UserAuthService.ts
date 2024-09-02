@@ -4,6 +4,7 @@ import { Alert } from "../utils/alert";
 import { auth, provider } from "../utils/firebase";
 import { signInWithPopup, signOut } from "firebase/auth";
 import { IOTP } from "../@types/otp";
+import { userAxiosInstance } from "./instance/userInstance";
 
 const api = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
@@ -109,4 +110,36 @@ export const signInWithGoogle = async () => {
 export const logout = async ()=>{
 
 
+}
+
+
+export const forgotPasswordSendOTP = async (email:string)=>{
+
+
+  try {
+
+    const response = await userAxiosInstance.post('/api/user/auth/send-otp-forgot',{email})
+
+
+
+    return response
+    
+  } catch (error) {
+    
+    return error.response
+  }
+
+}
+
+export const forgotPasswordVerifyOTP = async (otp :string,email:string)=>{
+  try {
+
+    const response = await userAxiosInstance.post('/api/user/auth/otp-verify',{otp,email})
+
+    return response
+    
+  } catch (error) {
+    
+    return error.response
+  }
 }

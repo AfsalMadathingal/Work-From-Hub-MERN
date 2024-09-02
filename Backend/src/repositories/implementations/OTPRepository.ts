@@ -16,7 +16,7 @@ export default class OTPRepository implements IOTPRepository {
     return savedOTP;
   }
 
-  async findOTP (user:IUsers): Promise < IOTP| null>{
+  async findOTP (user: Partial<IUsers>): Promise < IOTP| null>{
 
     const OTPFound  = await OTPModel.findOne({email:user.email})
 

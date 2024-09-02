@@ -6,7 +6,7 @@ export interface IOTPSerivice {
 
         sendOtp(user:IUsers): Promise <IOTP> | null; 
         verifyOTP(user:IUsers ,otp:IOTP ) :Promise <IOTP> | null ;
-        checkOTPExists(users:IUsers) :Promise <IOTP> | null ;
+        checkOTPExists(users: Partial<IUsers>) :Promise <IOTP> | null ;
 
 
 }

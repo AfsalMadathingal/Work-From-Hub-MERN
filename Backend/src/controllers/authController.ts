@@ -4,6 +4,7 @@ import ApiResponse from '../utils/ApiResponse';
 import { ApiError } from '../middleware/errorHandler';
 import OTPService from '../services/implementations/OTPService';
 import UserService from '../services/implementations/UserService';
+import { accessTokenForReset, generateAccessToken } from '../utils/jwt';
 
 
 
@@ -200,6 +201,165 @@ class AuthController {
       next(error)
     }
   }
+
+  public forgotPasswordOTP = async(req:Request, res:Response, next:NextFunction)=>{
+
+    try {
+
+      const isUserExists = await this.UserService.findUserWithEmail(req.body)
+
+
+      if (!isUserExists || isUserExists.isBlocked){
+        return res.status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            isUserExists.isBlocked ? "Account is blocked" : "Check Your Email"
+          )
+        )
+      }
+      
+  
+      const otpExists = await this.OTPService.checkOTPExists(req.body)
+  
+      if(otpExists){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "Please Wait 1 Minute. Before Trying again"
+          )
+        )
+      }
+  
+     await this.OTPService.sendOtp(req.body)
+
+      
+      return res.status(200)
+      .json(
+        new ApiResponse(
+          200,
+          null,
+          "OTP sent successfully"
+        )
+      )
+  
+      
+    } catch (error) {
+
+      next(error)
+      
+    }
+
+   
+
+    
+  }
+
+  public otpVerify = async(req:Request,res:Response,next:NextFunction)=>{
+
+    try {
+
+      const {email,otp} = req.body;
+
+      
+      const isUserExists = await this.UserService.findUserWithEmail(req.body)
+
+
+      if (!isUserExists || isUserExists.isBlocked){
+        return res.status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            isUserExists.isBlocked ? "Account is blocked" : "Something Wrong"
+          )
+        )
+      }
+
+      const OTPVerification = await this.OTPService.verifyOTP(isUserExists,otp)
+
+      if(!OTPVerification){
+        return res.status(500)
+        .json(
+          new ApiError(
+            500,
+            "Entered Wrong OTP"
+          )
+        )
+      }
+
+    
+
+        const {password,refreshToken,...user} = isUserExists
+
+        const accessToken = this.authService.generateTokenForForgotPassword(user)
+
+        return res.status(200)
+        .cookie('userOtpAccessToken', accessToken)
+        .json(new ApiResponse(
+          200,
+          {accessToken},
+          "OTP Verified Successfully"
+        ))
+    
+
+
+    } catch (error) {
+      next(error)
+    }
+
+
+  }
+
+
+  public resetPassword = async(req:Request,res:Response,next:NextFunction)=>{
+
+    try {
+
+      const {email,password ,token} = req.body;
+
+      
+      const decode = await this.authService.decodeAndVerifyToken(token)
+      req.body.user = decode
+
+
+      if(!decode){
+        return res.status(405)
+        .json(new ApiResponse(
+          405,
+          null,
+          "Session Expired Try Again"
+        ))
+      }
+
+      
+      const isUserExists = await this.UserService.findUserWithEmail(req.body)
+
+
+      if (!isUserExists || isUserExists.isBlocked){
+        return res.status(400)
+        .json(
+          new ApiResponse(
+            400,
+            null,
+            isUserExists.isBlocked ? "Account is blocked" : "Something Wrong"
+          )
+        )
+      }
+
+    
+    
+
+
+    } catch (error) {
+      next(error)
+    }
+
+
+  }
+
 
 }
 

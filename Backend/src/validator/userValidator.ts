@@ -16,12 +16,19 @@ const userLoginSchema =Joi.object({
   
 });
 
+const resetData = Joi.object({
+  email: Joi.string().min(6).max(50).email().required(),
+  token: Joi.string().required(),
+  password: Joi.string().min(6).required(),
+});
+
+
+const emailValidate = Joi.string().email().required();
+
 
 export function validateRegistration(req: Request, res: Response, next: NextFunction) {
 
-  console.log('====================================');
-  console.log(req.body);
-  console.log('====================================');
+
   
   const { error } = userRegistration.validate(req.body.user, { abortEarly: false });
 
@@ -51,3 +58,39 @@ export function validateLoginDetails(req:Request , res: Response , next: NextFun
   }
     next()
 }
+
+
+export function validateEmail (req:Request , res: Response , next: NextFunction){
+
+
+
+  const { error } = emailValidate.validate(req.body.email)
+
+  if(error){
+
+    return  res.status(400).json(new ApiError(
+      400,
+      error.details[0].message
+    ))
+
+  }
+    next()
+}
+
+export function validateResetPasswordData(req:Request , res: Response , next: NextFunction){
+
+
+  const {error} = resetData.validate(req.body)
+
+
+  if(error){
+
+    return  res.status(400).json(new ApiError(
+      400,
+      error.details[0].message
+    ))
+
+  }
+    next()
+}
+

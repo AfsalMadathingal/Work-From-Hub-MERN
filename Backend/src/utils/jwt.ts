@@ -7,6 +7,10 @@ export const generateAccessToken = (payload: object): string => {
   return jwt.sign(payload, accessTokenSecret, { expiresIn: '24h' });
 };
 
+export const accessTokenForReset =  (payload: object): string => {
+  return jwt.sign(payload, accessTokenSecret, { expiresIn: '1m' });
+};
+
 export const generateRefreshToken = (payload: object): string => {
 
   return jwt.sign(payload, refreshTokenSecret, { expiresIn: '7d' });
@@ -42,3 +46,20 @@ export const decodeToken = (token:string):any =>{
   }
  
 }
+
+export const decodeAndVerifyToken = (token: string): any => {
+  try {
+
+    const decoded: any = jwt.verify(token, accessTokenSecret);
+
+
+    if (decoded && decoded._doc) {
+      return decoded._doc;
+    }
+
+
+    return decoded;
+  } catch (error) {
+    throw new Error("Invalid token");
+  }
+};

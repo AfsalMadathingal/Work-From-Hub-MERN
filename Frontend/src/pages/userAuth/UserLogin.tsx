@@ -13,16 +13,18 @@ import {
 } from "../../redux/slices/userSlice";
 import { RootState } from "../../redux/store/store";
 import validate from "../../utils/userLoginValidator";
-import { login, signInWithGoogle } from "../../services/UserAuthService";
+import { forgotPasswordSendOTP, forgotPasswordVerifyOTP, login, signInWithGoogle } from "../../services/UserAuthService";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
+import ForgotPasswordModal from "../../components/userSide/ForgotPasswordModal";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
-
+  const [forgotPassword, setForgotPassword] = useState(false);
   const { loading, error , isAuthenticated } = useSelector((state: RootState) => state.user);
+  const [otpToken, setOtpToken] = useState("");
   const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -90,10 +92,77 @@ const LoginPage: React.FC = () => {
     
   }
 
+  const handleForgotPassword = async (email)=>{
+
+
+    dispatch(setLoading(true))
+
+    const response = await forgotPasswordSendOTP(email)
+
+
+    if(response?.status==400 || response.status==500){
+      toast.error("Invalid Email")
+
+      dispatch(setLoading(false))
+
+      return null
+    }
+
+
+    if(response?.data.success){
+      setOtpToken(response.data.data.accessToken)
+      toast.success(response.data.message)
+      dispatch(setLoading(false))
+      return  true
+
+    }
+
+
+    toast.error("Something went wrong")
+    dispatch(setLoading(false))
+    return null
+    
+   
+  }
+
+  const handleOTPVerification = async (otp : string,email:string)=>{
+
+    try {
+      dispatch(setLoading(true))
+
+
+      const response = await forgotPasswordVerifyOTP(otp,email)
+
+      console.log('====================================');
+      console.log(response);
+      console.log('====================================');
+      
+    } catch (error) {
+
+      toast.error("Something went wrong")
+      
+    }
+
+   
+
+
+
+
+
+
+  }
+
+
+
+
+  useEffect(() => {
+    dispatch(setError({}));
+  }, []);
 
   return (
     <>
    {loading && <LoadingPageWithReactLoading  transparent={true} type="spin" color={PRIMARY_COLOR}/>}
+   {forgotPassword && <ForgotPasswordModal onVerify={handleOTPVerification} onConfirm={handleForgotPassword} isOpen={forgotPassword} onCancel={() => setForgotPassword(false) } title={"Forgot Password"} message="Enter your email"  />}
       <div className="flex h-screen bg-[#fcefe7] transition ">
         <div className="m-auto bg-white rounded-lg shadow-2xl flex max-w-3xl ">
           <div className="  p-8">
@@ -146,9 +215,11 @@ const LoginPage: React.FC = () => {
                   />
                   <span className="text-sm text-gray-600">Remember me</span>
                 </label>
-                <a href="#" className="text-sm text-blue-500 hover:underline">
+                <p 
+                  onClick={() => setForgotPassword(true)}
+                 className="text-sm text-blue-500 hover:underline cursor-pointer">
                   Forgot password?
-                </a>
+                </p>
               </div>
               <button
                 type="submit"

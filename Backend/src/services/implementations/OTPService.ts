@@ -37,7 +37,7 @@ export default class OTPService implements IOTPSerivice {
     }
 
 
-    async verifyOTP(user:IUsers, otp:IOTP): Promise <IOTP| null> {
+    async verifyOTP(user:Partial<IUsers>, otp:IOTP): Promise <IOTP| null> {
 
         
 

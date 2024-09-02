@@ -5,8 +5,11 @@ import { IUsers } from "entities/UserEntity";
 import { IAuthService } from "../../services/interface/IAuthService";
 import { IUserRepository } from "../../repositories/interface/IUserRepository";
 import {
+  accessTokenForReset,
+  decodeAndVerifyToken,
   generateAccessToken,
   generateRefreshToken,
+  verifyAccessToken,
   verifyRefreshToken,
 } from "../../utils/jwt";
 import { sendEmail } from "../../utils/emailService";
@@ -147,5 +150,31 @@ export default class AuthService implements IAuthService {
       return null;
     }
   }
+
+
+  async decodeAndVerifyToken (token:string): Promise <Partial<IUsers | null> > {
+
+    try {
+
+
+      const decode = decodeAndVerifyToken(token)
+
+
+      return decode
+      
+    } catch (error) {
+
+      return null
+      
+    }
+
   
+
+  }
+
+  
+  generateTokenForForgotPassword(user: Partial<IUsers>): string {
+      return accessTokenForReset(user)
+      
+  }
 }

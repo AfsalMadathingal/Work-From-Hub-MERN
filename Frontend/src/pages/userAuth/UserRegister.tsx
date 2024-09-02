@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import validate from "../../utils/userRegisterValidator";
 import {
   register,
@@ -23,6 +23,7 @@ import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { IUsers } from "../../@types/user";
 import OTPForm from "../../components/userSide/OTPForm";
+import ForgotPasswordModal from "../../components/userSide/ForgotPasswordModal";
 
 const UserRegister: React.FC = () => {
   const [fullName, setFullName] = useState("");
@@ -32,7 +33,7 @@ const UserRegister: React.FC = () => {
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
   const { loading , modal ,error } = useSelector((state: RootState) => state.user);
-  const navigate = useNavigate();
+
 
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -92,12 +93,17 @@ const UserRegister: React.FC = () => {
     }
   };
 
+  useEffect(() => {
+    dispatch(setError({}));
+  }, []);
+
   return (
     <>
 {loading && <LoadingPageWithReactLoading type="spin" transparent={true} color={PRIMARY_COLOR}/>}
     
       
           {modal && <OTPForm />}
+         
 
           <div className="min-h-screen bg-[#fcefe7] flex items-center justify-center p-4 ">
             <div className="bg-white rounded-lg shadow-2xl flex max-w-4xl w-full">
@@ -190,23 +196,6 @@ const UserRegister: React.FC = () => {
                         {error.confirmPassword}
                       </p>
                     )}
-                  </div>
-                  <div className="flex items-center justify-between mb-6">
-                    <label className="flex items-center">
-                      <input
-                        type="checkbox"
-                        className="mr-2"
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                      />
-                      <span className="text-sm text-gray-600">Remember me</span>
-                    </label>
-                    <a
-                      href="#"
-                      className="text-sm text-blue-500 hover:underline"
-                    >
-                      Forgot password?
-                    </a>
                   </div>
                   <button
                     type="submit"
