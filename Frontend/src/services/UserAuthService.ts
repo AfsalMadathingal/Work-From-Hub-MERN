@@ -143,3 +143,16 @@ export const forgotPasswordVerifyOTP = async (otp :string,email:string)=>{
     return error.response
   }
 }
+
+export const forgotPasswordReset = async (password :string,token:string)=>{
+  try {
+
+    const response = await userAxiosInstance.patch('/api/user/auth/forgot-password-reset',{password,token})
+
+    return response
+    
+  } catch (error) {
+    
+    return error.response
+  }
+}

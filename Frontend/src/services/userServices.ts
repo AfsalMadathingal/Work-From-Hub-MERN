@@ -1,28 +1,34 @@
+import { IUsers } from "../@types/user";
 import { userAxiosInstance } from "./instance/userInstance";
 
 const api = userAxiosInstance;
 
+export const subscribe = async (userId: string, planId: string) => {
+  try {
+    const response = await api.post(
+      "/api/subscriptions/create-checkout-session",
+      {
+        userId,
+        planId,
+      }
+    );
 
-export const subscribe = async (userId:string,planId:string)=>{
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
 
-    try {
+export const editUserData = async (user:IUsers) => {
+  try {
 
-        const response = await api.post("/api/subscriptions/create-checkout-session",{
-            userId,
-            planId
-        })
+    const response = await api.patch('/api/user/',user)
 
-        return response
+    return response
 
+  } catch (error) {
 
-        
-    } catch (error) {
-
-        return error.response
-        
-    }
-        
-}
-
-
-export
+    return error.response;
+    
+  }
+};

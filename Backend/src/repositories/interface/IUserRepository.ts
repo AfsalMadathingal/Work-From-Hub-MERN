@@ -10,5 +10,6 @@ export interface IUserRepository {
    getAllUsers(page:number,limit:number): Promise <GetAllUsers | null >;
    blockUser(id:string):Promise <IUsers| null>;
    editUser(user:IUsers):Promise <IUsers | {emailExists:boolean} |null >;
+   changePassword(password:string,email:string):Promise <IUsers | null >;
 
 }

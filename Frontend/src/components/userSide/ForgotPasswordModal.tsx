@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
-import Joi from "joi";
 import { emailValidate } from "../../utils/userLoginValidator";
 import { setError } from "../../redux/slices/userSlice";
 
@@ -13,7 +12,7 @@ interface DialogProps {
   message: string;
   onConfirm: (email: string) => Promise<boolean | null>;
   onCancel: () => void;
-  onVerify: (otp: string,email:string) => void;
+  onVerify: (otp: string, email: string) => void;
 }
 
 const ForgotPasswordModal: FC<DialogProps> = ({
@@ -27,10 +26,10 @@ const ForgotPasswordModal: FC<DialogProps> = ({
   const [isVisible, setIsVisible] = useState(isOpen);
   const [showDialog, setShowDialog] = useState(isOpen);
   const [otpSent, setOtpSent] = useState(false);
-  const [otp, setOtp] = useState("");
+  const [otp, setOtp] = useState(["", "", "", ""]);
   const [email, setEmail] = useState("");
-  const dispatch = useDispatch()
-  const { loading ,error } = useSelector((state: RootState) => state.user);
+  const dispatch = useDispatch();
+  const { loading, error } = useSelector((state: RootState) => state.user);
 
   useEffect(() => {
     if (isOpen) {
@@ -46,32 +45,41 @@ const ForgotPasswordModal: FC<DialogProps> = ({
   if (!showDialog) return null;
 
   const handleConfirm = async () => {
-    dispatch(setError({}))
-    const error = emailValidate( email );
+    dispatch(setError({}));
+    const error = emailValidate(email);
 
     if (error) {
-        dispatch(setError(error))
+      dispatch(setError(error));
       return toast.error(error.email);
     }
 
     const response = await onConfirm(email);
 
-    console.log('=======fromthe confirm=================================');
-    console.log(response);
-    console.log('====================================');
-
     if (response) {
       setOtpSent(true);
     }
-
-
-    
   };
 
+  const handleOtpChange = (value: string, index: number) => {
+    if (/^\d?$/.test(value)) { // Only allow single digit
+      const newOtp = [...otp];
+      newOtp[index] = value;
+      setOtp(newOtp);
 
+      // Automatically move to next input if the current input has a value
+      if (value && index < otp.length - 1) {
+        document.getElementById(`otp-${index + 1}`)?.focus();
+      }
+    }
+  };
 
-
-  
+  const handleVerify = () => {
+    const otpValue = otp.join("");
+    if (otpValue.length !== 4) {
+      return toast.error("OTP must be 4 digits");
+    }
+    onVerify(otpValue, email);
+  };
 
   return (
     <div
@@ -87,32 +95,39 @@ const ForgotPasswordModal: FC<DialogProps> = ({
         <h2 className="text-lg font-semibold text-center text-gray-800">
           {title}
         </h2>
-        <p className="text-gray-600  mt-2">{message}</p>
-        <div className="flex flex-col justify-center mt-2">
-          <input
-            type="email"
-            name="email"
-            id="email"
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="Enter your email"
-            className="w-full px-3 py-2 border border-orange-300 focus:outline-none rounded-md focus:border-orange-500"
-          />
-          {error?.email && (
-            <p className="text-red-500 text-sm mt-1  ">{error.email}</p>
-          )}
-        </div>
+
+        {!otpSent && (
+          <div className="flex flex-col justify-center mt-2">
+            <p className="text-gray-600 mt-2">{message}</p>
+            <input
+              type="email"
+              name="email"
+              id="email"
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter your email"
+              className="w-full px-3 py-2 border border-orange-300 focus:outline-none rounded-md focus:border-orange-500"
+            />
+            {error?.email && (
+              <p className="text-red-500 text-sm mt-1">{error.email}</p>
+            )}
+          </div>
+        )}
+
         {otpSent && (
           <div className="flex flex-col items-center justify-center mt-2">
-            <p>Enter the Code sent to your email</p>
-            <div className="flex justify-center mt-2 w-[50%]">
-              <input
-                type="text"
-                placeholder="Enter the code"
-                name="otp"
-                id="otp"
-                onChange={(e) => setOtp(e.target.value)}
-                className="w-full px-3 py-2 border border-orange-300 focus:outline-none rounded-md focus:border-orange-500"
-              />
+            <p>Enter the 4-digit code sent to your email</p>
+            <div className="flex justify-center space-x-2 mt-2">
+              {otp.map((digit, index) => (
+                <input
+                  key={index}
+                  type="text"
+                  value={digit}
+                  onChange={(e) => handleOtpChange(e.target.value, index)}
+                  id={`otp-${index}`}
+                  maxLength={1} // Limit each input to one character
+                  className="w-10 h-10 text-center border border-orange-300 focus:outline-none rounded-md focus:border-orange-500"
+                />
+              ))}
             </div>
           </div>
         )}
@@ -126,7 +141,7 @@ const ForgotPasswordModal: FC<DialogProps> = ({
           </button>
           {otpSent ? (
             <button
-              onClick={() => onVerify(otp,email)}
+              onClick={handleVerify}
               className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition ease-in-out"
             >
               Verify

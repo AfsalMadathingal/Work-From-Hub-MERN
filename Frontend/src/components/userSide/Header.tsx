@@ -1,35 +1,83 @@
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux';
-import { setIsAuthenticated, setLoading, setUser } from '../../redux/slices/userSlice';
+import React, { useEffect } from "react";
+import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, DropdownTrigger, Dropdown, DropdownMenu, Avatar} from "@nextui-org/react";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import { toast } from "react-toastify";
 
 
-const  Header = ()=> {
 
-  const dispatch = useDispatch()
+export default function Header() {
 
-  const handleClick = ()=>{
-    dispatch(setLoading(true))
-    dispatch(setUser(null))
-    dispatch(setIsAuthenticated(false))
-    dispatch(setLoading(false))
-    
-    
-  }
+  const dispatch = useDispatch();
+  const { user } = useSelector((state: RootState) => state.user);
 
-    return (
-      <header className="bg-white p-4">
-        <div className="container mx-auto flex justify-between items-center">
-          <div className="text-2xl font-bold">Work From HUB</div>
-          <nav className="hidden md:flex space-x-4">
-            <a href="#" className="text-orange-500">Become a Member</a>
-            <a href="#">View all Workspace</a>
-            <a href="#">Call us for Help</a>
-            <button onClick={handleClick} className="bg-white border border-gray-300 rounded-full px-4 py-2">Profile</button>
-          </nav>
-          {/* Add a mobile menu button for small screens */}
+  
+
+
+  useEffect(() => {
+   
+  },[])
+  return (
+    <Navbar>
+      <NavbarBrand>
+        <div className="w-20">
+        <img src="/logo.png" alt="" />
         </div>
-      </header>
-    );
-  }
-export default Header
+      </NavbarBrand>
+
+      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+        <NavbarItem>
+          <Link color="foreground" href="#">
+            Complaints
+          </Link>
+        </NavbarItem>
+        <NavbarItem isActive>
+          <Link href="#" color="warning">
+          View all Workspace
+          </Link>
+        </NavbarItem>
+        <NavbarItem>
+          <Link color="foreground" href="#">
+            List your space
+          </Link>
+        </NavbarItem>
+      </NavbarContent>
+
+      <NavbarContent as="div" justify="end">
+        <Dropdown placement="bottom-end">
+          <DropdownTrigger>
+            <Avatar
+              isBordered
+              as="button"
+              className="transition-transform"
+              color="warning"
+              name={user?.fullName}
+              size="sm"
+              src={user?.profilePic}
+            />
+          </DropdownTrigger>
+          <DropdownMenu aria-label="Profile Actions" variant="flat">
+            <DropdownItem key="profile" className="h-14 gap-2">
+              <p className="font-semibold">Signed in as</p>
+              <p className="font-semibold">{user?.email}</p>
+            </DropdownItem>
+            <DropdownItem key="settings">My Settings</DropdownItem>
+            <DropdownItem key="team_settings">Team Settings</DropdownItem>
+            <DropdownItem key="analytics">Analytics</DropdownItem>
+            <DropdownItem key="system">System</DropdownItem>
+            <DropdownItem key="configurations">Configurations</DropdownItem>
+            <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
+            <DropdownItem 
+            onClick={() => {
+              toast.info("Logging out");
+            }}
+            key="logout" color="danger">
+              
+              Log Out
+            </DropdownItem>
+          </DropdownMenu>
+        </Dropdown>
+      </NavbarContent>
+    </Navbar>
+  );
+}

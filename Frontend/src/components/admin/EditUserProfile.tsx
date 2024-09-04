@@ -36,7 +36,7 @@ const EditUserProfile = ({ user, onSave, onCancel }) => {
       setErrors(formattedErrors);
       return;
     }
-    if (formData.fullName  == user.fullName && formData.email == formData.email) {
+    if (formData.fullName  == user.fullName && formData.email == user.email) {
       toast.error('If you dont want to change any details, please click cancel.');
       return;
     }

@@ -13,10 +13,11 @@ import {
 } from "../../redux/slices/userSlice";
 import { RootState } from "../../redux/store/store";
 import validate from "../../utils/userLoginValidator";
-import { forgotPasswordSendOTP, forgotPasswordVerifyOTP, login, signInWithGoogle } from "../../services/UserAuthService";
+import { forgotPasswordReset, forgotPasswordSendOTP, forgotPasswordVerifyOTP, login, signInWithGoogle } from "../../services/UserAuthService";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 import ForgotPasswordModal from "../../components/userSide/ForgotPasswordModal";
+import ResetPasswordModal from "../../components/userSide/ResetPassword";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -25,6 +26,7 @@ const LoginPage: React.FC = () => {
   const [forgotPassword, setForgotPassword] = useState(false);
   const { loading, error , isAuthenticated } = useSelector((state: RootState) => state.user);
   const [otpToken, setOtpToken] = useState("");
+  const [resetPassword,setResetPassword] = useState(false)
   const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -46,6 +48,7 @@ const LoginPage: React.FC = () => {
 
       if (response.success) {
         const { userFound, accessToken, refreshToken } = response.data;
+        localStorage.setItem("accessToken", accessToken);
         dispatch(setUser(userFound));
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));
@@ -67,6 +70,7 @@ const LoginPage: React.FC = () => {
       if(response?.success){
         const {user,accessToken} = response.data ;
 
+        localStorage.setItem("accessToken",accessToken)
 
         dispatch(setUser(user))
         dispatch(setIsAuthenticated(true))
@@ -101,7 +105,7 @@ const LoginPage: React.FC = () => {
 
 
     if(response?.status==400 || response.status==500){
-      toast.error("Invalid Email")
+      toast.error( response.status==500 ? response.data.error : response.data.message || "Something went wrong")
 
       dispatch(setLoading(false))
 
@@ -110,7 +114,7 @@ const LoginPage: React.FC = () => {
 
 
     if(response?.data.success){
-      setOtpToken(response.data.data.accessToken)
+
       toast.success(response.data.message)
       dispatch(setLoading(false))
       return  true
@@ -130,12 +134,28 @@ const LoginPage: React.FC = () => {
     try {
       dispatch(setLoading(true))
 
+      
+      if(!otp || otp.length !=4){
+
+        toast.error("Please Enter valid OTP")
+        return null
+      }
 
       const response = await forgotPasswordVerifyOTP(otp,email)
 
-      console.log('====================================');
-      console.log(response);
-      console.log('====================================');
+      if(response.data.statusCode==400 || response.data.statusCode==500){
+
+        toast.error(response.data.message || "Enter valid OTP")
+      }
+
+      if(response?.data.success){
+
+        dispatch(setLoading(false))
+        setOtpToken(response.data.data.accessToken)
+        setForgotPassword(false)
+        setResetPassword(true)
+
+      }
       
     } catch (error) {
 
@@ -152,8 +172,41 @@ const LoginPage: React.FC = () => {
 
   }
 
+  const handleResetPassword = async (password :string)=>{
+
+    dispatch(setLoading(true))
 
 
+    const response = await forgotPasswordReset(password,otpToken)
+
+
+    if(response?.data.success){
+
+      dispatch(setLoading(false))
+      
+      return true
+    }
+
+    if(response?.data.statusCode ==405){
+
+      toast.error(response.data.message)
+      dispatch(setLoading(false))
+      return null
+
+    }
+
+    toast.error("Something went wrong")
+    dispatch(setLoading(false))
+
+    return false
+
+  }
+
+const handleCancel = ()=>{
+  dispatch(setLoading(false))
+  setForgotPassword(false)
+  setResetPassword(false)
+}
 
   useEffect(() => {
     dispatch(setError({}));
@@ -161,8 +214,9 @@ const LoginPage: React.FC = () => {
 
   return (
     <>
-   {loading && <LoadingPageWithReactLoading  transparent={true} type="spin" color={PRIMARY_COLOR}/>}
-   {forgotPassword && <ForgotPasswordModal onVerify={handleOTPVerification} onConfirm={handleForgotPassword} isOpen={forgotPassword} onCancel={() => setForgotPassword(false) } title={"Forgot Password"} message="Enter your email"  />}
+   {forgotPassword && <ForgotPasswordModal onVerify={handleOTPVerification} onConfirm={handleForgotPassword} isOpen={forgotPassword} onCancel={handleCancel} title={"Forgot Password"} message="Enter your email"  />}
+    {resetPassword && <ResetPasswordModal onConfirm={handleResetPassword} isOpen={resetPassword} onCancel={handleCancel} title={"Reset Password"} message="Enter your new password"  />}
+     
       <div className="flex h-screen bg-[#fcefe7] transition ">
         <div className="m-auto bg-white rounded-lg shadow-2xl flex max-w-3xl ">
           <div className="  p-8">

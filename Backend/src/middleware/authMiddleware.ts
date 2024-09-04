@@ -165,3 +165,40 @@ export const decodedBUserRefreshToken = (req: Request  & Partial<{ user: string 
 
 };
 
+
+export const authenticateUser = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
+  const token = req.headers['authorization']?.split(' ')[1] || req.header('authorization');
+
+
+  if (!token) {
+    return res.status(401).send('Access denied');
+  }
+
+  try {
+    const decoded = verifyAccessToken(token);
+    req.user = decoded;
+
+    if(decoded.role != "user"){
+      res.status(401).json(
+        new ApiResponse(
+          401,
+          null,
+          "you are not authorized"
+        )
+      )
+    } 
+
+
+    next();
+  } catch (err) {
+
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid Token or Expired"
+    ))
+  }
+};
+
+

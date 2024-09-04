@@ -11,7 +11,7 @@ const UsersSchema: Schema = new Schema({
   gender: { type: String },
   membership: { type: Schema.Types.ObjectId },
   phone: { type: Number },
-  profilePic: { type: String },
+  profilePic: { type: String , default:"https://www.svgrepo.com/show/192247/man-user.svg"},
   refreshToken:{type:String},
   role: {type:String , default:"user"},
   isBlocked:{type:Boolean , default:false},

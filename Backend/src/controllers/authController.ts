@@ -32,7 +32,22 @@ class AuthController {
 
 
   public login = async (req: Request, res: Response) => {
+    
     const loginData = await this.authService.login(req.body);
+
+
+    if(loginData?.userFound?.isBlocked){
+
+      return res.status(401)
+        .json(
+          new ApiError(
+            401,
+            "You're blocked",
+            "You're blocked"
+          )
+        );
+
+    }
   
     if (loginData) { 
 
@@ -209,13 +224,13 @@ class AuthController {
       const isUserExists = await this.UserService.findUserWithEmail(req.body)
 
 
-      if (!isUserExists || isUserExists.isBlocked){
+      if (!isUserExists || isUserExists?.isBlocked){
         return res.status(400)
         .json(
           new ApiResponse(
             400,
             null,
-            isUserExists.isBlocked ? "Account is blocked" : "Check Your Email"
+            isUserExists?.isBlocked ? "Account is blocked" : "Check Your Email"
           )
         )
       }
@@ -278,7 +293,7 @@ class AuthController {
         )
       }
 
-      const OTPVerification = await this.OTPService.verifyOTP(isUserExists,otp)
+      const OTPVerification = await this.OTPService.verifyOTP(isUserExists,req.body)
 
       if(!OTPVerification){
         return res.status(500)
@@ -318,7 +333,7 @@ class AuthController {
 
     try {
 
-      const {email,password ,token} = req.body;
+      const {password ,token} = req.body;
 
       
       const decode = await this.authService.decodeAndVerifyToken(token)
@@ -335,10 +350,10 @@ class AuthController {
       }
 
       
-      const isUserExists = await this.UserService.findUserWithEmail(req.body)
+      const isUserExists = await this.UserService.findUserWithEmail(req.body.user)
 
 
-      if (!isUserExists || isUserExists.isBlocked){
+      if (!isUserExists || isUserExists?.isBlocked){
         return res.status(400)
         .json(
           new ApiResponse(
@@ -350,7 +365,28 @@ class AuthController {
       }
 
     
-    
+      const passwordUpdated = await this.UserService.changePassword(password,decode.email)
+
+      console.log('====================================');
+      console.log(passwordUpdated);
+      console.log('====================================');
+
+      if(passwordUpdated){
+        return res.status(200)
+        .json(new ApiResponse(
+          200,
+          null,
+          "reset success"
+        ))
+      }
+
+
+      return res.status(500)
+      .json(new ApiError(
+        500,
+        "something went wrong",
+        "reset Failed"
+      ))
 
 
     } catch (error) {

@@ -22,8 +22,26 @@ const resetData = Joi.object({
   password: Joi.string().min(6).required(),
 });
 
+const otpSchema = Joi.string().length(4).pattern(/^[0-9]+$/).required();
+
 
 const emailValidate = Joi.string().email().required();
+
+export function validateOTP(req: Request, res: Response, next: NextFunction) {
+
+  const { error } = otpSchema.validate(req.body.otp);
+
+  if (error) {
+
+    return res.status(400).json(new ApiError(
+      400,
+      error.details[0].message
+    ))
+
+  }
+
+  next()
+}
 
 
 export function validateRegistration(req: Request, res: Response, next: NextFunction) {

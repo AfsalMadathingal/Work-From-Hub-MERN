@@ -2,6 +2,7 @@ import { IUserRepository } from "../../repositories/interface/IUserRepository";
 import { IUsers } from "../../entities/UserEntity";
 import { GetAllUsers, IUserService } from "../../services/interface/IUserService";
 import UserRepository from "../../repositories/implementations/UserRepository";
+import bcrypt from 'bcryptjs'
 
 export default class UserService implements IUserService {
 
@@ -56,6 +57,15 @@ export default class UserService implements IUserService {
 
 
       return userAfterEdit
+  }
+
+  async changePassword(password: string,email:string): Promise<IUsers | null> {
+
+    const hashedPassword = await bcrypt.hash(password.toString(), 10);
+      
+    const userAfterUpdate = await this.userRepository.changePassword(hashedPassword,email)
+
+    return userAfterUpdate
   }
 
 

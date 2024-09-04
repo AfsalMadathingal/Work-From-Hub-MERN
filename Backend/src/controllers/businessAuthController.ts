@@ -33,6 +33,17 @@ class AuthController {
   public login = async (req: Request, res: Response) => {
     
     const loginData = await this.businessAuthService.login(req.body);
+
+    if(loginData?.userFound.isBlocked){
+      return res.status(401)
+      .json(
+        new ApiError(
+          401,
+          "You're blocked",
+          "You're blocked"
+        )
+      );
+    }
   
     if (loginData) { 
       

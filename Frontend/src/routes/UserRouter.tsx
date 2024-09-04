@@ -3,13 +3,13 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PrivateRoute from '../components/auth/PrivateRoute';
-import PublicRoute from '../components/auth/PublicRoute';  // Import PublicRoute
-
+import PublicRoute from '../components/auth/PublicRoute';  
 // Lazy load all components
 const LoginPage = lazy(() => import('../pages/userAuth/UserLogin'));
 const UserRegister = lazy(() => import('../pages/userAuth/UserRegister'));
 const LandingPage = lazy(() => import('../pages/userSide/LandingPage'));
 const HomePage = lazy(() => import('../pages/userSide/HomePage'));
+const Profile = lazy(() => import('../pages/userSide/Profile'));
 
 const UserRouter = () => {
   const location = useLocation();
@@ -45,6 +45,14 @@ const UserRouter = () => {
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PrivateRoute element={HomePage} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/my-account/profile"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={Profile} />
           </Suspense>
         }
       />

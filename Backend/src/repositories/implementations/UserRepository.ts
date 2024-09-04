@@ -95,7 +95,9 @@ export default class UserRepository implements IUserRepository {
 
 
   async editUser(user: IUsers): Promise<IUsers | { emailExists: boolean } | null> {
+
     try {
+
       const emailExists = await Users.findOne({ email: user.email });
       
   
@@ -106,10 +108,8 @@ export default class UserRepository implements IUserRepository {
      
       const updateResult = await Users.updateOne(
         { _id: user.id },
-        { $set: { fullName: user.fullName, email: user.email } }
+        { $set: user }
       );
-  
-
 
       
     
@@ -121,7 +121,24 @@ export default class UserRepository implements IUserRepository {
   
       return null; 
     } catch (error) {
+
       return null;
+    }
+  }
+
+
+  async changePassword(password: string,email:string): Promise<IUsers | null> {
+      
+    try {
+
+      const userAfterUpdate = await Users.findOneAndUpdate({email:email},{$set:{password:password}})
+
+      return userAfterUpdate
+      
+    } catch (error) {
+
+      return null
+      
     }
   }
   
