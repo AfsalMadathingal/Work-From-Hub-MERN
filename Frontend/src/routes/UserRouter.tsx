@@ -41,7 +41,7 @@ const UserRouter = () => {
         }
       />
       <Route
-        path="/u/home"
+        path="/user/home"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PrivateRoute element={HomePage} />
@@ -49,7 +49,7 @@ const UserRouter = () => {
         }
       />
       <Route
-        path="/my-account/profile"
+        path="/user/profile"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PrivateRoute element={Profile} />

@@ -11,5 +11,6 @@ export interface IUserRepository {
    blockUser(id:string):Promise <IUsers| null>;
    editUser(user:IUsers):Promise <IUsers | {emailExists:boolean} |null >;
    changePassword(password:string,email:string):Promise <IUsers | null >;
+   removeRefreshToken(userId:string,refreshToken:string):Promise<IUsers | null>;
 
 }

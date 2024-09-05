@@ -3,6 +3,9 @@ import {Navbar, NavbarBrand, NavbarContent, NavbarItem, Link, DropdownItem, Drop
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../../services/UserAuthService";
+import { setIsAuthenticated, setUser } from "../../redux/slices/userSlice";
 
 
 
@@ -10,17 +13,22 @@ export default function Header() {
 
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.user);
+  const navigate = useNavigate();
 
-  
+  const handleLogout = async () => {
+    
+    await logout();
+    dispatch(setUser({}))
+    navigate("/login");
+    dispatch(setIsAuthenticated(false));
+    toast.info("Logged out successfully");
 
+  }
 
-  useEffect(() => {
-   
-  },[])
   return (
     <Navbar>
       <NavbarBrand>
-        <div className="w-20">
+        <div className="w-20 ">
         <img src="/logo.png" alt="" />
         </div>
       </NavbarBrand>
@@ -61,16 +69,16 @@ export default function Header() {
               <p className="font-semibold">Signed in as</p>
               <p className="font-semibold">{user?.email}</p>
             </DropdownItem>
-            <DropdownItem key="settings">My Settings</DropdownItem>
+            <DropdownItem
+            onClick={()=>navigate("/user/profile")}
+            key="settings">My Profile</DropdownItem>
             <DropdownItem key="team_settings">Team Settings</DropdownItem>
             <DropdownItem key="analytics">Analytics</DropdownItem>
             <DropdownItem key="system">System</DropdownItem>
             <DropdownItem key="configurations">Configurations</DropdownItem>
             <DropdownItem key="help_and_feedback">Help & Feedback</DropdownItem>
             <DropdownItem 
-            onClick={() => {
-              toast.info("Logging out");
-            }}
+            onClick={handleLogout}
             key="logout" color="danger">
               
               Log Out

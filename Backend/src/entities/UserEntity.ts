@@ -6,11 +6,11 @@ export interface IUsers extends Document {
   fullName: String | null;
   password: String | null;
   date_of_birth: Date | null;
-  pin_code: Number | null;
+  pin_code: String | null;
   address: String | null;
   gender: String | null;
   membership: ObjectId | null;
-  phone: Number | null;
+  phone: String | null;
   profilePic: String | null;
   role: String | null;
   refreshToken: string | null;

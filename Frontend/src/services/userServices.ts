@@ -32,3 +32,23 @@ export const editUserData = async (user:IUsers) => {
     
   }
 };
+
+
+export const editUserProfilePic = async (FormData:FormData)=>{
+
+  try {
+
+
+    const response = await userAxiosInstance.patch('/api/user/upload-profile-photo',FormData)
+
+
+
+    return response 
+
+  } catch (error) {
+
+
+    
+    return error.response
+  }
+}

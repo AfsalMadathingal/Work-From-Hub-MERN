@@ -7,19 +7,21 @@ interface DialogProps {
   isOpen: boolean;
   user: {
     fullName: string;
-    email: string;
-    date_of_birth: string;
+    phone: string;
+    date_of_birth: Date;
     pin_code: string;
     state: string;
     city: string;
+    gender?: string;
   };
   onConfirm: (user: {
     fullName: string;
-    email: string;
-    date_of_birth: string;
+    phone: string;
+    date_of_birth: Date;
     pin_code: string;
     state: string;
     city: string;
+    gender?: string;
   }) => Promise<boolean | null>;
   onCancel: () => void;
 }
@@ -30,14 +32,17 @@ const ProfileEdit: FC<DialogProps> = ({ isOpen, user, onConfirm, onCancel }) => 
   const [showDialog, setShowDialog] = useState(isOpen);
   const [firstName, setFirstName] = useState(user.fullName.split(' ')[0]);
   const [lastName, setLastName] = useState(user.fullName.split(' ')[1]);
-  const [email, setEmail] = useState(user.email);
   const [date_of_birth, setdate_of_birth] = useState(user.date_of_birth);
   const [pin_code, setpin_code] = useState(user.pin_code);
+  const [gender, setGender] = useState(user.gender);
+  const [phone, setPhone] = useState(user.phone);
   const [state, setState] = useState(user.state);
+  
   const [city, setCity] = useState(user.city);
-  const {loading} = useSelector((state: RootState) => state.user)
+  const {loading,error} = useSelector((state: RootState) => state.user)
 
   useEffect(() => {
+
     if (isOpen) {
       setShowDialog(true); 
       setTimeout(() => setIsVisible(true), 10); 
@@ -80,21 +85,29 @@ const ProfileEdit: FC<DialogProps> = ({ isOpen, user, onConfirm, onCancel }) => 
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
             />
+            {error?.fullName && <p className="text-red-500 p-0 m-0 ">{error.fullName}</p>}
           </div>
+          <div className="flex space-x-4">
           <input
-            type="email"
+            type="text"
             className="p-2 border border-gray-300 rounded-lg w-full"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Phone Number"
+            value={phone?.toString()}
+            onChange={(e) => setPhone(e.target.value)}
           />
+          
           <input
             type="date"
             className="p-2 border border-gray-300 rounded-lg w-full"
             placeholder="Date of Birth"
-            value={date_of_birth}
+            value={date_of_birth?.slice(0,10)}
             onChange={(e) => setdate_of_birth(e.target.value)}
           />
+          
+          </div>
+          {error?.date_of_birth && <p className="text-red-500 p-0 m-0 ">{error.date_of_birth}</p>}
+          {error?.phone && <p className="text-red-500 p-0 m-0 ">{error.phone}</p>}
+          <div className="flex space-x-4">
           <input
             type="number"
             className="p-2 border border-gray-300 rounded-lg w-full"
@@ -102,6 +115,7 @@ const ProfileEdit: FC<DialogProps> = ({ isOpen, user, onConfirm, onCancel }) => 
             value={pin_code}
             onChange={(e) => setpin_code(e.target.value)}
           />
+          {error?.pin_code && <p className="text-red-500 p-0 m-0 ">{error.pin_code.split(`"`).join("")}</p>}
           <input
             type="text"
             className="p-2 border border-gray-300 rounded-lg w-full"
@@ -109,6 +123,9 @@ const ProfileEdit: FC<DialogProps> = ({ isOpen, user, onConfirm, onCancel }) => 
             value={state}
             onChange={(e) => setState(e.target.value)}
           />
+          {error?.state && <p className="text-red-500 p-0 m-0 ">{error.state}</p>}
+          </div>
+          <div className="flex space-x-4">
           <input
             type="text"
             className="p-2 border border-gray-300 rounded-lg w-full"
@@ -116,6 +133,20 @@ const ProfileEdit: FC<DialogProps> = ({ isOpen, user, onConfirm, onCancel }) => 
             value={city}
             onChange={(e) => setCity(e.target.value)}
           />
+          {error?.city && <p className="text-red-500 p-0 m-0 ">{error.city}</p>}
+          <select
+            className="p-2 border border-gray-300 rounded-lg w-full"
+            value={gender}
+            onChange={(e) => setGender(e.target.value)}
+          >
+            <option value="" disabled hidden>Gender</option>
+            <option value="Male">Male</option>
+            <option value="Female">Female</option>
+            <option value="Others">Others</option>
+          </select>
+          </div>
+          {error?.gender && <p className="text-red-500 p-0 m-0 ">{error.gender.split(`"`).join("")}</p>}
+
         </div>
         <div className="flex justify-end space-x-4 mt-6">
           <button
@@ -127,11 +158,12 @@ const ProfileEdit: FC<DialogProps> = ({ isOpen, user, onConfirm, onCancel }) => 
           <button
             onClick={() => onConfirm({
               fullName: `${firstName} ${lastName}`,
-              email,
+              phone,
               date_of_birth,
               pin_code,
               state,
-              city
+              city,
+              gender
             })}
             disabled={loading}
             className="px-4 py-2 bg-orange-500 text-white rounded hover:bg-orange-600 transition ease-in-out"

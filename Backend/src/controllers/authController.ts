@@ -48,6 +48,7 @@ class AuthController {
         );
 
     }
+
   
     if (loginData) { 
 
@@ -117,6 +118,7 @@ class AuthController {
           )
         )
       }
+
 
 
   
@@ -395,6 +397,42 @@ class AuthController {
 
 
   }
+
+  public logout = async (req:Request & {user: {rawToken: string, id: string}},res:Response)=>{
+
+  
+    const {user} = req;
+
+    console.log('=============userfromreq=======================');
+    console.log(user);
+    console.log('====================================');
+
+    const logoutData = await this.authService.logout(user.rawToken,user.id)
+
+    console.log('=====================logoutData===============');
+    console.log(logoutData);
+    console.log('====================================');
+
+    if(logoutData){
+      return res.status(200)
+      .clearCookie('refreshToken')
+      .json(
+          new ApiResponse(
+              200,
+              {message:"successfully cleared the token"},
+              "logout success"
+          )
+      )
+    }
+
+    return res.status(500)
+    .json(new ApiResponse(
+      500,
+      null,
+      "Something Went Wrong Clear your Browser Cookies"
+    ))
+
+}
 
 
 }

@@ -4,17 +4,26 @@ import { RootState } from "../../redux/store/store";
 import { useState } from "react";
 import ProfileEdit from "./ProfileEdit";
 import { IUsers } from "../../@types/user";
-import { setLoading, setUser } from "../../redux/slices/userSlice";
+import { setError, setLoading, setUser } from "../../redux/slices/userSlice";
 import { editUserData } from "../../services/userServices";
 import { toast } from "react-toastify";
+import { validateEditing } from "../../utils/userLoginValidator";
 
 const ProfileDetails = () => {
-  const { user } = useSelector((state: RootState) => state.user);
+  const { user,error } = useSelector((state: RootState) => state.user);
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
 
   const handleEdit = async (userForEdit:IUsers) => {
     dispatch(setLoading(true));
+
+    const error =  validateEditing(userForEdit);
+
+    if(error) {
+      dispatch(setLoading(false));
+      dispatch(setError(error));
+      return null;
+    }
 
     const userWithId = { ...userForEdit, id: user?._id };
 

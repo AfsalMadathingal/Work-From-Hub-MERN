@@ -43,7 +43,7 @@ export const logout = async ()=>{
       withCredentials:true
     });
 
-    localStorage.removeItem('accessToken')
+    localStorage.removeItem('adminAccessToken')
 
     if(response.data.success){
      

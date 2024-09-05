@@ -109,6 +109,26 @@ export const signInWithGoogle = async () => {
 
 export const logout = async ()=>{
 
+  try {
+    const response = await api.patch('/api/user/auth/logout',null,{
+      withCredentials:true
+    });
+
+    localStorage.removeItem('accessToken')
+
+    if(response.data.success){
+     
+      return response.data
+    }
+
+    
+    return null
+
+  } catch (error) {
+
+    return null
+
+  }
 
 }
 

@@ -71,9 +71,19 @@ export default class AuthService implements IAuthService {
     refreshToken: string;
     userFound: Omit<IUsers, "password">;
   } | null> {
+
+
     let userFound = await this.userRepository.findByUsername(
       user.email.toString()
     );
+
+    console.log('====================================');
+    console.log(userFound);
+    console.log('====================================');
+
+    if(!userFound?.password){
+      return null
+    }
 
     if (
       userFound &&
@@ -177,4 +187,13 @@ export default class AuthService implements IAuthService {
       return accessTokenForReset(user)
       
   }
+
+  async logout(token: string , id:string): Promise<IUsers | null> {
+
+    const user = await this.userRepository.removeRefreshToken(id,token)
+    
+    return user ? user : null
+}
+
+
 }

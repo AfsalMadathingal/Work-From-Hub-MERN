@@ -22,19 +22,34 @@ export default class UserRepository implements IUserRepository {
   }
 
   async findByUsername(email: string): Promise<IUsers | null> {
-    const userData = await Users.findOne({ email: email });
-    return userData;
+    try {
+
+      const userData = await Users.findOne({ email: email });
+      return userData;
+      
+    } catch (error) {
+
+      return null
+      
+    }
+ 
   }
 
   async saveRefreshToken(
     userId: string,
     refreshToken: string
   ): Promise<IUsers | null> {
-    const userWithSavedToken = await Users.findByIdAndUpdate(
-      { _id: userId },
-      { $set: { refreshToken: refreshToken } }
-    ).select("-password -refreshToken");
-    return userWithSavedToken;
+
+    try {
+      const userWithSavedToken = await Users.findByIdAndUpdate(
+        { _id: userId },
+        { $push: { refreshToken: refreshToken } }
+      ).select("-password -refreshToken");
+      return userWithSavedToken;
+    } catch (error) {
+      return null
+    }
+    
   }
 
   async googleSignIn(user: Partial<IUsers>): Promise<IUsers | null> {
@@ -57,7 +72,8 @@ export default class UserRepository implements IUserRepository {
 
   async getAllUsers(page: number, limit: number): Promise<GetAllUsers | null> {
 
-    const allUsers = await Users.find()
+    try {
+      const allUsers = await Users.find()
       .skip((page - 1) * limit)
       .limit(limit).select(
         "-password -refreshToken"
@@ -67,6 +83,11 @@ export default class UserRepository implements IUserRepository {
 
     return { allUsers, totalPages };
 
+    } catch (error) {
+      return null
+    }
+
+    
   }
 
   async blockUser(id: string): Promise<IUsers | null> {
@@ -140,6 +161,27 @@ export default class UserRepository implements IUserRepository {
       return null
       
     }
+  }
+
+  async removeRefreshToken(
+    userId: string,
+    refreshToken: string
+  ): Promise<IUsers | null> {
+
+    try {
+
+      const userWithRemovedToken = await Users.findOneAndUpdate(
+        { _id: userId },
+        { $pull: { refreshToken: refreshToken } },
+        { new: true }
+      ).select("-password -refreshToken");
+  
+      return userWithRemovedToken;
+      
+    } catch (error) {
+      return null
+    }
+   
   }
   
 

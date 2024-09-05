@@ -2,14 +2,20 @@ import { Request, Response, NextFunction } from "express";
 import UserService from "../services/implementations/UserService";
 import AuthService from "../services/implementations/AuthService";
 import ApiResponse from "../utils/ApiResponse";
+import { uploadToCloudinary } from "../utils/uploadToCloudinary";
+import { ApiError } from "../middleware/errorHandler";
+import { IUploadService } from "../services/interface/IUploadService";
+import UploadService from "../services/implementations/UploadService";
 
 class UserController {
   private userService: UserService;
+  private uploadService : IUploadService
   private AuthService: AuthService;
 
   constructor() {
     this.userService = new UserService();
     this.AuthService = new AuthService();
+    this.uploadService = new UploadService();
   }
 
 
@@ -55,6 +61,34 @@ class UserController {
 
 
   }
+
+  public editProfilePhoto = async (req: Request & {file:{path:string}}, res: Response) => {
+    try {
+
+      if (!req.file) {
+        
+        return res.status(400)
+        .json(new ApiError(
+          400,
+          "Upload Error",
+          "No file to Upload"
+          
+        ))
+      }
+  
+
+      const uploadResult = await this.uploadService.uploadSinglePhoto(req.file.path)
+      // Assuming `req.file.path` contains the path to the uploaded file
+
+  
+      res.status(200).json({
+        message: 'File uploaded successfully',
+        data: uploadResult,
+      });
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  };
 
 }
 

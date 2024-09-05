@@ -165,6 +165,36 @@ export const decodedBUserRefreshToken = (req: Request  & Partial<{ user: string 
 
 };
 
+export const decodedUserRefreshToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
+  
+  const refreshToken = req.cookies['refreshToken'] || req.header('refreshToken');
+
+  if (!refreshToken) {
+    return res.status(401)
+    .json(new ApiResponse(
+      401,
+      null,
+      "Access Denied"
+    ))
+  }
+
+  try {
+    const decoded = decodeToken(refreshToken);
+
+    req.user = { ...decoded, rawToken: refreshToken };
+
+    next();
+  } catch (err) {
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid "
+    ))
+  }
+
+};
+
 
 export const authenticateUser = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
   const token = req.headers['authorization']?.split(' ')[1] || req.header('authorization');

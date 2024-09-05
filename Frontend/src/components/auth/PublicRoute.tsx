@@ -18,7 +18,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ element: Element }) => {
   
 
 
-  return isAuthenticated ? <Navigate to="/u/home" /> : <Element/> ;
+  return isAuthenticated ? <Navigate to="/user/home" /> : <Element/> ;
   
 };
 
