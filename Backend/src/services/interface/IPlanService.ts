@@ -7,5 +7,8 @@ export interface IPlanService {
     
     createPlan(plan: IPlan): Promise<IPlan | null>
     getAllPlan(page:number, limit:number):Promise <GetAllPlansResponse | null>;
+    editPlan(id:string,action:string):Promise <IPlan | null>;
+    getPlansWithoutPagination():Promise <IPlan[]| null >    ;
+    getActivePlan():Promise <IPlan | null > ;
 
 }

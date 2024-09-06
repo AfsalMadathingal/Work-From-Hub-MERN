@@ -5,6 +5,7 @@ import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 import { emailValidate } from "../../utils/userLoginValidator";
 import { setError } from "../../redux/slices/userSlice";
+import AnimatedPage from "../Animation";
 
 interface DialogProps {
   isOpen: boolean;
@@ -82,11 +83,14 @@ const ForgotPasswordModal: FC<DialogProps> = ({
   };
 
   return (
+    <>
+  
     <div
       className={`fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity duration-300 ${
         isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
+        <AnimatedPage>
       <div
         className={`bg-white rounded-lg shadow-lg max-w-md w-full p-6 transform transition-all duration-300 ${
           isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
@@ -165,7 +169,10 @@ const ForgotPasswordModal: FC<DialogProps> = ({
           )}
         </div>
       </div>
+      </AnimatedPage>
     </div>
+ 
+    </>
   );
 };
 

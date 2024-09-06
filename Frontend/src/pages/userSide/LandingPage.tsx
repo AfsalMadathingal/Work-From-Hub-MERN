@@ -3,28 +3,13 @@ import Footer from "../../components/userSide/Footer";
 import Navbar from "../../components/userSide/Navbar";
 import { Link } from "react-router-dom";
 import FAQAccordion from "../../components/userSide/Faq";
-import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
-import { setLoading } from "../../redux/slices/userSlice";
+
 
 const LandingPage: React.FC = () => {
-  const dispatch = useDispatch();
-  const loading = useSelector((state: RootState) => state.user.loading);
-
-  useEffect(() => {
-    dispatch(setLoading(true));
-    const timer = setTimeout(() => {
-      dispatch(setLoading(false));
-    }, 1000); 
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <>
-      {loading ? <LoadingPageWithReactLoading transparent={false} type="bars" color="#ff6f00" />
-       :
-       <>
+    
       <Navbar />
       <div className="bg-beige min-h-screen m-12">
         <section className="container  mx-auto flex flex-col md:flex-row items-center mt-12 space-y-6 md:space-y-0 md:space-x-12">
@@ -78,8 +63,8 @@ const LandingPage: React.FC = () => {
       </div>
       <Footer />
       </>
-}
-    </>
+
+
   );
 };
 

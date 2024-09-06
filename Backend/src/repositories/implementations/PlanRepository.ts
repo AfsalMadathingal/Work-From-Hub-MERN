@@ -29,4 +29,63 @@ export default class PlanRepository implements IPlanRepository {
 
     return { allPlans, totalPages };
   }
+
+  async editPlan(id: string, planAction: Partial<IPlan>): Promise<IPlan | null> {
+      try {
+
+        const plan=  await Plans.findByIdAndUpdate({stripeId:id},{
+          $set:planAction
+        })
+
+
+        console.log(plan);
+        
+        return plan
+        
+      } catch (error) {
+
+        return null
+      }
+  }
+
+  async getPlansWithoutPagination(): Promise<IPlan[] | null> {
+      try {
+
+        const allPlans = await Plans.find({})
+        
+        return allPlans
+
+      } catch (error) {
+        return null
+      }
+  }
+
+  async getPlan(id:string): Promise<IPlan | null> {
+      try {
+        
+
+        const plan = await Plans.findOne({stripeId:id})
+
+        return plan 
+
+      } catch (error) {
+        
+        return null
+      }
+  }
+
+  async getActivePlan(): Promise<IPlan | null> {
+      try {
+
+        const activePlan = await Plans.findOne({status:"active"})
+
+        return activePlan
+        
+      } catch (error) {
+        
+        return null
+      }
+  }
+
+  
 }

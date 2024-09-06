@@ -12,38 +12,38 @@ const FeatureSection = function FeaturesSection() {
   const {user} = useSelector((state: RootState) => state.user);
 
 
-  const getActivePlan = async () => {
+  // const getActivePlan = async () => {
 
-    try {
+  //   try {
 
-      console.log('================id====================');
-      console.log(user._id);
-      console.log('====================================');
+  //     console.log('================id====================');
+  //     console.log(user._id);
+  //     console.log('====================================');
       
-      const response = await userAxiosInstance.get('/api/active-plan')
+  //     const response = await userAxiosInstance.get('/api/active-plan')
 
-      console.log('====================================');
-      console.log(response.data.data);
-      console.log('====================================');
+  //     console.log('====================================');
+  //     console.log(response.data.data);
+  //     console.log('====================================');
 
-    } catch (error) {
+  //   } catch (error) {
       
-      console.log('====================================');
-      console.log(error);
-      console.log('====================================');
-    }
+  //     console.log('====================================');
+  //     console.log(error);
+  //     console.log('====================================');
+  //   }
 
-  }
+  // }
 
-  useEffect(()=>{
+  // useEffect(()=>{
 
-    getActivePlan();
+  //   getActivePlan();
 
-  },[])
+  // },[])
 
   return (
     <>
-    {modal && 
+    {/* {modal && 
 
     <div className="absolute top-0 right-0 left-0 bottom-0 z-50">
       <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
@@ -58,7 +58,7 @@ const FeatureSection = function FeaturesSection() {
     
     
     
-    }
+    } */}
     <div className="m-12">
       <div className="container mx-auto flex flex-col justify-evenly md:flex-row min-h-[250px] bg-gray-800">
         <div className="flex m-5 items-center justify-center p-4 bg-gray-800 text-white text-center">

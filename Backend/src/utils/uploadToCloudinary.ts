@@ -1,6 +1,6 @@
 import cloudinary from './cloudinaryConfig';
 
-interface UploadResponse {
+export interface UploadResponse {
   url: string;
   public_id: string;
 }
@@ -9,7 +9,7 @@ interface UploadResponse {
 export const uploadToCloudinary = async (filePath: string): Promise<UploadResponse> => {
   try {
     const result = await cloudinary.uploader.upload(filePath, {
-      folder: 'your_folder_name', // Optional: specify a folder to store images
+      folder: 'work_from_hub', 
     });
 
     return {

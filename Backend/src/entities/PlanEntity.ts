@@ -6,5 +6,7 @@ export interface IPlan extends Document {
   price:number;
   discountAmount: number;
   createdAt: Date;
+  status:string;
+  isDeleted:boolean;
 }
 

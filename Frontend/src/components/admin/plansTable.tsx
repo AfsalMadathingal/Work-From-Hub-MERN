@@ -8,11 +8,12 @@ import {
   Button,
 } from "@nextui-org/react";
 import { setModal } from '../../redux/slices/adminSlice';
-import { createPlan, getPlans } from '../../services/adminService';
+import { changePlanStatus, createPlan, getPlans } from '../../services/adminService';
 import { RootState } from '../../redux/store/store';
 import { toast } from 'react-toastify';
 import { resetAdmin } from '../../redux/slices/adminSlice';
 import { logout } from '../../services/adminAuth';
+import { FaPause, FaPlay } from 'react-icons/fa';
 
 const PlansTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -22,9 +23,17 @@ const PlansTable = () => {
   const [plans, setPlans] = useState([]);
   const [totalPages, setTotalPages] = useState(0);
   const {accessToken ,modal} = useSelector((state : RootState) => state.admin)
-
-
   const dispatch = useDispatch();
+
+
+  const handlePlanStatus = async (id : string,action:string) => {
+
+    const response = await changePlanStatus(id,action);
+
+    console.log(response);
+    
+    
+  }
 
   const handleCreatePlan = async () => {
 
@@ -189,7 +198,8 @@ const PlansTable = () => {
                 <td className="py-2 px-4 border-b hidden md:table-cell">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                 <td className="py-2 px-4 border-b hidden md:table-cell">{plan.stripeId}</td>
                 <td className="py-2 px-4 border-b">&#x20B9;{plan.price}</td>
-                <td className="py-2 px-4 border-b">
+                <td className="py-2 px-4 border-b flex">
+                 {plan.status === "active" ? <FaPause onClick={() => handlePlanStatus(plan?.stripeId,"pause")} className="text-red-500 m-1 cursor-pointer"/> : <FaPlay onClick={() => handlePlanStatus(plan?.stripeId,"active")} className="text-green-500 m-1 cursor-pointer"/>}
                   <button
                     className={`${
                       plan.status === "active" ? "bg-green-300" : "bg-red-200"
@@ -205,15 +215,14 @@ const PlansTable = () => {
                       <i className="fa fa-bars mr-2 hover:cursor-pointer" aria-hidden="true"></i>
                     </DropdownTrigger>
                     <DropdownMenu aria-label="Static Actions">
-                      <DropdownItem key="new">New file</DropdownItem>
-                      <DropdownItem key="copy">Copy link</DropdownItem>
-                      <DropdownItem key="edit">Edit file</DropdownItem>
+                      <DropdownItem key="edit">Edit Plan</DropdownItem>
                       <DropdownItem
+                        onClick={() => handleDeletePlan(plan?.stripeId,"delete")}
                         key="delete"
                         className="text-danger"
                         color="danger"
                       >
-                        Delete file
+                        Remove Plan
                       </DropdownItem>
                     </DropdownMenu>
                   </Dropdown>

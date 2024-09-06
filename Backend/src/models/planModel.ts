@@ -8,6 +8,7 @@ const planSchema: Schema = new Schema({
   price:{type:Number},
   discount:{type:Number},
   status:{type:String , default:"paused"},
+  isDeleted:{type:Boolean,default:false},
   createdAt:{type:Date , default: new Date()}
 });
 

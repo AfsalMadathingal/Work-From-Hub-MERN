@@ -86,7 +86,7 @@ const profileEditSchema = Joi.object({
   city: Joi.string().messages({
     "string.empty": "City is required.",
   }),
-  gender: Joi.string().valid("male", "female", "others").messages({
+  gender: Joi.string().valid("Male", "Female", "Others").messages({
     "string.invalid": "Gender must be one of the following: male, female, others",
     "string.empty": "Gender is required.",
   }),

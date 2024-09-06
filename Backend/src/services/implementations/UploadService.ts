@@ -1,7 +1,7 @@
 import UserRepository from "../../repositories/implementations/UserRepository";
 import { IUserRepository } from "../../repositories/interface/IUserRepository";
 import { IUploadService } from "../../services/interface/IUploadService";
-import { uploadToCloudinary } from "../../utils/uploadToCloudinary";
+import { UploadResponse, uploadToCloudinary } from "../../utils/uploadToCloudinary";
 
 
 export default class UploadService implements IUploadService{
@@ -13,7 +13,7 @@ export default class UploadService implements IUploadService{
     }
 
 
-     async uploadSinglePhoto(path: string): Promise<{}>  {
+     async uploadSinglePhoto(path: string): Promise<UploadResponse>  {
 
         const uploadResult = await uploadToCloudinary(path);
 

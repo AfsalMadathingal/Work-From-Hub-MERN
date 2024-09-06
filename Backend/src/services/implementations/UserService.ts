@@ -49,7 +49,7 @@ export default class UserService implements IUserService {
       
   }
 
-  async editUser(user:IUsers ): Promise<IUsers | {emailExists:boolean} | null> {
+  async editUser(user:Partial<IUsers> ): Promise< Partial<IUsers> | {emailExists:boolean} | null> {
 
 
       const userAfterEdit = await this.userRepository.editUser(user)

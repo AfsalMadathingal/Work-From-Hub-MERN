@@ -6,6 +6,7 @@ import { uploadToCloudinary } from "../utils/uploadToCloudinary";
 import { ApiError } from "../middleware/errorHandler";
 import { IUploadService } from "../services/interface/IUploadService";
 import UploadService from "../services/implementations/UploadService";
+import { IUsers } from "entities/UserEntity";
 
 class UserController {
   private userService: UserService;
@@ -56,13 +57,15 @@ class UserController {
         ))
 
     } catch (error) {
+
+      next(error)
       
     }
 
 
   }
 
-  public editProfilePhoto = async (req: Request & {file:{path:string}}, res: Response) => {
+  public editProfilePhoto = async (req: Request & {file:{path:string} ,user:IUsers}, res: Response ,next:NextFunction) => {
     try {
 
       if (!req.file) {
@@ -78,15 +81,40 @@ class UserController {
   
 
       const uploadResult = await this.uploadService.uploadSinglePhoto(req.file.path)
-      // Assuming `req.file.path` contains the path to the uploaded file
+      const user = {profilePic:uploadResult.url , id:req.user.id}
+
+      console.log(user);
+      
+      const userFound = await this.userService.editUser(user)
 
   
-      res.status(200).json({
-        message: 'File uploaded successfully',
-        data: uploadResult,
-      });
+
+      console.log(userFound);
+
+      // const {password,refreshToken,...userToSend} = userFound;
+      
+      if(userFound){
+        return res.status(200)
+        .json(
+          new ApiResponse(
+            200,
+            userFound,
+            "Success fully Uploaded"
+          )
+        )
+      }
+
+      return res.status(500)
+      .json(
+        new ApiError(
+          500,
+          "Error While Uploading",
+          "uploading failed"
+        )
+      )
+
     } catch (error) {
-      res.status(500).json({ message: error.message });
+      next(error)
     }
   };
 

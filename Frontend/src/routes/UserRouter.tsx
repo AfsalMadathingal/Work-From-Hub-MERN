@@ -15,6 +15,7 @@ const UserRouter = () => {
   const location = useLocation();
 
   return (
+    
     <Routes location={location} key={location.pathname}>
       <Route
         path="/"
@@ -27,7 +28,7 @@ const UserRouter = () => {
       <Route
         path="/login"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="spin" color={PRIMARY_COLOR} />}>
             <PublicRoute element={LoginPage } />
           </Suspense>
         }

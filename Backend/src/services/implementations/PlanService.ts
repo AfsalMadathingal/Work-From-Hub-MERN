@@ -48,4 +48,63 @@ export default class PlanService implements IPlanService {
 
     return allPlans
   }
+
+
+  async editPlan(id: string, action: string): Promise<IPlan | null> {
+
+    const plan = await this.planRepository.getPlan(id)
+    const activePlan = await this.planRepository.getActivePlan()
+
+    let planAction: Partial<IPlan> = {};
+
+    switch (action) {
+      case "pause":
+        planAction.status = "paused";
+        break;
+      case "active":
+        planAction.status = "active";
+        break;
+      case "delete":
+        planAction.isDeleted = true;
+        break;
+      default:
+        return null;
+    }
+
+    if(plan.status == planAction?.status  ){
+      return null
+    }
+
+    if (!id) {
+      return null;
+    }
+    
+    if(activePlan){
+      const changingActivePlan = await this.planRepository.editPlan(activePlan?.stripeId,{status:"paused"})
+      if(!changingActivePlan)
+      {
+        return null
+      }
+    }
+
+    console.log(id,planAction);
+    
+
+      const editedPlan = await this.planRepository.editPlan(id,planAction)
+
+      console.log(editedPlan);
+      
+
+      return editedPlan
+  }
+
+  async getPlansWithoutPagination(): Promise<IPlan[] | null> {
+      
+    return this.planRepository.getPlansWithoutPagination();
+
+  }
+
+   async getActivePlan(): Promise<IPlan | null> {
+      return this.planRepository.getActivePlan()
+  }
 }

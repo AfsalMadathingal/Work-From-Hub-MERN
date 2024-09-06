@@ -57,6 +57,22 @@ export const createPlan = async (accessToken:string , plan) =>{
 }
 
 
+export const changePlanStatus = async(id:string,action:string)=>{
+
+  try {
+    
+
+    return await  api.patch('/api/admin/plan',{id,action})
+
+  } catch (error) {
+
+    return error.response
+    
+  }
+
+}
+
+
 export const  getAllUsers = async (page:number,itemsPerPage:number)=>{
 
   try {

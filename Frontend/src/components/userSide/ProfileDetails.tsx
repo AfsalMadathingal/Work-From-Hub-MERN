@@ -88,7 +88,9 @@ const ProfileDetails = () => {
             {user?.date_of_birth ? (
                 <span className="text-gray-800">{user?.date_of_birth.slice(0,10)}</span>
             ):(
-                <button className="text-orange-500 hover:underline">+ Add</button>
+                <button onClick={() => {
+                  setIsEdit(!isEdit);
+                }} className="text-orange-500 hover:underline">+ Add</button>
             )}
             
           </div>
@@ -97,7 +99,9 @@ const ProfileDetails = () => {
             {user?.gender ? (
                 <span className="text-gray-800">{user?.gender}</span>
             ):(
-                <button className="text-orange-500 hover:underline">+ Add</button>
+                <button onClick={() => {
+                  setIsEdit(!isEdit);
+                }} className="text-orange-500 hover:underline">+ Add</button>
             )}
           </div>
           <div className="py-4 flex justify-between border-t border-gray-200">
@@ -105,7 +109,9 @@ const ProfileDetails = () => {
             {user?.phone ? (
                 <span className="text-gray-800">{user?.phone}</span>
             ):(
-                <button className="text-orange-500 hover:underline">+ Add</button>
+                <button onClick={() => {
+                  setIsEdit(!isEdit);
+                }} className="text-orange-500 hover:underline">+ Add</button>
             )}
           </div>
           <div className="py-4 flex justify-between border-t border-gray-200">
@@ -117,7 +123,11 @@ const ProfileDetails = () => {
             {user?.pin_code ? (
                 <span className="text-gray-800">{user?.pin_code}</span>
             ):(
-                <button className="text-orange-500 hover:underline">+ Add</button>
+                <button 
+                onClick={() => {
+                  setIsEdit(!isEdit);
+                }}
+                className="text-orange-500 hover:underline">+ Add</button>
             )}
           </div>
           <div className="py-4 flex justify-between border-t border-gray-200">
@@ -125,7 +135,11 @@ const ProfileDetails = () => {
             {user?.address ? (
                 <span className="text-gray-800">{user?.address}</span>
             ):(
-                <button className="text-orange-500 hover:underline">+ Add</button>
+                <button 
+                onClick={() => {
+                  setIsEdit(!isEdit);
+                }}
+                className="text-orange-500 hover:underline">+ Add</button>
             )}
           </div>
         </div>

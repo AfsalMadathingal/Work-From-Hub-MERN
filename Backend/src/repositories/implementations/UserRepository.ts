@@ -3,6 +3,7 @@ import { IUsers } from "entities/UserEntity";
 import Users from "../../models/userModel";
 import { ApiError } from "../../middleware/errorHandler";
 import { GetAllUsers } from "services/interface/IUserService";
+import { IPlan } from "entities/PlanEntity";
 
 export default class UserRepository implements IUserRepository {
   async createUser(user: IUsers): Promise<IUsers | null> {
@@ -130,13 +131,14 @@ export default class UserRepository implements IUserRepository {
       const updateResult = await Users.updateOne(
         { _id: user.id },
         { $set: user }
-      );
-
+      )
       
     
       if (updateResult.modifiedCount > 0) {
        
-        const updatedUser = await Users.findById(user.id);
+        const updatedUser = await Users.findById(user.id).select(
+          "-password -refreshToken"
+        );
         return updatedUser; 
       }
   
@@ -183,6 +185,7 @@ export default class UserRepository implements IUserRepository {
     }
    
   }
+
   
 
 }
