@@ -1,6 +1,33 @@
 import Joi from "joi";
 import { IUsers } from "../@types/user";
 
+
+const planSchema = Joi.object({
+  price: Joi.string()
+    .pattern(/^\d+$/)
+    .min(0)
+    .max(1000)
+    .required()
+    .messages({
+      "string.min": "Price should be at least 0",
+      "string.max": "Price should not be more than 1000",
+      "string.empty": "Price is required",
+      "string.pattern.base": "Price should be a number",
+    }),
+  discount: Joi.string()
+    .pattern(/^\d+$/)
+    .min(0)
+    .max(50)
+    .required()
+    .messages({
+      "string.min": "Discount should be at least 0",
+      "string.max": "Discount should not be more than 50",
+      "string.empty": "Discount is required",
+      "string.pattern.base": "Discount should be a number",
+    }),
+});
+
+
 const loginSchema = Joi.object({
   email: Joi.string()
     .email({ tlds: { allow: false } })
@@ -95,10 +122,6 @@ const profileEditSchema = Joi.object({
 export const validateEditing = (data: Partial<IUsers>) => {
   const { error } = profileEditSchema.validate(data, { abortEarly: false });
 
-  console.log("================ddfgdfg====================");
-  console.log(error);
-  console.log("====================================");
-
   if (error) {
     const formattedErrors: { [key: string]: string } = {};
     error.details.forEach((detail) => {
@@ -161,5 +184,25 @@ export const emailValidate = (email: string) => {
 
   return null;
 };
+
+
+export const planValidate= (price:string,discount:string)=>{
+
+  const { error } = planSchema.validate({price,discount}, { abortEarly: false });
+
+  if (error) {
+    const formattedErrors: { [key: string]: string } = {};
+    error.details.forEach((detail) => {
+      formattedErrors[detail.path[0]] = detail.message;
+    });
+
+    return formattedErrors;
+  }
+
+  return null;
+
+
+
+}
 
 export default validate;

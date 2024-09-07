@@ -10,5 +10,5 @@ export interface IPlanService {
     editPlan(id:string,action:string):Promise <IPlan | null>;
     getPlansWithoutPagination():Promise <IPlan[]| null >    ;
     getActivePlan():Promise <IPlan | null > ;
-
+    filterPlan(query:string): Promise <IPlan[] | null> ;
 }

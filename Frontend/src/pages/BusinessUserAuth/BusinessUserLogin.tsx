@@ -11,7 +11,7 @@ import {
   setAccessToken,
 } from "../../redux/slices/businessUserSlice";
 import { RootState } from "../../redux/store/store";
-import validate from "../../utils/userLoginValidator";
+import validate from "../../utils/userValidator";
 import { login } from "../../services/BUserAuthService";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";

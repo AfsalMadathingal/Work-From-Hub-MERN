@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import loginSchema from "../../utils/userLoginValidator";
+import loginSchema from "../../utils/userValidator";
 import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { useDispatch, useSelector } from "react-redux";
@@ -12,7 +12,7 @@ import {
   setAccessToken,
 } from "../../redux/slices/userSlice";
 import { RootState } from "../../redux/store/store";
-import validate from "../../utils/userLoginValidator";
+import validate from "../../utils/userValidator";
 import {
   forgotPasswordReset,
   forgotPasswordSendOTP,

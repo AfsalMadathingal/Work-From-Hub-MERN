@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
-import { emailValidate } from "../../utils/userLoginValidator";
+import { emailValidate } from "../../utils/userValidator";
 import { setError } from "../../redux/slices/userSlice";
 import AnimatedPage from "../Animation";
 

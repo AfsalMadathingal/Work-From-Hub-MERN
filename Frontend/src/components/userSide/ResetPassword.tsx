@@ -6,7 +6,7 @@ import ReactLoading from "react-loading";
 import { toast } from "react-toastify";
 import { setError } from "../../redux/slices/userSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { validatePassword } from "../../utils/userLoginValidator";
+import { validatePassword } from "../../utils/userValidator";
 
 interface DialogProps {
   isOpen: boolean;

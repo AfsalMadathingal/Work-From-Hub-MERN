@@ -7,7 +7,7 @@ import { IUsers } from "../../@types/user";
 import { setError, setLoading, setUser } from "../../redux/slices/userSlice";
 import { editUserData } from "../../services/userServices";
 import { toast } from "react-toastify";
-import { validateEditing } from "../../utils/userLoginValidator";
+import { validateEditing } from "../../utils/userValidator";
 
 const ProfileDetails = () => {
   const { user,error } = useSelector((state: RootState) => state.user);

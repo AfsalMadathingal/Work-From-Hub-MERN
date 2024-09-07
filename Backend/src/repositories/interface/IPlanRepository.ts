@@ -14,6 +14,6 @@ export interface IPlanRepository {
     editPlan(id:string , planAction:Partial<IPlan>):Promise<IPlan | null>; 
     getPlan(id:string):Promise<IPlan| null>;
     getActivePlan():Promise <IPlan | null> ;
-    
+    filterPlan(query:string):Promise<IPlan[] | null>
 
  }

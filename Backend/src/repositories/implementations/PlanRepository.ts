@@ -21,11 +21,14 @@ export default class PlanRepository implements IPlanRepository {
     limit: number
   ): Promise<GetAllPlansResponse | null> {
     
-    const allPlans = await Plans.find()
+    const allPlans = await Plans.find({isDeleted:false})
       .skip((page - 1) * limit)
       .limit(limit);
     const totalPlans = await Plans.countDocuments();
     const totalPages = Math.ceil(totalPlans / limit);
+
+    console.log(allPlans);
+    
 
     return { allPlans, totalPages };
   }
@@ -33,7 +36,7 @@ export default class PlanRepository implements IPlanRepository {
   async editPlan(id: string, planAction: Partial<IPlan>): Promise<IPlan | null> {
       try {
 
-        const plan=  await Plans.findByIdAndUpdate({stripeId:id},{
+        const plan=  await Plans.findOneAndUpdate({stripeId:id},{
           $set:planAction
         })
 
@@ -83,6 +86,19 @@ export default class PlanRepository implements IPlanRepository {
         
       } catch (error) {
         
+        return null
+      }
+  }
+
+  async filterPlan(query: string): Promise<IPlan[] | null> {
+      try {
+        
+
+          const filteredPlan = await Plans.find({stripeId:query})
+
+          return filteredPlan
+
+      } catch (error) {
         return null
       }
   }
