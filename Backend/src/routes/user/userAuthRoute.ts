@@ -1,7 +1,7 @@
 import { Router } from "express";
 import authController from "../../controllers/authController";
 import { validateRegistration, validateLoginDetails, validateEmail, validateOTP } from "../../validator/userValidator";
-import { decodedRefreshToken, decodedUserRefreshToken } from "../../middleware/authMiddleware";
+import { decodedRefreshToken, decodedUserRefreshToken, verifyUserRefreshToken } from "../../middleware/authMiddleware";
 const userAuthRoute = Router();
 
 
@@ -13,6 +13,7 @@ userAuthRoute.patch('/logout',decodedUserRefreshToken,authController.logout)
 userAuthRoute.post('/send-otp-forgot',validateEmail,authController.forgotPasswordOTP)
 userAuthRoute.post('/otp-verify' ,validateOTP,authController.otpVerify)
 userAuthRoute.patch('/forgot-password-reset',authController.resetPassword)
+userAuthRoute.get('/refresh-token',verifyUserRefreshToken,authController.refreshAccessToken)
 
 
 export default userAuthRoute

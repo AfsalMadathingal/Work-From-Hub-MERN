@@ -4,6 +4,7 @@ import axios from "axios";
 import { userAxiosInstance } from "../../services/instance/userInstance";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import CheckoutButton from "../payments/CheckoutStripe";
 
 const FeatureSection = function FeaturesSection() {
 
@@ -79,6 +80,7 @@ const FeatureSection = function FeaturesSection() {
           className="bg-orange-500 text-white px-6 py-3 rounded-lg">
           <i className="fa-solid fa-crown"></i> Became a Member
           </button>
+          <CheckoutButton priceId="plan_Qo0MT9VBKdrqcB" />
         </div>
       </div>
     </div>

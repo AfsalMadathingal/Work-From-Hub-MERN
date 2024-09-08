@@ -8,6 +8,10 @@ import store, { persistor } from "./redux/store/store";
 import GlobalTransitionWrapper from "./components/userSide/PageTransition ";
 import { PersistGate } from "redux-persist/integration/react";
 import { NextUIProvider } from "@nextui-org/react";
+import { Elements } from "@stripe/react-stripe-js";
+import { loadStripe } from "@stripe/stripe-js";
+
+const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
   <Provider store={store}>
@@ -15,7 +19,9 @@ ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
       <BrowserRouter>
         <GlobalTransitionWrapper>
           <NextUIProvider>
-            <App />
+            <Elements stripe={stripePromise}>
+              <App />
+            </Elements>
           </NextUIProvider>
         </GlobalTransitionWrapper>
       </BrowserRouter>

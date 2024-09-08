@@ -102,7 +102,7 @@ export const decodedRefreshToken = (req: Request  & Partial<{ user: string | jwt
 
 
 export const refreshAccessToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
-  const refreshToken = req.cookies['refreshToken'] || req.header('refreshtoken');
+  const refreshToken = req.cookies['refreshToken'] || req.header('refreshToken');
 
   
 
@@ -229,6 +229,43 @@ export const authenticateUser = (req: Request  & Partial<{ user: string | jwt.Jw
       "Invalid Token or Expired"
     ))
   }
+};
+
+
+export const verifyUserRefreshToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
+
+  const refreshToken = req.cookies['refreshToken'] || req.header('refreshToken');
+
+  console.log('====================================');
+  console.log(refreshToken);
+  console.log('====================================');
+  if (!refreshToken) {
+    return res.status(401)
+    .json(new ApiResponse(
+      401,
+      null,
+      "Access Denied"
+    ))
+  }
+
+  try {
+    const decoded = verifyRefreshToken(refreshToken);
+
+
+    req.user = { ...decoded, rawToken: refreshToken };
+
+
+
+    next();
+  } catch (err) {
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid Token or Expired"
+    ))
+  }
+
 };
 
 
