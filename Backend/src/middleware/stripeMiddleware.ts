@@ -8,16 +8,17 @@ declare module 'express-serve-static-core' {
   }
   
 
-export function stripeMiddleware(req: Request, res: Response, next: NextFunction) {
-  req.rawBody = '';
-  req.setEncoding('utf8');
-  req.on('data', (chunk) => {
-    req.rawBody += chunk;
-  });
-  req.on('end', () => {
-    console.log('====================================');
-    console.log(req.rawBody);
-    console.log('====================================');
-    next();
-  });
-}
+
+  // Middleware to capture the raw body for Stripe webhook verification
+  export function stripeMiddleware(req: Request, res: Response, next: NextFunction) {
+    req.rawBody = ''; // Initialize rawBody
+  
+    req.on('data', (chunk) => {
+      req.rawBody += chunk;
+    });
+  
+    req.on('end', () => {
+      next(); // Continue processing the request
+    });
+  }
+  

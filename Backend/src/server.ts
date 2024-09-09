@@ -8,6 +8,7 @@ import  { errorHandler } from './middleware/errorHandler';
 import logger from "../src/utils/logger";
 import morgan from "morgan";
 import router from './routes/router';
+import bodyParser from 'body-parser';
 
 
 
@@ -25,6 +26,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+app.use(bodyParser.raw({ type: 'application/json' }));
 
 const morganFormat = ":method :url :status :response-time ms";
 app.use(

@@ -236,9 +236,7 @@ export const verifyUserRefreshToken = (req: Request  & Partial<{ user: string | 
 
   const refreshToken = req.cookies['refreshToken'] || req.header('refreshToken');
 
-  console.log('====================================');
-  console.log(refreshToken);
-  console.log('====================================');
+
   if (!refreshToken) {
     return res.status(401)
     .json(new ApiResponse(
@@ -258,6 +256,7 @@ export const verifyUserRefreshToken = (req: Request  & Partial<{ user: string | 
 
     next();
   } catch (err) {
+    
     res.status(401).
     json(new ApiResponse(
       401,

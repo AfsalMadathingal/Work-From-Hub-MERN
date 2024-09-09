@@ -52,3 +52,24 @@ export const editUserProfilePic = async (FormData:FormData)=>{
     return error.response
   }
 }
+
+
+export const fetchActivePlan = async ()=>{
+  try {
+
+
+    const response = await userAxiosInstance.get('/api/user/active-plan')
+
+
+
+
+
+    return response 
+
+  } catch (error) {
+
+
+    
+    return error.response
+  }
+}

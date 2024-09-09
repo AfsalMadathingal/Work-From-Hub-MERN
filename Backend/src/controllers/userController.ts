@@ -7,16 +7,21 @@ import { ApiError } from "../middleware/errorHandler";
 import { IUploadService } from "../services/interface/IUploadService";
 import UploadService from "../services/implementations/UploadService";
 import { IUsers } from "entities/UserEntity";
+import { IPlanService } from "../services/interface/IPlanService";
+import PlanService from "../services/implementations/PlanService";
 
 class UserController {
   private userService: UserService;
   private uploadService : IUploadService
   private AuthService: AuthService;
+  private planService : IPlanService
 
   constructor() {
     this.userService = new UserService();
     this.AuthService = new AuthService();
     this.uploadService = new UploadService();
+    this.planService = new PlanService();
+
   }
 
 
@@ -117,6 +122,41 @@ class UserController {
       next(error)
     }
   };
+
+
+  public getActivePlan = async (req:Request , res:Response, next:NextFunction)=>{
+
+    try {
+
+
+      const activePlan = await this.planService.getActivePlan();
+
+
+     if(!activePlan){
+      return res.status(404)
+      .json(new ApiError(
+        404,
+        "No active Plan",
+        "Currently subscription not available"
+      ))
+     }
+
+     return res.status(200)
+     .json(new ApiResponse(
+       200,
+       activePlan,
+       "Fetched Successfully"
+     ))
+
+      
+    } catch (error) {
+
+      next(error)
+
+    }
+
+
+  }
 
 }
 

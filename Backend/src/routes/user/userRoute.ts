@@ -15,6 +15,7 @@ userRouter.use('/payment',authenticateUser,paymentRouter)
 
 userRouter.patch('/',authenticateUser,userController.editUser)
 userRouter.patch('/upload-profile-photo',authenticateUser,upload.single('image'),userController.editProfilePhoto)
+userRouter.get('/active-plan',authenticateUser,userController.getActivePlan)
 
 userRouter.post('/subscribe',)
 
