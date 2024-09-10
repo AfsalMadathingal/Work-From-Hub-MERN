@@ -37,7 +37,7 @@ import { GetAllBUsers } from "services/interface/IBusinessUserService";
     async saveRefreshToken(userId: string, refreshToken: string): Promise<IBusinessUser | null> {
 
         const userWithSavedToken = await BusinessUser.findOneAndUpdate(
-          { _id: userId },
+          {email: userId },
           { $push:{refreshToken: refreshToken }  }
         ).select(
             "-password -refreshToken"

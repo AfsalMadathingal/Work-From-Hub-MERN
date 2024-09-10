@@ -1,8 +1,8 @@
 import React, { useEffect } from 'react';
 import BusinessUserLayout from '../../components/businessUser/BusinessUserLayout';
-import BusinessUserTable from '../../components/admin/BusinessUserTable';
 import { useDispatch } from 'react-redux';
-import { setPageTitle } from '../../redux/slices/adminSlice';
+import { setPageTitle } from '../../redux/slices/businessUserSlice';
+import BuildingForm from '../../components/businessUser/BuildingForm';
 
 
 
@@ -17,7 +17,7 @@ const WorkplaceManage = () => {
   return (
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
-        <BusinessUserLayout component={<BusinessUserTable />} />
+        <BusinessUserLayout component={<BuildingForm/>} />
       </div>
     </div>
   );

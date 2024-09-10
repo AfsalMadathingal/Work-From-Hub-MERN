@@ -6,7 +6,9 @@ import { GetAllUsers } from "services/interface/IUserService";
 import { IPlan } from "entities/PlanEntity";
 
 export default class UserRepository implements IUserRepository {
+
   async createUser(user: IUsers): Promise<IUsers | null> {
+    
     const isUserExists = await Users.findOne({ email: user.email });
 
     if (isUserExists) {
