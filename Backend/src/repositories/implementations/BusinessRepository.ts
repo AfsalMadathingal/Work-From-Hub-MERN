@@ -27,6 +27,15 @@ import { GetAllBUsers } from "services/interface/IBusinessUserService";
         return registeredUser;
     }
 
+    
+    async findById(id: string): Promise<IBusinessUser | null> {
+
+        const userData = await BusinessUser.findById(id).select(
+            "-password -refreshToken"
+        )
+        return userData;
+    }
+
 
     async findByUsername(email: string): Promise<IBusinessUser | null> {
 

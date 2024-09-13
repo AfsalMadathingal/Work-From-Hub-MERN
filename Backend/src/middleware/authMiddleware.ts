@@ -70,6 +70,39 @@ export const verifyRefreshTokenMiddleware = (req: Request  & Partial<{ user: str
 
 };
 
+
+export const verifyRefreshTokenMiddlewareBUser = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
+
+  const refreshToken = req.cookies['BusinessUserRefreshToken'] || req.header('BusinessUserRefreshToken');
+
+
+
+  if (!refreshToken) {
+    return res.status(401)
+    .json(new ApiResponse(
+      401,
+      null,
+      "Access Denied"
+    ))
+  }
+
+  try {
+    const decoded = verifyRefreshToken(refreshToken);
+
+    req.user = { ...decoded, rawToken: refreshToken };
+
+    next();
+  } catch (err) {
+    res.status(401).
+    json(new ApiResponse(
+      401,
+      null,
+      "Invalid Token or Expired"
+    ))
+  }
+
+};
+
 export const decodedRefreshToken = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }> , res: Response, next: NextFunction) => {
   
   const refreshToken = req.cookies['adminRefreshToken'] || req.header('adminRefreshToken');

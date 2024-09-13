@@ -13,6 +13,6 @@ export interface IUserRepository {
    editUser(user:Partial<IUsers>):Promise <IUsers | {emailExists:boolean} |null >;
    changePassword(password:string,email:string):Promise <IUsers | null >;
    removeRefreshToken(userId:string,refreshToken:string):Promise<IUsers | null>;
-   
+  
 
 }

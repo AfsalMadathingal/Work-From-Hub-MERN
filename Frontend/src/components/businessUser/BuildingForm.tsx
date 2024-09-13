@@ -9,8 +9,6 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { setError } from '../../redux/slices/businessUserSlice';
 
-
-
 const BuildingForm: React.FC = () => {
   const [formData, setFormData] = useState<IWorkspace>({
     buildingName: '',
@@ -32,8 +30,8 @@ const BuildingForm: React.FC = () => {
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
   const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 }); // Default center (India)
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-  const {error} = useSelector((state: RootState) => state.businessUser);
-  const dispatch = useDispatch()
+  const { error } = useSelector((state: RootState) => state.businessUser);
+  const dispatch = useDispatch();
 
   const { isLoaded } = useLoadScript({
     googleMapsApiKey: import.meta.env.VITE_GOOGLE_MAP_API, // Replace with your Google Maps API key
@@ -42,10 +40,17 @@ const BuildingForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked, files } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === 'checkbox' ? checked : type === 'file' ? files : value,
-    }));
+    if (type === 'file') {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: files,
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: type === 'checkbox' ? checked : value,
+      }));
+    }
   };
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
@@ -78,38 +83,40 @@ const BuildingForm: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+  
     const validationError = validateWorkspaceSubmission(formData);
-
-    if(validationError) {
+  
+    if (validationError) {
       dispatch(setError(validationError));
-      toast.error(
-        "Please fill all the required fields"
-      )
-      return
+      toast.error('Please fill all the required fields');
+      return;
     }
-
-    
-    
-
-
+  
+    const formDataToSend = new FormData();
+  
+    // Append all form data to the FormData object
+    Object.keys(formData).forEach((key) => {
+      if (key === 'photos' || key === 'video') {
+        if (formData[key]) {
+          for (let i = 0; i < formData[key].length; i++) {
+            formDataToSend.append(key, formData[key][i]);
+          }
+        }
+      } else {
+        formDataToSend.append(key, formData[key]);
+      }
+    });
+  
     try {
-      
-      const response = await submitWorkspaceData(formData);
-
+      const response = await submitWorkspaceData(formDataToSend);
+  
       console.log('====================================');
       console.log(response);
       toast.success('Data submitted successfully');
       console.log('====================================');
-
     } catch (error) {
-
       toast.error('Something went wrong');
-      
     }
-    
-
-    // Add form submission logic here
   };
 
   return (
@@ -170,7 +177,7 @@ const BuildingForm: React.FC = () => {
               onClick={() => setIsMapModalOpen(true)}
               className="px-4 py-2 bg-blue-500 text-white font-semibold rounded hover:bg-blue-600"
             >
-              <FaLocationArrow/>
+              <FaLocationArrow />
             </button>
           </div>
           {error?.location && <p className="text-red-500 mt-1">{error?.location}</p>}
@@ -211,18 +218,8 @@ const BuildingForm: React.FC = () => {
           />
           {error?.contactNo && <p className="text-red-500 mt-1">{error?.contactNo}</p>}
         </div>
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="powerBackup"
-            checked={formData.powerBackup}
-            onChange={handleChange}
-            className="h-4 w-4"
-          />
 
-          <label>Power Backup</label>
-        </div>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center space-x-2 ">
           <input
             type="checkbox"
             name="ac"
@@ -231,17 +228,28 @@ const BuildingForm: React.FC = () => {
             className="h-4 w-4"
           />
           <label>AC</label>
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="powerBackup"
+              checked={formData.powerBackup}
+              onChange={handleChange}
+              className="h-4 w-4"
+            />
+            <label>Power Backup</label>
+          </div>
+          <div className="flex items-center space-x-2">
+            <input
+              type="checkbox"
+              name="bathroom"
+              checked={formData.bathroom}
+              onChange={handleChange}
+              className="h-4 w-4"
+            />
+            <label>Bathroom</label>
+          </div>
         </div>
-        <div className="flex items-center space-x-2">
-          <input
-            type="checkbox"
-            name="bathroom"
-            checked={formData.bathroom}
-            onChange={handleChange}
-            className="h-4 w-4"
-          />
-          <label>Bathroom</label>
-        </div>
+
         <div className="col-span-full md:col-span-2">
           <label className="block text-sm font-medium">Add Photos</label>
           <input
@@ -295,24 +303,20 @@ const BuildingForm: React.FC = () => {
           >
             SUBMIT FOR REVIEW
           </button>
-
-          
         </div>
-
       </form>
 
       {isMapModalOpen && (
-        <div 
-        onClick={() => setIsMapModalOpen(false)}
-        className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            
+        <div
+          onClick={() => setIsMapModalOpen(false)}
+          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl">
-          <button
+            <button
               type="button"
               onClick={() => setIsMapModalOpen(false)}
               className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
             >
-            <FaWindowClose/>  Close
+              <FaWindowClose /> Close
             </button>
             {isLoaded ? (
               <>

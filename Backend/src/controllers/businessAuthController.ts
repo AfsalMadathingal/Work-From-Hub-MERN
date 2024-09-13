@@ -68,15 +68,27 @@ class AuthController {
   }
 
 
-  public refreshAccessToken = async (req: Request, res: Response) => {
-    const { refreshToken } = req.body;
-    const newAccessToken = await this.businessAuthService.refreshAccessToken(refreshToken);
-    if (newAccessToken) {
-      res.json({ accessToken: newAccessToken });
-    } else {
-      res.status(400).json({ message: 'Invalid refresh token' });
+  public refreshAccessToken = async (req:Request & {user: {rawToken: string, id: string}} ,res:Response)=>{
+
+    const {user} = req
+
+
+
+    const accessToken = await this.businessAuthService.refreshAccessToken(user.id)
+
+    if(accessToken){
+      return res.status(200)
+      .json(
+        new ApiResponse(
+          200,
+          {accessToken},
+          "token Created Successfully"
+        )
+      )
     }
-  };
+
+    
+  }
 
 
   public createUser = async (

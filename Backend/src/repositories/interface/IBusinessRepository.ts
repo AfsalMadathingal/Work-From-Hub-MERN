@@ -10,4 +10,5 @@ export interface IBusinessUserRepository {
    blockUser(id:string):Promise <IBusinessUser| null>;
    removeRefreshToken(userId:string,refreshToken:string):Promise<IBusinessUser | null>;
    editUser(user:IBusinessUser):Promise <IBusinessUser | {emailExists:boolean} |null >;
+   findById(id:string):Promise<IBusinessUser | null>;
 }

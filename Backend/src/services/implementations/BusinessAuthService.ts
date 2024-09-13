@@ -105,19 +105,26 @@ export default class BusinessAuthService implements IBusinessAuthService {
   }
   
 
-  async refreshAccessToken(refreshToken: string): Promise<string | null> {
-    try {
-      const payload = verifyRefreshToken(refreshToken);
-      const newAccessToken = generateAccessToken({
-        id: payload.id,
-        role: payload.role,
-      });
+  async refreshAccessToken(userId:string): Promise <string| null> {
+        
+    const userFound  = await this.BusinessRepository.findById(userId)
 
-      return newAccessToken;
-    } catch (error) {
-      return null;
+
+    if(userFound){
+        const id = userFound._id?.toString();
+        
+        const accessToken = generateAccessToken({
+            id,
+            role: userFound.role,
+        });
+
+        return accessToken
     }
-  }
+
+
+
+    return null
+}
 
 
   async logout(token: string , id:string): Promise<IBusinessUser | null> {

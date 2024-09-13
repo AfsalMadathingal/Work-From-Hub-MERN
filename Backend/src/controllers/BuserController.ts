@@ -19,6 +19,10 @@ class BUserController {
 
         try {
 
+            console.log('====================================');
+            console.log(req.body);
+            console.log('====================================');
+
 
             const response = await this.workspaceService.submitWorkspaceListing(req.body)
 
