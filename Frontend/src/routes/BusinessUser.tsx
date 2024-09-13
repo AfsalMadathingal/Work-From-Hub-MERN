@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
@@ -14,6 +14,13 @@ const BusinessUserRegister = lazy(
 
 const BusinessUser = () => {
   const location = useLocation();
+
+
+  useEffect(()=>{
+
+    
+    
+  },[])
 
   return (
     <Routes location={location} key={location.pathname}>

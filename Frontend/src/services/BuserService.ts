@@ -11,6 +11,8 @@ export const  submitWorkspaceData = async(data:IWorkspace)=>{
 
         const response = await api.post('/api/business/work-space',data)
 
+        
+
         return response
         
     } catch (error) {

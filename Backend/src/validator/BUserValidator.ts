@@ -2,6 +2,7 @@
 import { NextFunction, Request, Response } from "express";
 import Joi from "joi";
 import { ApiError } from "../middleware/errorHandler";
+import ApiResponse from "../utils/ApiResponse";
 
 
 
@@ -60,14 +61,17 @@ const buildingFormSchema = Joi.object({
       'number.min': 'Seats per table must be a non-negative number',
       'any.required': 'Seats per table is required',
     }),
-    photos: Joi.any().required().messages({
-      'any.unknown': 'Photos must be a file list',
-      'any.required': "Photo Required"
+    imageAdded: Joi.boolean().valid(true).required().messages({
+      'boolean.base': 'Image  is required',
+      'boolean.invalid': 'Image  is required',
+      'any.required': 'Image  is required',
     }),
-    video: Joi.any().required().messages({
-      'any.unknown': 'Video must be a file list',
-      'any.required': "Video is Mandatory"
+    videoAdded: Joi.boolean().valid(true).required().messages({
+      'boolean.base': 'Video  is required',
+      'boolean.invalid': 'Video  is required',
+      'any.required': 'Video  is required',
     }),
+  
   });
 
 
@@ -90,19 +94,18 @@ const buildingFormSchema = Joi.object({
           formattedErrors[detail.path[0]] = detail.message;
         });
 
-        console.log('====================================');
         console.log(formattedErrors);
-        console.log('====================================');
+        
     
-        return formattedErrors;
+         return res.status(400).json( new ApiResponse(
+            400,
+           formattedErrors,
+            "something wrong with the data user filled"
+        ))
       }
 
 
-        // throw new ApiError(
-        //     500,
-        //     "Inputs not Valid",
-        //     "something wrong with the data user filled"
-        // )
+       
     }
 
 

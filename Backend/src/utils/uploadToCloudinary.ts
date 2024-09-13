@@ -46,6 +46,9 @@ export const uploadMultiplePhotosToCloudinary = async (filePaths: string[]): Pro
 
 export const uploadVideoToCloudinary = async (filePath: string): Promise<UploadResponse> => {
   try {
+
+    console.log(filePath);
+    
     const result = await cloudinary.uploader.upload(filePath, {
       folder: 'work_from_hub', 
       resource_type: 'video',

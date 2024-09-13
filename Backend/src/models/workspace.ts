@@ -5,7 +5,7 @@ import mongoose, { Schema, Document, model } from 'mongoose';
 
 
 const workspaceSchema = new Schema<IWorkspace>({
-  name: { type: String, required: true },
+  buildingName: { type: String, required: true },
   state: { type: String, required: true },
   district: { type: String, required: true },
   location: { type: String, required: true },

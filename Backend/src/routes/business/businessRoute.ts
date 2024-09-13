@@ -8,8 +8,10 @@ const cpUpload = upload.fields([{ name: 'photos', maxCount: 10 }, { name: 'video
 
 const businessRoute = Router()
 
+
+
 businessRoute.use('/auth',businessAuthRoute)
 
-businessRoute.post('/work-space',authenticateBUser,cpUpload,validateWorkspaceSubmission,BUserController.submitListingData)
+businessRoute.post('/work-space',authenticateBUser,BUserController.validateUser,cpUpload,validateWorkspaceSubmission,BUserController.submitListingData)
 
 export default businessRoute;

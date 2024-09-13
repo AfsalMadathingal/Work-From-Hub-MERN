@@ -45,17 +45,29 @@ const buildingFormSchema = Joi.object({
       'boolean.base': 'Bathroom must be a boolean value',
       'any.required': 'Bathroom is required',
     }),
-    tablesAvailable: Joi.number().integer().min(0).required().messages({
+    tablesAvailable: Joi.number().integer().min(1).required().messages({
       'number.base': 'Tables available must be a number',
       'number.integer': 'Tables available must be an integer',
-      'number.min': 'Tables available must be a non-negative number',
+      'number.min': 'Tables available must be >1',
       'any.required': 'Tables available is required',
     }),
-    seatsPerTable: Joi.number().integer().min(0).required().messages({
+    seatsPerTable: Joi.number().integer().min(2).required().messages({
       'number.base': 'Seats per table must be a number',
       'number.integer': 'Seats per table must be an integer',
-      'number.min': 'Seats per table must be a non-negative number',
+      'number.min': 'Seats per table must be > 2 number',
       'any.required': 'Seats per table is required',
+    }),
+    imageAdded: Joi.boolean().valid(true).required().messages({
+      'boolean.base': 'Image  is required',
+      'boolean.invalid': 'Image  is required',
+      'any.required': 'Image  is required',
+      'any.valid': "Image  is required",
+    }),
+    videoAdded: Joi.boolean().valid(true).required().messages({
+      'boolean.base': 'Video  is required',
+      'boolean.invalid': 'Video  is required',
+      'any.required': 'Video  is required',
+      'any.valid': "Video  is required",
     }),
     photos: Joi.any().required().messages({
       'any.unknown': 'Photos must be a file list',
@@ -69,9 +81,7 @@ const buildingFormSchema = Joi.object({
 
 
   export const validateWorkspaceSubmission = (data: Partial<IWorkspace>) => {
-    console.log('====================================');
-    console.log(data);
-    console.log('====================================');
+
     const { error } = buildingFormSchema.validate(data, { abortEarly: false });
   
     if (error) {

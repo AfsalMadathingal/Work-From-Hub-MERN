@@ -7,7 +7,8 @@ import { toast } from 'react-toastify';
 import { validateWorkspaceSubmission } from '../../utils/BUserValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
-import { setError } from '../../redux/slices/businessUserSlice';
+import { resetBUser, setError } from '../../redux/slices/businessUserSlice';
+import { logout } from '../../services/BUserAuthService';
 
 const BuildingForm: React.FC = () => {
   const [formData, setFormData] = useState<IWorkspace>({
@@ -25,6 +26,8 @@ const BuildingForm: React.FC = () => {
     seatsPerTable: 0,
     photos: null,
     video: null,
+    imageAdded: false,
+    videoAdded:false,
   });
 
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
@@ -41,10 +44,23 @@ const BuildingForm: React.FC = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked, files } = e.target;
     if (type === 'file') {
-      setFormData((prev) => ({
-        ...prev,
-        [name]: files,
-      }));
+      if(name === 'photos'){
+        setFormData((prev) => ({
+          ...prev,
+          [name]: files,
+          imageAdded: true
+        }));
+      }else if(name === 'video'){
+        setFormData((prev) => ({
+          ...prev,
+          [name]: files,
+          videoAdded: true
+        }));
+      }
+      // setFormData((prev) => ({
+      //   ...prev,
+      //   [name]: files,
+      // }));
     } else {
       setFormData((prev) => ({
         ...prev,
@@ -110,11 +126,15 @@ const BuildingForm: React.FC = () => {
     try {
       const response = await submitWorkspaceData(formDataToSend);
   
-      console.log('====================================');
-      console.log(response);
-      toast.success('Data submitted successfully');
-      console.log('====================================');
+      if(response?.status === 401){
+        toast.error('Session expired. Please login again');
+        dispatch(resetBUser());
+        await logout();
+        return;
+        
+      }
     } catch (error) {
+
       toast.error('Something went wrong');
     }
   };
@@ -259,7 +279,7 @@ const BuildingForm: React.FC = () => {
             multiple
             className="mt-1 block w-full p-2 border border-gray-300 rounded"
           />
-          {error?.photos && <p className="text-red-500 mt-1">{error?.photos}</p>}
+          {error?.imageAdded && <p className="text-red-500 mt-1">{error?.imageAdded}</p>}
         </div>
         <div className="col-span-full md:col-span-2">
           <label className="block text-sm font-medium">Add Video</label>
@@ -270,7 +290,7 @@ const BuildingForm: React.FC = () => {
             accept="video/*"
             className="mt-1 block w-full p-2 border border-gray-300 rounded"
           />
-          {error?.video && <p className="text-red-500 mt-1">{error?.video}</p>}
+          {error?.videoAdded && <p className="text-red-500 mt-1">{error?.videoAdded}</p>}
         </div>
         <div>
           <label className="block text-sm font-medium">How many tables available?</label>

@@ -1,7 +1,7 @@
 import mongoose, { Schema, Document, model } from 'mongoose';
 
 export interface IWorkspace extends Document {
-  name?: string;
+  buildingName?: string;
   state?: string;
   district?: string;
   location?: string;

@@ -75,6 +75,9 @@ export const verifyRefreshTokenMiddlewareBUser = (req: Request  & Partial<{ user
 
   const refreshToken = req.cookies['BusinessUserRefreshToken'] || req.header('BusinessUserRefreshToken');
 
+  console.log('============sdfsdf========================');
+  console.log(refreshToken);
+  console.log('====================================');
 
 
   if (!refreshToken) {
@@ -93,6 +96,8 @@ export const verifyRefreshTokenMiddlewareBUser = (req: Request  & Partial<{ user
 
     next();
   } catch (err) {
+
+
     res.status(401).
     json(new ApiResponse(
       401,
@@ -304,6 +309,7 @@ export const authenticateBUser = (req: Request  & Partial<{ user: string | jwt.J
   const token = req.headers['authorization']?.split(' ')[1] || req.header('authorization');
 
 
+
   if (!token) {
     return res.status(401).send('Access denied');
   }
@@ -313,20 +319,24 @@ export const authenticateBUser = (req: Request  & Partial<{ user: string | jwt.J
     req.user = decoded;
 
     if(decoded.role != "businessUser"){
-      res.status(401).json(
+     return res.status(401).json(
         new ApiResponse(
           401,
           null,
           "you are not authorized"
         )
       )
-    } 
+    }
+    
+    
 
 
     next();
   } catch (err) {
 
-    res.status(401).
+   
+
+   return res.status(401).
     json(new ApiResponse(
       401,
       null,

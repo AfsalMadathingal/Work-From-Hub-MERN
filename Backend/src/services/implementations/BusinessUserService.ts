@@ -29,6 +29,18 @@ export default class BusinessUserService implements IBusinessUserService {
 
     return null 
   }
+  
+  async findUserWithId(user:IBusinessUser) : Promise< IBusinessUser | null >{
+
+    const userFound = await this.businessUserRepository.findById(user.id)
+
+    if(userFound){
+      return userFound
+    }
+
+    return null 
+  }
+
 
 
   async  getBusinessUsers(page: number, limit: number): Promise<GetAllBUsers | null> {

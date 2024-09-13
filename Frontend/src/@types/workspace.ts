@@ -13,4 +13,6 @@ export interface IWorkspace {
     seatsPerTable: number;
     photos: FileList | null;
     video: FileList | null;
+    imageAdded: boolean ;
+    videoAdded:boolean ;
   }

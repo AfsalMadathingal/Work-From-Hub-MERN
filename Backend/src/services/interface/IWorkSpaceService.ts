@@ -1,7 +1,8 @@
 import { IWorkspace } from "entities/workspace";
+import { Request } from "express";
 
 export interface IWorkspaceService {
 
-    submitWorkspaceListing(data:IWorkspace):Promise<IWorkspace| null>;
+    submitWorkspaceListing(data:Request):Promise<IWorkspace| null>;
     
 }
