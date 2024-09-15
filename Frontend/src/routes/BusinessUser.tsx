@@ -5,6 +5,10 @@ import { PRIMARY_COLOR } from "../constant/colors";
 import WorkplaceManage from "../pages/BusinessUserAuth/WorkplaceManage";
 import PublicRoute from "../components/auth/BUsesrPublicRoute";
 import PrivateRoute from "../components/auth/BUserPrivateRoute";
+import BWorkspaceListing from "../components/businessUser/BWorkSpace";
+import BWorkspaceManage from "../pages/BusinessUserAuth/WorkspaceListing";
+import BWorkspaceDetail from "../components/businessUser/BWorkspaceDetails";
+import ViewWorkSpace from "../pages/BusinessUserAuth/ViewWorkSpace";
 const BusinessLogin = lazy(
   () => import("../pages/BusinessUserAuth/BusinessUserLogin")
 );
@@ -15,12 +19,7 @@ const BusinessUserRegister = lazy(
 const BusinessUser = () => {
   const location = useLocation();
 
-
-  useEffect(()=>{
-
-    
-    
-  },[])
+  useEffect(() => {}, []);
 
   return (
     <Routes location={location} key={location.pathname}>
@@ -86,6 +85,39 @@ const BusinessUser = () => {
             }
           >
             <PrivateRoute element={WorkplaceManage} />
+          </Suspense>
+        }
+      />
+
+      <Route
+        path="/workspace-manage"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={BWorkspaceManage} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/workspace-view/:workspaceId"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={ViewWorkSpace} />
           </Suspense>
         }
       />

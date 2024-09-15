@@ -21,3 +21,42 @@ export const  submitWorkspaceData = async(data:IWorkspace)=>{
     }
 
 }
+
+export const getAllPendingSubmission = async (
+    page: number,
+    itemsPerPage: number
+  ) => {
+    try {
+      const response = await api.get(
+        `/api/business/workspace-submission?page=${page}&limit=${itemsPerPage}`
+      );
+  
+      console.log(response);
+      
+  
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  };
+
+  
+  export const getAllWorkspaces = async (
+    page: number,
+    itemsPerPage: number
+  ) => {
+    try {
+      const response = await api.get(
+        `/api/business/workspaces?page=${page}&limit=${itemsPerPage}`
+      );
+  
+      console.log(response);
+      
+  
+      return response;
+    } catch (error) {
+      return error.response;
+    }
+  };
+  
+

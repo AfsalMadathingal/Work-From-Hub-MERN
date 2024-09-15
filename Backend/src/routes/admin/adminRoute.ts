@@ -21,10 +21,15 @@ adminRouter.patch('/users/block-and-unblock/:id',authenticate,adminController.bl
 
 
 adminRouter.get('/business-users',authenticate,adminController.getBusinessUsers)
+adminRouter.get('/business-user/:id',authenticate,adminController.getBusinessUser)
 adminRouter.patch('/business-users',authenticate,adminController.editBUser)
 adminRouter.patch('/business-user/block-and-unblock/:id',authenticate,adminController.blockBUseres)
 
 
+adminRouter.get('/workspace-submission',authenticate,adminController.getWorkspaceSubmission)
+adminRouter.patch('/approve-workspace/:id',authenticate,adminController.approveWorkspace)
+adminRouter.patch('/reject-workspace/:id',authenticate,adminController.rejectWorkspace)
+adminRouter.get('/approved-workspaces',authenticate,adminController.getApprovedWorkspaces)
 
 
 export default adminRouter

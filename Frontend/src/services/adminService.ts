@@ -142,3 +142,79 @@ export const searchPlans = async (
     return error.response;
   }
 };
+
+export const getAllPendingSubmission = async (
+  page: number,
+  itemsPerPage: number
+) => {
+  try {
+    const response = await api.get(
+      `/api/admin/workspace-submission?page=${page}&limit=${itemsPerPage}`
+    );
+
+    console.log(response);
+    
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};
+
+
+export const getOwnerById = async (id:string)=>{
+
+  try {
+      
+      const response = await api.get(`/api/admin/business-user/${id}`)
+
+      return response
+
+  } catch (error) {
+      return error.response
+  }
+}
+
+export const approveWorkspace = async (id:string)=>{
+  try {
+    
+
+    const response = await api.patch(`/api/admin/approve-workspace/${id}`)
+
+    return response
+
+  } catch (error) {
+    return error.response
+  }
+}
+
+export const rejectWorkspace = async (id:string)=>{
+  try {
+    
+
+    const response = await api.patch(`/api/admin/reject-workspace/${id}`)
+
+    return response
+
+  } catch (error) {
+
+    return error.response
+  }
+}
+
+
+export const getAllApprovedWorkspaces = async (page: number, itemsPerPage: number) => {
+
+  try {
+      const response = await api.get(`/api/admin/approved-workspaces?page=${page}&limit=${itemsPerPage}`)
+
+      console.log('===================fromapi=================');
+      console.log(response);
+      console.log('====================================');
+
+      return response
+
+  } catch (error) {
+      return error.response
+  }
+}

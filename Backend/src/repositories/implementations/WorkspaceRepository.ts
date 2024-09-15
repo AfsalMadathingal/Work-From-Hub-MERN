@@ -1,53 +1,107 @@
-import { IWorkspaceRepository } from '../interface/IWorkspaceRepository';
-import { IWorkspace as Workspace } from '../../entities/workspace';
-import { ObjectId } from 'mongodb';
-import { WorkspaceModel } from '../../models/workspace';
-
+import { GetPendingWorkspace, IWorkspaceRepository } from "../interface/IWorkspaceRepository";
+import { IWorkspace as Workspace } from "../../entities/workspace";
+import { ObjectId } from "mongodb";
+import { WorkspaceModel } from "../../models/workspace";
 
 
 export class WorkspaceRepository implements IWorkspaceRepository {
   private collection;
 
-  
   constructor() {
-    this.collection = WorkspaceModel
+    this.collection = WorkspaceModel;
   }
 
   async create(workspace: Workspace): Promise<Workspace | null> {
+    try {
+      const result = await this.collection.create(workspace);
 
-
-
-    const result = await this.collection.create(workspace);
-
-    return result
+      return result;
+    } catch (error) {
+      return null;
+    }
   }
 
-  // async update(id: string, workspace: Partial<Workspace>): Promise<Workspace | null> {
-  //   const result = await this.collection.findOneAndUpdate(
-  //     { _id: new ObjectId(id) },
-  //     { $set: workspace },
-  //     { returnDocument: 'after' }
-  //   );
-  //   return result.value ? { ...result.value, id: result.value._id.toString() } : null;
-  // }
+  async findWithPagination(page:number,limit:number, approved:boolean = false): Promise<GetPendingWorkspace | null> {
 
-  // async delete(id: string): Promise<boolean> {
-  //   const result = await this.collection.deleteOne({ _id: new ObjectId(id) });
-  //   return result.deletedCount === 1;
-  // }
+    
+    try {
 
-  // async findById(id: string): Promise<Workspace | null> {
-  //   const workspace = await this.collection.findOne({ _id: new ObjectId(id) });
-  //   return workspace ? { ...workspace, id: workspace._id.toString() } : null;
-  // }
+      
+      const data  = await WorkspaceModel.find({approved})
+      .skip((page - 1) * limit)
+      .limit(limit).select(
+        "-password -refreshToken"
+      );
 
-  // async findAll(): Promise<Workspace[]> {
-  //   const workspaces = await this.collection.find().toArray();
-  //   return workspaces.map((workspace) => ({ ...workspace, id: workspace._id.toString() }));
-  // }
+    const approvedWorkspaces = approved ? data : null
+    const pendingSubmissions = approved ? null : data
+    const totalUser = await WorkspaceModel.countDocuments({approved});
+    const totalPages = Math.ceil(totalUser / limit);
+ 
 
-  // async findByOwnerId(ownerId: string): Promise<Workspace[]> {
-  //   const workspaces = await this.collection.find({ ownerId }).toArray();
-  //   return workspaces.map((workspace) => ({ ...workspace, id: workspace._id.toString() }));
-  // }
+    if (approved){
+      return {approvedWorkspaces,totalPages}
+    }
+
+    return {pendingSubmissions, totalPages}
+
+
+    return 
+    } catch (error) {
+      return null
+    }
+
+  }
+
+  async approveWorkspace(id: string): Promise<Workspace | null> {
+
+    try {
+      const updateResult = await this.collection.findByIdAndUpdate(id,{
+        approved: true,
+        rejected: false
+      },{
+        new: true
+      });
+
+      return updateResult;
+
+    } catch (error) {
+      return null
+    }
+
+  }
+
+  
+  async rejectWorkspace(id: string): Promise<Workspace | null> {
+
+    try {
+      const updateResult = await this.collection.findByIdAndUpdate(id,{
+        approved: false,
+        rejected: true
+      },{
+        new: true
+      });
+
+      return updateResult;
+
+    } catch (error) {
+      return null
+    }
+
+  }
+
+  async getAllWorkspaces(): Promise<Workspace[] | null> {
+
+    try {
+      const allWorkspaces = await this.collection.find({}).sort({ createdAt: -1 });
+
+      return allWorkspaces;
+
+    } catch (error) {
+      return null
+    }
+
+  }
+  
+
 }

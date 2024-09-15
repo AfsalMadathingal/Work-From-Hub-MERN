@@ -3,13 +3,20 @@ import { Route, Routes, useLocation } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PublicRoute from "../components/auth/AdminPublicRoute";
-import UserManagement from "../pages/admin/UserManagement";
 import PrivateRoute from "../components/auth/AdminPrivateRoute";
-import MembershipPlan from "../pages/admin/MembershipPlan";
-import BusinessUserManage from "../pages/admin/BusinessUserManage";
+import WorkspaceSubmission from "../pages/admin/WorkspaceSubmission";
+import WorkspacePage from "../components/admin/WorkspaceViewPage";
+import View from "../pages/admin/ViewWorkSpace";
+import { approveWorkspace } from "../services/adminService";
+import ApprovedWorkspaces from "../components/admin/ApprovedWorkspaces";
+import WorkspaceManagement from "../pages/admin/WorkSpaceManagement";
 
+const UserManagement = lazy(() => import("../pages/admin/UserManagement"));
+const MembershipPlan = lazy(() => import("../pages/admin/MembershipPlan"));
+const BusinessUserManage = lazy(
+  () => import("../pages/admin/BusinessUserManage")
+);
 const AdminLogin = lazy(() => import("../pages/adminAuth/AdminLogin"));
-
 
 const AdminRouter = () => {
   const location = useLocation();
@@ -19,7 +26,15 @@ const AdminRouter = () => {
       <Route
         path="/login"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
             <PublicRoute element={AdminLogin} />
           </Suspense>
         }
@@ -27,7 +42,15 @@ const AdminRouter = () => {
       <Route
         path="/dashboard"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
             <PrivateRoute element={UserManagement} />
           </Suspense>
         }
@@ -35,7 +58,15 @@ const AdminRouter = () => {
       <Route
         path="/user-management"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
             <PrivateRoute element={UserManagement} />
           </Suspense>
         }
@@ -43,7 +74,15 @@ const AdminRouter = () => {
       <Route
         path="/membership"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
             <PrivateRoute element={MembershipPlan} />
           </Suspense>
         }
@@ -51,13 +90,68 @@ const AdminRouter = () => {
       <Route
         path="/business-user-management"
         element={
-          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
             <PrivateRoute element={BusinessUserManage} />
           </Suspense>
         }
       />
-      
-     
+      <Route
+        path="/workspace-submission"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={WorkspaceSubmission} />
+          </Suspense>
+        }
+      />
+
+      <Route
+        path="/workspace-view/:workspaceId"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={View} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/workspace-management"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={WorkspaceManagement} />
+          </Suspense>
+        }
+      />
     </Routes>
   );
 };

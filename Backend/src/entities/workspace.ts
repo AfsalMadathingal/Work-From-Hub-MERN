@@ -19,4 +19,6 @@ export interface IWorkspace extends Document {
   createdAt?: Date;
   updatedAt?: Date;
   approved?:boolean;
+  rejected?:boolean;
+  listed?:boolean;
 }

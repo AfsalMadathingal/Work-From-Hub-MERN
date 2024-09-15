@@ -1,7 +1,7 @@
 import { Request } from "express";
 import { IWorkspace } from "../../entities/workspace";
 import { WorkspaceRepository } from "../../repositories/implementations/WorkspaceRepository";
-import { IWorkspaceRepository } from "../../repositories/interface/IWorkspaceRepository";
+import { GetPendingWorkspace, IWorkspaceRepository } from "../../repositories/interface/IWorkspaceRepository";
 import { IWorkspaceService } from "../../services/interface/IWorkSpaceService";
 import { IBusinessUser } from "../../entities/BusinessUserEntity";
 import { IUploadService } from "../../services/interface/IUploadService";
@@ -62,6 +62,45 @@ export default class WorkspaceService implements IWorkspaceService{
       
         return response;
       }
+
+
+     async getWorkSpaceSubmission(page: number, limit: number): Promise<GetPendingWorkspace | null> {
+
+      const response = await this.workspaceRepository.findWithPagination(page,limit)
+
+
+      return response
+   
+     }
+
+
+     async getAllWorkspaces(): Promise<IWorkspace[] | null> {
+      const response = await this.workspaceRepository.getAllWorkspaces();
+      return response;
+     }
+
+
+     async approveWorkspace(id: string): Promise<IWorkspace | null> {
+      const response = await this.workspaceRepository.approveWorkspace(id);
+      return response;
+     }
+
+     
+     async rejectWorkspace(id: string): Promise<IWorkspace | null> {
+      const response = await this.workspaceRepository.rejectWorkspace(id);
+      return response;
+     }
+
+
+     
+     async getApprovedWorkspaces(page: number, limit: number): Promise<GetPendingWorkspace | null> {
+
+      const response = await this.workspaceRepository.findWithPagination(page,limit,true)
+
+
+      return response
+   
+     }
       
       
 }

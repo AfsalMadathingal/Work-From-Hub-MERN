@@ -13,5 +13,5 @@ export interface IBusinessUserService {
     getBusinessUsers(page:number,limit:number) : Promise <GetAllBUsers | null>
     blockUser(id:string): Promise <IBusinessUser | null > ;
     editUser(user:IBusinessUser):Promise <IBusinessUser | {emailExists:boolean} | null > ;
-    findUserWithId(user:IBusinessUser):Promise <IBusinessUser | null> ;
+    findUserWithId(user:Partial<IBusinessUser>):Promise <IBusinessUser | null> ;
 }

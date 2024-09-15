@@ -22,7 +22,9 @@ const workspaceSchema = new Schema<IWorkspace>({
   ownerId: { type: String, required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-  approved:{type:Boolean,default:false}
+  approved:{type:Boolean,default:false},
+  rejected:{type:Boolean,default:false},
+  listed:{type:Boolean,default:false}
 });
 
 export const WorkspaceModel = model<IWorkspace>('Workspace', workspaceSchema);

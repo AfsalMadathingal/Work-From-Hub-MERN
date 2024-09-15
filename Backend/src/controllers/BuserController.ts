@@ -5,6 +5,7 @@ import { Request,Response, NextFunction, response } from "express";
 import BusinessUserService from "../services/implementations/BusinessUserService";
 import { IBusinessUser } from "../entities/BusinessUserEntity";
 import { ApiError } from "../middleware/errorHandler";
+import ApiResponse from "../utils/ApiResponse";
 
 class BUserController {
 
@@ -79,6 +80,52 @@ class BUserController {
             
         }
     }
+
+    public getAllPendingSubmission = async (req:Request , res:Response , next:NextFunction)=> {
+
+        try {
+
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 5;
+
+            const response = await this.workspaceService.getWorkSpaceSubmission(page,limit);
+
+          
+           
+           return res.json(new ApiResponse(200, response, "fetched successfully"))
+            
+
+        } catch (error) {
+
+            next(error)
+            
+        }
+    }
+
+    public getAllWorkspaces = async (req:Request , res:Response , next:NextFunction)=> {
+
+        try {
+
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 5;
+
+            const response = await this.workspaceService.getAllWorkspaces();
+
+            console.log(response);
+            
+            return res.json(new ApiResponse(200, response, "fetched successfully"));
+            
+
+        } catch (error) {
+
+            console.log(error);
+            
+
+            next(error)
+            
+        }
+    }
+
 
 
     

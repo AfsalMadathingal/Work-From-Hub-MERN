@@ -9,6 +9,7 @@ const initialState = {
   modal:false,
   formData:{},
   pageTitle:"Admin Panel",
+  tempData:{}
 };
 
 const adminSlice = createSlice({
@@ -42,6 +43,9 @@ const adminSlice = createSlice({
     setPageTitle(state,action){
       state.pageTitle = action.payload
     },
+    setTempData(state,action){
+      state.tempData = action.payload;
+    },
     resetAdmin:(state) =>initialState,
     
 
@@ -50,7 +54,7 @@ const adminSlice = createSlice({
 
 });
 
-export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData , resetAdmin ,setPageTitle , setModalConfig} = adminSlice.actions;
+export const { setUser, setLoading, setError ,setIsAuthenticated , setTempData, setAccessToken ,setModal , setFormData , resetAdmin ,setPageTitle , setModalConfig} = adminSlice.actions;
 
 export default adminSlice.reducer;
 
