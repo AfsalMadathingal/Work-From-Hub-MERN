@@ -7,6 +7,7 @@ import { RootState } from "../../redux/store/store";
 import CheckoutButton from "../payments/CheckoutStripe";
 import PaymentForm from "./PaymentForm";
 import { fetchActivePlan } from "../../services/userServices";
+import CardForPlan from "./CardForPlan";
 
 const FeatureSection = function FeaturesSection() {
 
@@ -54,11 +55,14 @@ const FeatureSection = function FeaturesSection() {
       <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
 
       <div className="fixed inset-0 flex items-center justify-center">
-        <div className="bg-white p-4 w-1/2 rounded-lg">
-        <PaymentForm activePlan={activePlan} />
+        <div className="bg-white p-4 w-1/1 rounded-lg">
+        <CardForPlan/>
+        {/* <PaymentForm activePlan={activePlan} /> */}
         </div>
       </div>
     </div>
+
+    
     
     
     

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { FaEdit, FaEye, FaLocationArrow } from "react-icons/fa";
+import { FaEdit, FaEye, FaLocationArrow, FaTrash } from "react-icons/fa";
 import { toast } from "react-toastify";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
@@ -116,6 +116,12 @@ export default function BWorkspaceListing() {
                         onClick={() => handleEdit(workspace)}
                       >
                         <FaEdit />
+                      </button>
+                      <button
+                        className="text-white bg-red-500 hover:bg-red-600 rounded-full p-2 transition-colors"
+                        onClick={() => handleEdit(workspace)}
+                      >
+                        <FaTrash />
                       </button>
                     </div>
                   </td>
