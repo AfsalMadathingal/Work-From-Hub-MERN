@@ -60,3 +60,15 @@ export const getAllPendingSubmission = async (
   };
   
 
+  export const fetchActivePlan = async ()=>{
+    try {
+      const response = await api.get('/api/user/active-plan')
+  
+      return response
+      
+    } catch (error) {
+  
+     return error.response;
+      
+    }
+  }

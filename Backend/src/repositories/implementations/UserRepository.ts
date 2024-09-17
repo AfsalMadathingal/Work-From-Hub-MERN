@@ -189,5 +189,19 @@ export default class UserRepository implements IUserRepository {
   }
 
   
+  async updateUser(user: Partial<IUsers>, id: string): Promise<IUsers | null> {
+    
+    try {
+      const userAfterUpdate = await Users.findByIdAndUpdate(id, user, { new: true });
+
+      console.log(user);
+      
+      return userAfterUpdate;
+    } catch (error) {
+      return null;
+    }
+  }
+
+  
 
 }

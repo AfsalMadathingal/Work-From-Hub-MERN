@@ -12,7 +12,7 @@ const SubscriptionSchema = new Schema({
   currency: { type: String },
   paymentMethodId: { type: String },
   invoiceId: { type: String },
-  eventType: { type: String },  // To capture event type like 'invoice.payment_succeeded'
+  InvoicePdf: { type: String },  // To capture event type like 'invoice.payment_succeeded'
   timestamp: { type: Date, default: Date.now },
 }, { timestamps: true });
 

@@ -4,6 +4,7 @@ import { authenticateUser } from "../../middleware/authMiddleware";
 import userController from "../../controllers/userController";
 import upload from "../../utils/multer";
 import paymentRouter from "./payment";
+import paymentController from "controllers/paymentController";
 
 
 const userRouter = Router();
@@ -17,7 +18,7 @@ userRouter.patch('/',authenticateUser,userController.editUser)
 userRouter.patch('/upload-profile-photo',authenticateUser,upload.single('image'),userController.editProfilePhoto)
 userRouter.get('/active-plan',authenticateUser,userController.getActivePlan)
 
-userRouter.post('/subscribe',)
+// userRouter.post('/subscribe',authenticateUser,paymentController.updatePaymentStatus)
 
 
 

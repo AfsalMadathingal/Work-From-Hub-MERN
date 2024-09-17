@@ -85,6 +85,26 @@ class PlanController {
       next(error);
     }
   };
+
+  public getActivePlan = async (req:Request,res:Response,next:NextFunction)=>{
+    
+    try {
+      const activePlan = await this.planService.getActivePlan();
+
+      if (!activePlan) {
+        return res
+          .status(404)
+          .json(new ApiError(404, "not found", "plan not found"));
+      }
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, activePlan, "fetched successfully"));
+    } catch (error) {
+      next(error);
+    }
+  };
+
 }
 
 export default new PlanController();

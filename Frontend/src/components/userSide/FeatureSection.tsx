@@ -1,98 +1,120 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import StripePayment from "../subscription/stripe";
 import axios from "axios";
 import { userAxiosInstance } from "../../services/instance/userInstance";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import CheckoutButton from "../payments/CheckoutStripe";
 import PaymentForm from "./PaymentForm";
 import { fetchActivePlan } from "../../services/userServices";
 import CardForPlan from "./CardForPlan";
+import { toast } from "react-toastify";
+import { setModal } from "../../redux/slices/userSlice";
 
 const FeatureSection = function FeaturesSection() {
-
-  const [modal , setModal] = React.useState(true)
-  const [activePlan , setActivePlan] = React.useState({})
-  const {user} = useSelector((state: RootState) => state.user);
-
+  const { modal , user  } = useSelector((state: RootState) => state.user);
+  const [isSubscribeClicked, setIsSubscribeClicked] = React.useState(false);
+  const dispatch = useDispatch();
+  const [activePlan, setActivePlan] = useState<any>(null);
 
   const getActivePlan = async () => {
-
     try {
-
-   
-      
       const response = await fetchActivePlan();
+      console.log(response);
 
-
-      if(response.statusCose === 200){
-        setActivePlan(response.data.data)
+      // Fix the typo: use `statusCode` instead of `statusCose`
+      if (response.status === 200) {
+        setActivePlan(response.data.data);
+      } else {
+        toast.error("Failed to fetch active plan.");
       }
-
-      
-
-
     } catch (error) {
-      
-      console.log('====================================');
-      console.log(error);
-      console.log('====================================');
+      console.log("Error fetching active plan:", error);
+      toast.error("An error occurred while fetching the plan.");
     }
+  };
 
-  }
+  const handleMembershipClick = async () => {
 
-  useEffect(()=>{
+    if(user?.membership){
+      toast.error("You are already a member")
+      return
+    }
+    dispatch(setModal(true));
+  };
 
+  useEffect(() => {
     getActivePlan();
-
-  },[])
+  }, []);
 
   return (
     <>
-    {modal && 
+      {modal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center">
+          {/* Overlay */}
+          <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
 
-    <div className="absolute top-0 right-0 left-0 bottom-0 z-50">
-      <div className="fixed inset-0 bg-gray-500 opacity-75"></div>
+          {/* Modal Content */}
+          <div
+            className={`bg-none p-4 flex justify-center rounded-lg relative w-full sm:w-3/4 md:w-1/2 lg:w-2/5`}
+          >
+            {/* Close Button */}
+            <button
+              onClick={() => {
+                dispatch(setModal(false));
+                setIsSubscribeClicked(false);
+              }}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-6 w-6"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
 
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="bg-white p-4 w-1/1 rounded-lg">
-        <CardForPlan/>
-        {/* <PaymentForm activePlan={activePlan} /> */}
+            {/* Content (PaymentForm or CardForPlan) */}
+            {isSubscribeClicked ? (
+              <PaymentForm activePlan={activePlan} />
+            ) : (
+              <CardForPlan setIsSubscribeClicked={setIsSubscribeClicked} />
+            )}
+          </div>
+        </div>
+      )}
+      <div className="m-12">
+        <div className="container mx-auto flex flex-col justify-evenly md:flex-row min-h-[250px] bg-gray-800">
+          <div className="flex m-5 items-center justify-center p-4 bg-gray-800 text-white text-center">
+            <h2 className="text-3xl font-bold">
+              Get Unlimited <br /> offers
+            </h2>
+          </div>
+          <div className="w-1  bg-white"></div>
+          <div className="flex m-5 items-center justify-center p-4 bg-gray-800 text-white text-center">
+            <h2 className="text-3xl font-bold">
+              Get Unlimited <br /> Discounts
+            </h2>
+          </div>
+          <div className="w-1  bg-white"></div>
+          <div className="flex m-5 items-center justify-center p-4 bg-gray-800 text-white text-center">
+            <button
+              onClick={handleMembershipClick}
+              className="bg-orange-500 text-white px-6 py-3 rounded-lg"
+            >
+              <i className="fa-solid fa-crown"></i> Became a Member
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-
-    
-    
-    
-    
-    
-    }
-    <div className="m-12">
-      <div className="container mx-auto flex flex-col justify-evenly md:flex-row min-h-[250px] bg-gray-800">
-        <div className="flex m-5 items-center justify-center p-4 bg-gray-800 text-white text-center">
-          <h2 className="text-3xl font-bold">
-            Get Unlimited <br /> offers
-          </h2>
-        </div>
-        <div className="w-1  bg-white"></div>
-        <div className="flex m-5 items-center justify-center p-4 bg-gray-800 text-white text-center">
-          <h2 className="text-3xl font-bold">
-            Get Unlimited <br /> Discounts
-          </h2>
-        </div>
-        <div className="w-1  bg-white"></div>
-        <div className="flex m-5 items-center justify-center p-4 bg-gray-800 text-white text-center">
-          <button
-          onClick={()=>setModal(true)}
-          className="bg-orange-500 text-white px-6 py-3 rounded-lg">
-          <i className="fa-solid fa-crown"></i> Became a Member
-          </button>
-         
-          <CheckoutButton priceId="plan_Qo0MT9VBKdrqcB" />
-        </div>
-      </div>
-    </div>
     </>
   );
 };

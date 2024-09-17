@@ -1,6 +1,7 @@
 import { adminAxiosInstance } from "./instance/adminInstance";
 import { IUsers } from "../@types/user";
 import { IBUsers } from "../@types/businessUser";
+import { userAxiosInstance } from "./instance/userInstance";
 
 const api = adminAxiosInstance;
 
@@ -218,3 +219,5 @@ export const getAllApprovedWorkspaces = async (page: number, itemsPerPage: numbe
       return error.response
   }
 }
+
+

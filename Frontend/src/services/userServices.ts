@@ -61,7 +61,7 @@ export const fetchActivePlan = async ()=>{
     const response = await userAxiosInstance.get('/api/user/active-plan')
 
 
-
+    
 
 
     return response 
@@ -70,6 +70,19 @@ export const fetchActivePlan = async ()=>{
 
 
     
+    return error.response
+  }
+}
+
+export const updatePaymentStatus = async (paymentData,user,stripeResponse)=>{
+  try {
+
+    const response = await userAxiosInstance.post('/api/user/payment/update-status',{paymentData,user,stripeResponse})
+
+    return response
+    
+  } catch (error) {
+
     return error.response
   }
 }
