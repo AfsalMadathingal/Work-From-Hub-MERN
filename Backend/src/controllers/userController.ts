@@ -158,6 +158,28 @@ class UserController {
 
   }
 
+  
+  public validateSuccessResponse = async (req:Request , res:Response, next:NextFunction)=>{
+
+    try {
+
+      return res.status(200)
+      .json(new ApiResponse(
+        200,
+        null,
+        "Validation successful"
+      ))
+      
+    } catch (error) {
+
+      next(error)
+
+    }
+
+
+  }
+  
+
 }
 
 export default new UserController();

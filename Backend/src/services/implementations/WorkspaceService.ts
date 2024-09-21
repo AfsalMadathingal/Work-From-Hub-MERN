@@ -6,16 +6,20 @@ import { IWorkspaceService } from "../../services/interface/IWorkSpaceService";
 import { IBusinessUser } from "../../entities/BusinessUserEntity";
 import { IUploadService } from "../../services/interface/IUploadService";
 import UploadService from "./UploadService";
+import { ISeatRepository } from "../../repositories/interface/ISeatRepository";
+import { SeatRepository } from "../../repositories/implementations/SeatRepository";
 
 export default class WorkspaceService implements IWorkspaceService{
 
     private workspaceRepository: IWorkspaceRepository;
     private uploadService : IUploadService;
+    private seatRepository: ISeatRepository;
 
     constructor(){
 
         this.workspaceRepository = new WorkspaceRepository()
         this.uploadService = new UploadService()
+        this.seatRepository = new SeatRepository()
 
     }
 
@@ -59,6 +63,8 @@ export default class WorkspaceService implements IWorkspaceService{
       
         // Save the data using the repository pattern
         const response = await this.workspaceRepository.create(dataToSave);
+
+        await this.seatRepository.createSeatsForWorkspace(response)
       
         return response;
       }
@@ -101,6 +107,6 @@ export default class WorkspaceService implements IWorkspaceService{
       return response
    
      }
-      
+  
       
 }

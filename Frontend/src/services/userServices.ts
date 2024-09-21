@@ -86,3 +86,14 @@ export const updatePaymentStatus = async (paymentData,user,stripeResponse)=>{
     return error.response
   }
 }
+
+
+export const validateUserSession = async () => {
+  try {
+    const response = await api.get("/api/user/validate-session");
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};

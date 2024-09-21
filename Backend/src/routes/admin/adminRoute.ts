@@ -10,6 +10,8 @@ const adminRouter = Router()
 
 
 adminRouter.use('/auth',adminAuthRoute)
+
+adminRouter.get('/validate-session',authenticate,adminController.validateSuccessResponse)
 adminRouter.post('/plan', authenticate,validatePlanDetails, planController.createPlan)
 adminRouter.get('/plan',authenticate,planController.getPlans)
 adminRouter.patch('/plan',authenticate,planController.editPlan)

@@ -9,10 +9,10 @@ import { setModal, setTempData } from "../../redux/slices/adminSlice";
 import { getAllPendingSubmission } from "../../services/adminService";
 import { Pagination } from "@nextui-org/react";
 import { Link } from "react-router-dom";
-import { getAllWorkspaces } from "../../services/BuserService";
+import { getAllWorkspaces, getApprovedWorkspaces } from "../../services/BuserService";
 import AnimatedPage from "../Animation";
 
-export default function BWorkspaceListing() {
+export default function BApprovedWorkspaces() {
   const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -26,7 +26,7 @@ export default function BWorkspaceListing() {
 
   const fetchWorkspaces = async (page: number) => {
     try {
-      const response = await getAllWorkspaces(page, limit);
+      const response = await getApprovedWorkspaces(page, limit);
       if (response.status === 200) {
         setWorkspaces(response.data.data);
         setTotalPages(response.data.data.totalPages);

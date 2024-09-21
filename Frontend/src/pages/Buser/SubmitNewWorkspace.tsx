@@ -2,25 +2,27 @@ import React, { useEffect } from 'react';
 import BusinessUserLayout from '../../components/businessUser/BusinessUserLayout';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/businessUserSlice';
+import BWorkspaceListing from '../../components/businessUser/BWorkSpace';
 import BuildingForm from '../../components/businessUser/PropertyForm';
 
 
 
-const WorkplaceManage = () => {
+
+const SubmitNewWorkspace = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle("Business User Management"));
+    dispatch(setPageTitle("Submit New Workspace"));
   }, []);
 
 
   return (
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
-        <BusinessUserLayout component={<BuildingForm/>} />
+        <BusinessUserLayout component={<BuildingForm />} />
       </div>
     </div>
   );
 };
 
-export default WorkplaceManage;
+export default SubmitNewWorkspace;

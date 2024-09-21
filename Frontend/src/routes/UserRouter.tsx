@@ -1,9 +1,13 @@
-import React, { lazy, Suspense } from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import React, { lazy, Suspense, useEffect } from "react";
+import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PrivateRoute from '../components/auth/PrivateRoute';
 import PublicRoute from '../components/auth/PublicRoute';  
+import { logout } from "../services/UserAuthService";
+import { useDispatch } from "react-redux";
+import { resetUser } from "../redux/slices/userSlice";
+import { toast } from "react-toastify";
 // Lazy load all components
 const LoginPage = lazy(() => import('../pages/userAuth/UserLogin'));
 const UserRegister = lazy(() => import('../pages/userAuth/UserRegister'));
@@ -13,6 +17,7 @@ const Profile = lazy(() => import('../pages/userSide/Profile'));
 
 const UserRouter = () => {
   const location = useLocation();
+  
 
   return (
     

@@ -37,6 +37,14 @@ const userSlice = createSlice({
       state.modal = action.payload
     },setFormData(state,action){
       state.formData = action.payload
+    },resetUser(state){
+      state.user = {};
+      state.loading = false;
+      state.error = {};
+      state.isAuthenticated = false;
+      state.accessToken = "";
+      state.modal = false;
+      state.formData = {};
     }
 
   },
@@ -44,7 +52,7 @@ const userSlice = createSlice({
 
 });
 
-export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData } = userSlice.actions;
+export const { setUser, setLoading, setError ,setIsAuthenticated , setAccessToken ,setModal , setFormData , resetUser} = userSlice.actions;
 
 export default userSlice.reducer;
 

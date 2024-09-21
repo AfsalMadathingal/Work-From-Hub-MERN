@@ -1,4 +1,3 @@
-// src/models/WorkspaceModel.ts
 import { IWorkspace } from 'entities/workspace';
 import mongoose, { Schema, Document, model } from 'mongoose';
 

@@ -11,6 +11,7 @@ export interface IWorkspaceRepository {
   approveWorkspace(id: string): Promise<IWorkspace | null>;
   rejectWorkspace(id: string): Promise<IWorkspace | null>;
   getAllWorkspaces(): Promise<IWorkspace[] | null>;
+
   // update(id: string, IWorkspace: Partial<IWorkspace>): Promise<IWorkspace | null>;
   // delete(id: string): Promise<boolean>;
   // findById(id: string): Promise<IWorkspace | null>;

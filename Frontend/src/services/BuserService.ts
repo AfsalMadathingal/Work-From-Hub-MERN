@@ -60,15 +60,18 @@ export const getAllPendingSubmission = async (
   };
   
 
-  export const fetchActivePlan = async ()=>{
+  
+  export const getApprovedWorkspaces = async (
+    page: number,
+    itemsPerPage: number
+  ) => {
     try {
-      const response = await api.get('/api/user/active-plan')
+      const response = await api.get(
+        `/api/business/approved-workspaces?page=${page}&limit=${itemsPerPage}`
+      );
   
-      return response
-      
+      return response;
     } catch (error) {
-  
-     return error.response;
-      
+      return error.response;
     }
-  }
+  };

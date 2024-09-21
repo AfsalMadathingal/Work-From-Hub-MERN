@@ -12,6 +12,7 @@ const userRouter = Router();
 
 
 userRouter.use('/auth',userAuthRoute)
+userRouter.get('/validate-session',authenticateUser,userController.validateSuccessResponse)
 userRouter.use('/payment',authenticateUser,paymentRouter)
 
 userRouter.patch('/',authenticateUser,userController.editUser)

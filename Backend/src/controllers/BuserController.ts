@@ -38,11 +38,15 @@ class BUserController {
                 )
             }
 
+            console.log('hi from submiting');
+            
+
             const response = await this.workspaceService.submitWorkspaceListing(req)
 
+            console.log(response);
+            
 
-            res.send(response)
-
+            res.json(new ApiResponse(200,response,"Workspace listing created successfully"))
             
         } catch (error) {
 
@@ -124,6 +128,27 @@ class BUserController {
         }
     }
 
+    
+    public getApprovedWorkspaces = async (req:Request , res:Response , next:NextFunction)=> {
+
+        try {
+
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 5;
+
+            const response = await this.workspaceService.getApprovedWorkspaces(page,limit);
+
+            console.log(response);
+            
+            return res.json(new ApiResponse(200, response, "fetched successfully"));
+            
+
+        } catch (error) {
+
+            next(error)
+            
+        }
+    }
 
 
     

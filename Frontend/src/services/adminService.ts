@@ -220,4 +220,12 @@ export const getAllApprovedWorkspaces = async (page: number, itemsPerPage: numbe
   }
 }
 
+export const validateAdminSession = async ()=>{
+  try {
+    const response = await adminAxiosInstance.get('/api/admin/validate-session')
+    return response
+  } catch (error) {
+    return error.response
+  }
+}
 

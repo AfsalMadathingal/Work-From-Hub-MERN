@@ -26,6 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { resetBUser } from "../../redux/slices/businessUserSlice";
 import { logout } from "../../services/BUserAuthService";
+import { FaCheck } from "react-icons/fa";
 
 
 const drawerWidth = 240;
@@ -88,9 +89,9 @@ export default function ResponsiveDrawer(props: Props) {
           { text: "Booking", link: "/business/booking", icon: <BookIcon /> },
           { text: "Workspace", link: "/business/workspace-manage", icon: <WorkIcon /> },
           {
-            text: "Workspace Submission",
-            link: "/business/workspace-submission",
-            icon: <AssignmentIcon />,
+            text: "Approved Workspaces",
+            link: "/business/workspace/approved",
+            icon: <FaCheck />,
           },
           { text: "Support", link: "/business/support", icon: <SupportIcon /> },
         ].map((item) => (

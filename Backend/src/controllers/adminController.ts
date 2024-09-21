@@ -217,6 +217,17 @@ class AdminController {
       next(error);
     }
   };
+  
+  
+  public validateSuccessResponse = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      return res
+        .status(200)
+        .json(new ApiResponse(200, null, "Success"));
+    } catch (error) {
+      next(error);
+    }
+  };
 
 }
 

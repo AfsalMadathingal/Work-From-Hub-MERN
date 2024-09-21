@@ -77,51 +77,8 @@ const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     window.open(`https://www.google.com/maps/search/${location}`, "_blank");
   };
 
-  const getOwner = async (ownerId: string) => {
-    try {
-      const response = await getOwnerById(ownerId);
 
-      console.log(response);
 
-      setOwnerName(response.data.data.email);
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
-
-  const handleApprove = async () => {
-    try {
-      const response = await approveWorkspace(workspace._id);
-
-      if (response.status === 200) {
-        toast.success("Workspace approved successfully");
-      } else {
-        toast.error("Something went wrong");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
-
-  const handleReject = async () => {
-    try {
-      const response = await rejectWorkspace(workspace._id);
-
-      console.log(response);
-
-      if (response.status === 200) {
-        toast.success("Workspace rejected successfully");
-      } else {
-        toast.error("Something went wrong");
-      }
-    } catch (error) {
-      toast.error("Something went wrong");
-    }
-  };
-
-  useEffect(() => {
-    getOwner(ownerId);
-  }, [workspace]);
 
   const sliderSettings = {
     dots: true,
@@ -133,10 +90,11 @@ const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold">{buildingName}</h2>
-        <div className="flex items-center space-x-2 text-sm">
+        <div
+         className="flex items-center space-x-2 text-sm">
           <span>Submitted:</span>
           <span className="font-semibold">
             {new Date(createdAt).toLocaleString()}
@@ -164,9 +122,9 @@ const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
 
       {/* Video Player */}
       {video && (
-        <div className="mb-6 w-1/2">
-          <Player>
-            <source src={video} />
+        <div  className="mb-6 w-1/2 mx-auto">
+          <Player  >
+            <source  src={video} />
           </Player>
         </div>
       )}

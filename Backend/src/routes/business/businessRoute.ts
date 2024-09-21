@@ -14,4 +14,5 @@ businessRoute.use('/auth',businessAuthRoute)
 
 businessRoute.post('/work-space',authenticateBUser,BUserController.validateUser,cpUpload,validateWorkspaceSubmission,BUserController.submitListingData)
 businessRoute.get('/workspaces',authenticateBUser,BUserController.getAllWorkspaces)
+businessRoute.get('/approved-workspaces',authenticateBUser,BUserController.getApprovedWorkspaces)
 export default businessRoute;

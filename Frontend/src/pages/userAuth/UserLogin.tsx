@@ -25,6 +25,7 @@ import { toast } from "react-toastify";
 import ForgotPasswordModal from "../../components/userSide/ForgotPasswordModal";
 import ResetPasswordModal from "../../components/userSide/ResetPassword";
 import AnimatedPage from "../../components/Animation";
+import { Image } from "@nextui-org/react";
 
 const LoginPage: React.FC = () => {
   const [email, setEmail] = useState("");
@@ -311,11 +312,10 @@ const LoginPage: React.FC = () => {
               </p>
             </div>
             <div className="w-1/2 hidden lg:block relative">
-              <img
-                src="/loginpageimage.webp"
-                alt="Person working on laptop"
+              <Image
                 className="object-cover h-full w-full rounded-r-lg opacity-90 transition-opacity duration-300"
-                loading="eager"
+                alt="NextUI hero Image with delay"
+                src="/loginpageimage.webp"
               />
             </div>
           </div>

@@ -11,4 +11,5 @@ export interface IWorkspaceService {
     rejectWorkspace(id:string):Promise<IWorkspace| null> ;
     getApprovedWorkspaces(page:number,limit:number):Promise <GetPendingWorkspace | null> ;
     getAllWorkspaces():Promise<IWorkspace[]| null> ;
+
 }

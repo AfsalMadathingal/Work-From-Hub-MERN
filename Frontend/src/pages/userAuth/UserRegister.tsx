@@ -25,6 +25,7 @@ import { IUsers } from "../../@types/user";
 import OTPForm from "../../components/userSide/OTPForm";
 import ForgotPasswordModal from "../../components/userSide/ForgotPasswordModal";
 import AnimatedPage from "../../components/Animation";
+import { Image } from "@nextui-org/react";
 
 const UserRegister: React.FC = () => {
   const [fullName, setFullName] = useState("");
@@ -239,11 +240,13 @@ const UserRegister: React.FC = () => {
               </p>
             </div>
             <div className="hidden md:block md:w-1/2">
-              <img
+              <Image
+           
                 src="/loginpageimage.webp"
                 alt="Person working on laptop"
                 className="object-cover h-full w-full rounded-r-lg"
               />
+
             </div>
           </div>
         </div>
