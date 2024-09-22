@@ -28,7 +28,10 @@ export default function Header() {
   return (
     <Navbar>
       <NavbarBrand>
-        <div className="w-20 ">
+        <div 
+
+        onClick={() => navigate("/user/home")}
+        className="w-20 cursor-pointer">
         <img src="/logo.png" alt="" />
         </div>
       </NavbarBrand>
@@ -40,7 +43,10 @@ export default function Header() {
           </Link>
         </NavbarItem>
         <NavbarItem isActive>
-          <Link href="#" color="warning">
+          <Link 
+          className=" cursor-pointer"
+          onPress={()=>navigate("/workspace")}
+          color="warning">
           View all Workspace
           </Link>
         </NavbarItem>

@@ -8,9 +8,13 @@ import { RootState } from "../../redux/store/store";
 import { setModal, setTempData } from "../../redux/slices/adminSlice";
 import { getAllPendingSubmission } from "../../services/adminService";
 import { Pagination } from "@nextui-org/react";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import { getAllWorkspaces } from "../../services/BuserService";
 import AnimatedPage from "../Animation";
+import { EyeIcon } from "../admin/EyeIcon";
+import { Tooltip } from "@mui/material";
+import { EditIcon } from "../admin/Editicon";
+import { DeleteIcon, TrashIcon } from "lucide-react";
 
 export default function BWorkspaceListing() {
   const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
@@ -18,6 +22,7 @@ export default function BWorkspaceListing() {
   const [totalPages, setTotalPages] = useState(1);
   const [limit] = useState(5); // Keep the limit static for now
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { modal } = useSelector((state: RootState) => state.admin);
 
   useEffect(() => {
@@ -106,23 +111,29 @@ export default function BWorkspaceListing() {
                           state={{ workspace }}
                           to={`/business/workspace-view/${workspace?._id}`}
                         >
-                          <button className="text-white bg-blue-500 hover:bg-blue-600 rounded-full p-2 transition-colors">
-                            <FaEye />
-                          </button>
+                          <Tooltip title="View Details" content="Details">
+                            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+                              <EyeIcon />
+                            </span>
+                          </Tooltip>
                         </Link>
 
-                        <button
-                          className="text-white bg-green-500 hover:bg-green-600 rounded-full p-2 transition-colors"
-                          onClick={() => handleEdit(workspace)}
-                        >
-                          <FaEdit />
-                        </button>
-                        <button
-                          className="text-white bg-red-500 hover:bg-red-600 rounded-full p-2 transition-colors"
-                          onClick={() => handleEdit(workspace)}
-                        >
-                          <FaTrash />
-                        </button>
+                        <Tooltip title="Edit Workspace" content="Edit user">
+                          <span
+                            onClick={() => handleEdit(workspace)}
+                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                          >
+                            <EditIcon />
+                          </span>
+                        </Tooltip>
+                        <Tooltip title="Edit Workspace" content="Edit user">
+                          <span
+                            onClick={() => handleEdit(workspace)}
+                            className="text-lg text-default-400 cursor-pointer active:opacity-50"
+                          >
+                            <FaTrash className="text-red-500" />
+                          </span>
+                        </Tooltip>
                       </div>
                     </td>
                   </tr>

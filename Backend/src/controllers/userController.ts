@@ -9,18 +9,22 @@ import UploadService from "../services/implementations/UploadService";
 import { IUsers } from "entities/UserEntity";
 import { IPlanService } from "../services/interface/IPlanService";
 import PlanService from "../services/implementations/PlanService";
+import WorkspaceService from "../services/implementations/WorkspaceService";
+import { IWorkspaceService } from "../services/interface/IWorkSpaceService";
 
 class UserController {
   private userService: UserService;
   private uploadService : IUploadService
   private AuthService: AuthService;
   private planService : IPlanService
+  private workspaceService:IWorkspaceService;
 
   constructor() {
     this.userService = new UserService();
     this.AuthService = new AuthService();
     this.uploadService = new UploadService();
     this.planService = new PlanService();
+    this.workspaceService = new WorkspaceService();
 
   }
 
@@ -168,6 +172,37 @@ class UserController {
         200,
         null,
         "Validation successful"
+      ))
+      
+    } catch (error) {
+
+      next(error)
+
+    }
+
+
+  }
+
+  
+  public getWorkspace = async (req:Request , res:Response, next:NextFunction)=>{
+
+    try {
+
+      const workspace = await this.workspaceService.getApprovedWorkspaces(1,4)
+      if(!workspace){
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "Workspace not found"
+        ))
+      }
+
+      return res.status(200)
+      .json(new ApiResponse(
+        200,
+        workspace,
+        "Fetched Successfully"
       ))
       
     } catch (error) {

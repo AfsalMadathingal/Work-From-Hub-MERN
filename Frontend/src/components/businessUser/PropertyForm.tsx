@@ -17,7 +17,9 @@ import ReactLoading from "react-loading";
 import { setLoading } from "../../redux/slices/businessUserSlice";
 
 import AnimatedPage from "../Animation";
+import { Navigate, useNavigate } from "react-router-dom";
 const BuildingForm: React.FC = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState<IWorkspace>({
     buildingName: "",
     state: "",
@@ -52,32 +54,32 @@ const BuildingForm: React.FC = () => {
     libraries: ["places"], // Include the Places library
   });
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, type, files } = e.target;
-
-  if (type === "file") {
-    if (name === "photos") {
-      const photoFiles = files ? Array.from(files) : null; // Convert FileList to File[]
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, type, files } = e.target;
+  
+    if (type === "file") {
+      if (name === "photos") {
+        const photoFiles = files ? Array.from(files) : null;
+        setFormData((prev) => ({
+          ...prev,
+          [name]: photoFiles,
+          imageAdded: true,
+        }));
+      } else if (name === "video") {
+        const videoFile = files && files.length > 0 ? files[0] : null;
+        setFormData((prev) => ({
+          ...prev,
+          [name]: videoFile,
+          videoAdded: true,
+        }));
+      }
+    } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: photoFiles, // Set as File[] or null
-        imageAdded: true,
-      }));
-    } else if (name === "video") {
-      const videoFile = files && files.length > 0 ? files[0] : null; // Get the first file
-      setFormData((prev) => ({
-        ...prev,
-        [name]: videoFile, // Set as single File or null
-        videoAdded: true,
+        [name]: type === "checkbox" ? e.target.checked : e.target.value,
       }));
     }
-  } else {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "checkbox" ? e.target.checked : e.target.value,
-    }));
-  }
-};
+  };
 
   
   
@@ -114,23 +116,27 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.preventDefault();
     dispatch(setLoading(true));
     const validationError = validateWorkspaceSubmission(formData);
-
+  
     if (validationError) {
       dispatch(setError(validationError));
       dispatch(setLoading(false));
       toast.error("Please fill all the required fields");
       return;
     }
-
+  
     const formDataToSend = new FormData();
-
+  
     // Append all form data to the FormData object
     Object.keys(formData).forEach((key) => {
-      if (key === "photos" || key === "video") {
+      if (key === "photos") {
         if (formData[key]) {
           for (let i = 0; i < formData[key].length; i++) {
-            formDataToSend.append(key, formData[key][i]);
+            formDataToSend.append('photos', formData[key][i]);
           }
+        }
+      } else if (key === "video") {
+        if (formData[key]) {
+          formDataToSend.append('video', formData[key]);
         }
       } else {
         formDataToSend.append(key, formData[key]);
@@ -162,7 +168,9 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
           video: null,
           imageAdded: false,
           videoAdded: false,
+          pricePerSeat: 0,
         });
+        navigate("/business/workspace-manage/submission");
         return;
       }
 

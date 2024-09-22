@@ -77,6 +77,12 @@ const buildingFormSchema = Joi.object({
       'any.unknown': 'Video must be a file list',
       'any.required': "Video is Mandatory"
     }),
+    pricePerSeat :Joi.number().integer().min(2).required().messages({
+      'number.base': 'must be a number',
+      'number.integer': ' must be an integer',
+      'number.min': 'must be > 2 number',
+      'any.required': 'required',
+    }),
   });
 
 

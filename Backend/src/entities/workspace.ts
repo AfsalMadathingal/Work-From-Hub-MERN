@@ -21,4 +21,5 @@ export interface IWorkspace extends Document {
   approved?:boolean;
   rejected?:boolean;
   listed?:boolean;
+  pricePerSeat?:number;
 }

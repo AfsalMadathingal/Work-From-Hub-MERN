@@ -8,6 +8,7 @@ import { logout } from "../services/UserAuthService";
 import { useDispatch } from "react-redux";
 import { resetUser } from "../redux/slices/userSlice";
 import { toast } from "react-toastify";
+import WorkspaceListingsPage from "../pages/userSide/WorkspaceListings";
 // Lazy load all components
 const LoginPage = lazy(() => import('../pages/userAuth/UserLogin'));
 const UserRegister = lazy(() => import('../pages/userAuth/UserRegister'));
@@ -43,6 +44,14 @@ const UserRouter = () => {
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PublicRoute element={UserRegister} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/workspace"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={WorkspaceListingsPage} />
           </Suspense>
         }
       />

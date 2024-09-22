@@ -19,6 +19,9 @@ userRouter.patch('/',authenticateUser,userController.editUser)
 userRouter.patch('/upload-profile-photo',authenticateUser,upload.single('image'),userController.editProfilePhoto)
 userRouter.get('/active-plan',authenticateUser,userController.getActivePlan)
 
+
+userRouter.get('/workspace',authenticateUser,userController.getWorkspace)
+
 // userRouter.post('/subscribe',authenticateUser,paymentController.updatePaymentStatus)
 
 

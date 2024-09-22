@@ -1,7 +1,11 @@
-import React from "react";
-import { Navigate } from "react-router-dom";
+import React, { useEffect } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { RootState } from "../../redux/store/store";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { validateAdminSession } from "../../services/adminService";
+import { logout } from "../../services/adminAuth";
+import { resetAdmin } from "../../redux/slices/adminSlice";
+import { toast } from "react-toastify";
 
 interface PrivateRouteProps {
   element: React.ComponentType; 
@@ -9,7 +13,28 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ element: Element }) => {
 
+  const navigate =  useNavigate();
+  const dispatch = useDispatch();
+  const validateSession = async () => {
+    const response = await validateAdminSession();
+    if(response.status === 200){
+      return;
+    }
 
+    if(response.status === 401){
+      await logout();
+      dispatch(resetAdmin());
+      navigate("/admin/login");
+      toast.error("Session expired Please login again");
+    }
+  }
+
+
+  useEffect(() => {
+
+validateSession();
+
+  }, []);
 
   const { isAuthenticated } = useSelector((state: RootState) => state.admin);
 

@@ -1,4 +1,5 @@
 import { IUsers } from "../@types/user";
+import { IWorkspace } from "../@types/workspace";
 import { userAxiosInstance } from "./instance/userInstance";
 
 const api = userAxiosInstance;
@@ -97,3 +98,22 @@ export const validateUserSession = async () => {
     return error.response;
   }
 };
+
+export const getWorkspace = async () => {
+  try {
+
+    const response = await userAxiosInstance.get<IWorkspace>('/api/user/workspace')
+
+
+    
+
+
+    return response;
+
+  } catch (error) {
+
+
+    
+    return error.response;
+  }
+}

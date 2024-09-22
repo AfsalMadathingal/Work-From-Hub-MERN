@@ -12,15 +12,11 @@ import {
   FaToilet,
   FaChair,
   FaTable,
-  FaMarsStroke,
+  FaDollarSign,
 } from "react-icons/fa";
-import { toast } from "react-toastify";
+
 import { useLocation } from "react-router-dom";
-import {
-  approveWorkspace,
-  getOwnerById,
-  rejectWorkspace,
-} from "../../services/adminService";
+
 
 interface WorkspaceDetailProps {
   workspace: {
@@ -44,6 +40,7 @@ interface WorkspaceDetailProps {
     createdAt: string;
     updatedAt: string;
     rejected: boolean;
+    pricePerSeat: number;
     __v: number;
   };
 }
@@ -53,6 +50,7 @@ const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
   const [ownerName, setOwnerName] = React.useState<string>("");
 
   const {
+    pricePerSeat,
     rejected,
     buildingName,
     state,
@@ -190,6 +188,12 @@ const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
           <FaChair className="text-red-500 mr-2" />
           <p>
             <strong>Seats Per Table:</strong> {seatsPerTable}
+          </p>
+        </div>
+        <div className="flex items-center">
+          <FaDollarSign className="text-red-500 mr-2" />
+          <p>
+            <strong>Price Per seat:</strong> ₹ {pricePerSeat}/seat
           </p>
         </div>
 
