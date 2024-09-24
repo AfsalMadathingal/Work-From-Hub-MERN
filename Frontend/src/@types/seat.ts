@@ -1,12 +1,11 @@
-import mongoose, { Schema, Document } from 'mongoose';
 
-export interface ISeat extends Document {
+
+export interface ISeat  {
   id: string;
-  workspaceId: Schema.Types.ObjectId;
+  workspaceId: string;
   tableNumber: number;
   seatNumber: number;
   availability: Map<string, boolean>; // Use Map for availability
   createdAt: Date;
   updatedAt: Date;
-  
 }

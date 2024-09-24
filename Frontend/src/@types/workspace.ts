@@ -11,8 +11,8 @@ export interface IWorkspace {
     bathroom: boolean;
     tablesAvailable: number;
     seatsPerTable: number;
-    photos: File[] | null;  
-    video: File | null;   
+    photos: File[] | null | string[];  
+    video: File | null | string;   
     imageAdded: boolean ;
     videoAdded:boolean ;
     pricePerSeat: number;

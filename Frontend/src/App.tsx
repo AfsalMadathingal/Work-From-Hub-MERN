@@ -6,8 +6,15 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import BusinessUser from "./routes/BusinessUser";
 import AdminRouter from "./routes/AdminRouter";
+import { useEffect } from "react";
 
 const App: React.FC = () => {
+
+    const location = useLocation();
+    useEffect(() => {
+      window.scrollTo(0, 0);
+    }, [location]);
+
   return (
     <MuiThemeProvider>
       <ToastContainer />

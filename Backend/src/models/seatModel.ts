@@ -15,9 +15,10 @@ const seatSchema = new Schema<ISeat>({
     type: Number,
     required: true,
   },
-  isAvailable: {
-    type: Boolean,
-    default: true,
+  availability: {
+    type: Map, // Use a Map to hold date availability
+    of: { type: Boolean, default: true }, // Each date will map to a boolean
+    default: {}, // Default to an empty object
   },
   createdAt: {
     type: Date,
@@ -29,5 +30,5 @@ const seatSchema = new Schema<ISeat>({
   },
 });
 
-export const Seat: Model<Document> = mongoose.model('Seat', seatSchema);
-
+// Create the model
+export const Seat: Model<ISeat & Document> = mongoose.model('Seat', seatSchema);

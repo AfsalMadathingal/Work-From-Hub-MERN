@@ -117,3 +117,32 @@ export const getWorkspace = async () => {
     return error.response;
   }
 }
+
+export const getSingleWorkspace = async (id: string) => {
+  try {
+    
+    const response = await userAxiosInstance.get<IWorkspace>(`/api/user/workspace/${id}`)
+
+    return response;
+
+  } catch (error) {
+
+    return error.response;
+  }
+
+}
+
+export const getAvailableSeats = async (workspaceId: string) => {
+  try {
+    
+    const response = await userAxiosInstance.get<number>(`/api/user/workspace/${workspaceId}/available-seats`)
+
+    return response;
+
+  } catch (error) {
+
+    return error.response;
+  }
+
+}
+

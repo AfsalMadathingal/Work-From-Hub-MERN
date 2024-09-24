@@ -7,6 +7,7 @@ import { RootState } from '../../redux/store/store';
 import { setLoading } from '../../redux/slices/userSlice';
 import { getWorkspace } from '../../services/userServices';
 import { IWorkspace } from '../../@types/workspace';
+import ListingCardSkeloton from './ListingCardSkeloton';
 
 
 
@@ -18,8 +19,9 @@ const Listings = () => {
 
     const fetchListings = async () => {
       try {
+        dispatch(setLoading(true));
         const response = await getWorkspace();
-
+        await new Promise((resolve) => setTimeout(resolve, 2000));
     
         if (response.status === 200) {
           setListings(response.data.data.approvedWorkspaces);
@@ -39,6 +41,8 @@ const Listings = () => {
     }, []);
 
   return (
+    <>
+    { loading ? <ListingCardSkeloton /> : null }
     <div className="space-y-6">
       {listings.map((listing, index) => (
         <ListingCard key={index} listing={listing} />
@@ -47,6 +51,7 @@ const Listings = () => {
         View More
       </button>
     </div>
+    </>
   );
 };
 

@@ -107,6 +107,12 @@ export default class WorkspaceService implements IWorkspaceService{
       return response
    
      }
+
+     
+     async getSingleWorkspace(id: string): Promise<IWorkspace | null> {
+      const response = await this.workspaceRepository.findById(id);
+      return response;
+     }
   
       
 }

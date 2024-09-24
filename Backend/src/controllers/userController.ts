@@ -11,6 +11,8 @@ import { IPlanService } from "../services/interface/IPlanService";
 import PlanService from "../services/implementations/PlanService";
 import WorkspaceService from "../services/implementations/WorkspaceService";
 import { IWorkspaceService } from "../services/interface/IWorkSpaceService";
+import { ISeatService } from "../services/interface/ISeatService";
+import { SeatService } from "../services/implementations/SeatService";
 
 class UserController {
   private userService: UserService;
@@ -18,6 +20,8 @@ class UserController {
   private AuthService: AuthService;
   private planService : IPlanService
   private workspaceService:IWorkspaceService;
+  private seatService: ISeatService;
+  
 
   constructor() {
     this.userService = new UserService();
@@ -25,6 +29,8 @@ class UserController {
     this.uploadService = new UploadService();
     this.planService = new PlanService();
     this.workspaceService = new WorkspaceService();
+    this.seatService = new SeatService();
+
 
   }
 
@@ -213,6 +219,82 @@ class UserController {
 
 
   }
+
+  public getSingleWorkspace = async (req:Request , res:Response, next:NextFunction)=>{
+
+    try {
+
+      const id = req.params.id;
+
+      const workspace = await this.workspaceService.getSingleWorkspace(id);
+      if(!workspace){
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "Workspace not found"
+        ))
+      }
+
+      return res.status(200)
+      .json(new ApiResponse(
+        200,
+        workspace,
+        "Fetched Successfully"
+      ))
+      
+    } catch (error) {
+
+      next(error)
+
+    }
+
+
+  }
+
+  
+  public getAvailableSeatsOfWorkspace = async (req:Request , res:Response, next:NextFunction)=>{
+
+    try {
+
+      const {workspaceId} = req.params;
+
+      const workspace = await this.workspaceService.getSingleWorkspace(workspaceId);
+      if(!workspace){
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "Workspace not found"
+        ))
+      }
+
+      const availableSeats = await this.seatService.getSeatsByWorkspaceId(workspace.id)
+      if(!availableSeats){
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "No available seats"
+        ))
+      }
+
+      return res.status(200)
+      .json(new ApiResponse(
+        200,
+        availableSeats,
+        "Fetched Successfully"
+      ))
+      
+    } catch (error) {
+
+      next(error)
+
+    }
+
+
+  }
+  
   
 
 }

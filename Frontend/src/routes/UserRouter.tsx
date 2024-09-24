@@ -4,12 +4,10 @@ import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PrivateRoute from '../components/auth/PrivateRoute';
 import PublicRoute from '../components/auth/PublicRoute';  
-import { logout } from "../services/UserAuthService";
-import { useDispatch } from "react-redux";
-import { resetUser } from "../redux/slices/userSlice";
-import { toast } from "react-toastify";
-import WorkspaceListingsPage from "../pages/userSide/WorkspaceListings";
-// Lazy load all components
+const WorkspaceListingsPage = lazy(() => import('../pages/userSide/WorkspaceListings'));
+const ViewWorkspacePage = lazy(() => import('../pages/userSide/ViewWorkspace'));
+const BookingFrom = lazy(() => import('../pages/userSide/BookingFrom'));
+const BookingCheckout = lazy(() => import('../pages/userSide/BookingCheckout'));
 const LoginPage = lazy(() => import('../pages/userAuth/UserLogin'));
 const UserRegister = lazy(() => import('../pages/userAuth/UserRegister'));
 const LandingPage = lazy(() => import('../pages/userSide/LandingPage'));
@@ -52,6 +50,30 @@ const UserRouter = () => {
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PrivateRoute element={WorkspaceListingsPage} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/workspace/:id/view"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={ViewWorkspacePage} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/workspace/:id/book"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={BookingFrom} />
+          </Suspense>
+        }
+      />
+       <Route
+        path="/workspace/:id/booking/seat/:seatId/date/:date"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={BookingCheckout} />
           </Suspense>
         }
       />

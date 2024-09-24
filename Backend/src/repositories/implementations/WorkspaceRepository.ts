@@ -102,6 +102,20 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     }
 
   }
+
+  
+  async findById(id: string): Promise<Workspace | null> {
+
+    try {
+      const workspaceData = await this.collection.findOne({ _id: id, approved: true });
+
+      return workspaceData;
+
+    } catch (error) {
+      return null
+    }
+
+  }
   
 
 }
