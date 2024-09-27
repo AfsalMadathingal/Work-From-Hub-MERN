@@ -294,6 +294,90 @@ class UserController {
 
 
   }
+
+  
+  public reserveSeat = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+
+    
+
+      const {seatId,workspaceId,date} = req.params;
+
+
+      const workspace = await this.workspaceService.getSingleWorkspace(workspaceId)
+
+
+      if(!workspace){
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "The workspace not available"
+        ))
+      }
+
+
+      const seatData = await this.seatService.getSeatById(seatId);
+
+
+      console.log(seatData.workspaceId.toString() != workspace._id.toString());
+      
+      
+      if(seatData.workspaceId.toString() != workspace._id.toString()){
+        
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "Something went Wrong"
+        ))
+      
+      }
+
+      console.log('====================================');
+      console.log(seatData);
+      console.log('====================================');
+
+      if(!seatData){
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "No available seats"
+        ))
+      }
+
+      const reservedSeat = await this.seatService.reserveSeatForBooking(seatId,date)
+
+      console.log(reservedSeat);
+      
+
+
+      if(!reservedSeat){
+        return res.status(404)
+        .json(new ApiResponse(
+          404,
+          null,
+          "seat Cant Be booked"
+        ))
+      }
+
+  
+      return res.status(200)
+      .json(new ApiResponse(
+        200,
+        null,
+        "Reserved Successfully"
+      ))
+      
+    } catch (error) {
+
+      next(error)
+
+    }
+
+  }
   
   
 

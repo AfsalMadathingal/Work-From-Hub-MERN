@@ -22,4 +22,6 @@ export interface IWorkspace extends Document {
   rejected?:boolean;
   listed?:boolean;
   pricePerSeat?:number;
+  timing?:string;
+  workingDays?:string;
 }

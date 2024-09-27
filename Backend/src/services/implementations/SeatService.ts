@@ -32,5 +32,28 @@ export class SeatService implements ISeatService{
 
         return null;
     }
+
+   async getSeatById(id: string): Promise<ISeat | null> {
+
+        const response = await this.seatRepository.getSeatById(id);
+
+        if(response){
+            return response;
+        }
+
+        return null;
+    }
+
+    async reserveSeatForBooking(id:string,date:string):Promise <ISeat | null > {
+
+
+        const response = await this.seatRepository.reserveSeatForBooking(id,date);
+
+        if(response){
+            return response;
+        }
+
+        return null;
+    }
     
 }

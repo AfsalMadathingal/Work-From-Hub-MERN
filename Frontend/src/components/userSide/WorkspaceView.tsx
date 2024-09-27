@@ -14,7 +14,19 @@ import { RootState } from "../../redux/store/store";
 import { setLoading } from "../../redux/slices/userSlice";
 import WorkspaceSkeleton from "./WorkspaceSkeleton";
 import { IWorkspace } from "../../@types/workspace";
-import { FaLocationArrow, FaMap } from "react-icons/fa";
+import {
+  FaArrowAltCircleDown,
+  FaArrowLeft,
+  FaCalendar,
+  FaChair,
+  FaClock,
+  FaLocationArrow,
+  FaMap,
+  FaMapMarkerAlt,
+  FaPhoneAlt,
+  FaRupeeSign,
+  FaTicketAlt,
+} from "react-icons/fa";
 
 const WorkspaceView = () => {
   const [workspace, setWorkspace] = useState({});
@@ -32,7 +44,7 @@ const WorkspaceView = () => {
         const seatsAvailable = await getAvailableSeats(id as string);
         if (seatsAvailable.status === 200) {
           const seatData = seatsAvailable.data.data;
-          const available = seatData.reduce((acc : number, el ) => {
+          const available = seatData.reduce((acc: number, el) => {
             if (el.isAvailable) {
               acc++;
             }
@@ -41,7 +53,7 @@ const WorkspaceView = () => {
           setAvailableSeats(available);
         }
       }
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      await new Promise((resolve) => setTimeout(resolve, 300));
       setWorkspace(response.data.data);
       dispatch(setLoading(false));
     } catch (error) {
@@ -61,10 +73,17 @@ const WorkspaceView = () => {
         <WorkspaceSkeleton />
       ) : (
         <div className="max-w-6xl mx-auto p-4 sm:p-6 bg-white rounded-lg shadow-lg mt-6">
-          <h1 className="text-4xl font-bold mb-2 text-gray-800">
-            {workspace.buildingName}
-          </h1>
-          <h2 className="text-2xl text-gray-600 mb-6">{workspace.district}</h2>
+          <div className="bg-gray-100 flex  items-center rounded-lg ps-4 pt-1 pb-1 mb-1">
+            <FaArrowLeft onClick={() => window.history.back()}  className="text-orange-500 font-bold text-2xl me-2 cursor-pointer " />
+            <div>
+              <h1 className="text-2xl font-bold mb-2 text-gray-800">
+                {workspace.buildingName}
+              </h1>
+              <h2 className="text-2xl text-gray-600 mb-1">
+                {workspace.district}
+              </h2>
+            </div>
+          </div>
 
           <div className="grid bg-orange-50 grid-cols-1 lg:grid-cols-2 gap-8 mb-8 rounded-lg shadow-xl">
             <Carousel
@@ -101,20 +120,31 @@ const WorkspaceView = () => {
               )}
             </Carousel>
 
-            <div className="space-y-6">
-              <div className="flex items-center text-lg text-gray-700">
-                <strong>Seat Available:</strong>
-                <p className="ml-2">{workspace.seatsPerTable * workspace.tablesAvailable}</p>
+            <div className="space-y-2 p-12">
+              <div className="flex  items-center text-lg text-gray-700">
+                <FaChair className="mr-2" />
+                <strong> Seat Available:</strong>
+                <p className="ml-2">
+                  {workspace.seatsPerTable * workspace.tablesAvailable}
+                </p>
               </div>
               <div className="flex items-center text-lg text-gray-700">
+                <FaClock className="mr-2" />
                 <strong>Open Hours:</strong>
-                <p className="ml-2">10:00 AM to 12:00 AM</p>
+                <p className="ml-2">{workspace.timing}</p>
               </div>
               <div className="flex items-center text-lg text-gray-700">
+                <FaCalendar className="mr-2" />
+                <strong>Working Days:</strong>
+                <p className="ml-2">{workspace.workingDays}</p>
+              </div>
+              <div className="flex items-center text-lg text-gray-700">
+                <FaRupeeSign className="mr-2" />
                 <strong>Price:</strong>
                 <p className="ml-2">₹{workspace?.pricePerSeat}/Seat</p>
               </div>
               <div className="flex items-center text-lg text-gray-700">
+                <FaMapMarkerAlt className="mr-2" />
                 <strong>Location:</strong>
                 <p className="ml-2">
                   {workspace.state + " " + workspace.district}
@@ -130,6 +160,7 @@ const WorkspaceView = () => {
                 />
               </div>
               <div className="flex items-center text-lg text-gray-700">
+                <FaPhoneAlt className="mr-2" />
                 <strong>Contact:</strong>
                 <p className="ml-2">+91 {workspace.contactNo}</p>
               </div>
@@ -138,7 +169,8 @@ const WorkspaceView = () => {
                   state={{ workspace }}
                   to={`/workspace/${workspace?._id}/book`}
                 >
-                  <button className="bg-orange-500 text-white font-semibold px-6 py-3 rounded-lg hover:bg-orange-600 transition">
+                  <button className="bg-orange-500 flex items-center gap-2 text-white font-semibold px-8 py-3 rounded-lg hover:bg-orange-600 transition">
+                    <FaTicketAlt />
                     Book Seat
                   </button>
                 </Link>

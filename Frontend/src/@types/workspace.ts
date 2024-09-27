@@ -16,4 +16,6 @@ export interface IWorkspace {
     imageAdded: boolean ;
     videoAdded:boolean ;
     pricePerSeat: number;
+    timing:string;
+    workingDays:string;
   }

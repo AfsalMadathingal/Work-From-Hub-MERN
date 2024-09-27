@@ -5,14 +5,19 @@ import {
   Marker,
   Autocomplete,
 } from "@react-google-maps/api";
-import { FaFilm, FaImage, FaLocationArrow, FaWindowClose } from "react-icons/fa";
+import {
+  FaFilm,
+  FaImage,
+  FaLocationArrow,
+  FaWindowClose,
+} from "react-icons/fa";
 import { IWorkspace } from "../../@types/workspace";
 import { submitWorkspaceData } from "../../services/BuserService";
 import { toast } from "react-toastify";
 import { validateWorkspaceSubmission } from "../../utils/BUserValidator";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import {  setError } from "../../redux/slices/businessUserSlice";
+import { setError } from "../../redux/slices/businessUserSlice";
 import ReactLoading from "react-loading";
 import { setLoading } from "../../redux/slices/businessUserSlice";
 
@@ -38,6 +43,8 @@ const BuildingForm: React.FC = () => {
     imageAdded: false,
     videoAdded: false,
     pricePerSeat: 0,
+    timing: "",
+    workingDays: "",
   });
 
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
@@ -56,7 +63,7 @@ const BuildingForm: React.FC = () => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, type, files } = e.target;
-  
+
     if (type === "file") {
       if (name === "photos") {
         const photoFiles = files ? Array.from(files) : null;
@@ -80,9 +87,6 @@ const BuildingForm: React.FC = () => {
       }));
     }
   };
-
-  
-  
 
   const handleMapClick = (e: google.maps.MapMouseEvent) => {
     const lat = e.latLng?.lat();
@@ -116,27 +120,27 @@ const BuildingForm: React.FC = () => {
     e.preventDefault();
     dispatch(setLoading(true));
     const validationError = validateWorkspaceSubmission(formData);
-  
+
     if (validationError) {
       dispatch(setError(validationError));
       dispatch(setLoading(false));
       toast.error("Please fill all the required fields");
       return;
     }
-  
+
     const formDataToSend = new FormData();
-  
+
     // Append all form data to the FormData object
     Object.keys(formData).forEach((key) => {
       if (key === "photos") {
         if (formData[key]) {
           for (let i = 0; i < formData[key].length; i++) {
-            formDataToSend.append('photos', formData[key][i]);
+            formDataToSend.append("photos", formData[key][i]);
           }
         }
       } else if (key === "video") {
         if (formData[key]) {
-          formDataToSend.append('video', formData[key]);
+          formDataToSend.append("video", formData[key]);
         }
       } else {
         formDataToSend.append(key, formData[key]);
@@ -169,6 +173,8 @@ const BuildingForm: React.FC = () => {
           imageAdded: false,
           videoAdded: false,
           pricePerSeat: 0,
+          timing: "",
+          workingDays: "",
         });
         navigate("/business/workspace-manage/submission");
         return;
@@ -341,55 +347,96 @@ const BuildingForm: React.FC = () => {
                 </div>
               </div>
               <div>
-                  <label className="block text-sm font-medium">
-                    How many tables available?
-                  </label>
-                  <input
-                    type="number"
-                    name="tablesAvailable"
-                    value={formData.tablesAvailable}
-                    onChange={handleChange}
-                    min="0"
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  />
-                  {error?.tablesAvailable && (
-                    <p className="text-red-500 mt-1">
-                      {error?.tablesAvailable}
-                    </p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">
-                    How many seats each table has?
-                  </label>
-                  <input
-                    type="number"
-                    name="seatsPerTable"
-                    value={formData.seatsPerTable}
-                    onChange={handleChange}
-                    min="0"
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  />
-                  {error?.seatsPerTable && (
-                    <p className="text-red-500 mt-1">{error?.seatsPerTable}</p>
-                  )}
-                </div>
-                <div>
-                  <label className="block text-sm font-medium">
-                    How much will you price per seat?
-                  </label>
-                  <input
-                    type="number"
-                    name="pricePerSeat"
-                    value={formData.pricePerSeat}
-                    onChange={handleChange}
-                    min="0"
-                    className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                  />
-                  {error?.pricePerSeat && (
-                    <p className="text-red-500 mt-1">{error?.pricePerSeat}</p>
-                  )}
-                </div>
+                <label className="block text-sm font-medium">
+                  How many tables available?
+                </label>
+                <input
+                  type="number"
+                  name="tablesAvailable"
+                  value={formData.tablesAvailable}
+                  onChange={handleChange}
+                  min="0"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                />
+                {error?.tablesAvailable && (
+                  <p className="text-red-500 mt-1">{error?.tablesAvailable}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  How many seats each table has?
+                </label>
+                <input
+                  type="number"
+                  name="seatsPerTable"
+                  value={formData.seatsPerTable}
+                  onChange={handleChange}
+                  min="0"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                />
+                {error?.seatsPerTable && (
+                  <p className="text-red-500 mt-1">{error?.seatsPerTable}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  How much will you price per seat?
+                </label>
+                <input
+                  type="number"
+                  name="pricePerSeat"
+                  value={formData.pricePerSeat}
+                  onChange={handleChange}
+                  min="0"
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                />
+                {error?.pricePerSeat && (
+                  <p className="text-red-500 mt-1">{error?.pricePerSeat}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium">Timing</label>
+                <select
+                  name="timing"
+                  value={formData.timing}
+                  onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="">Select timing</option>
+                  <option value="08:00-12:00">8:00 AM-05:00 PM</option>
+                  <option value="08:00-12:00">9:00 AM-06:00 PM</option>
+                  <option value="08:00-12:00">10:00 AM-07:00 PM</option>
+                  <option value="08:00-12:00">11:00 AM-08:00 PM</option>
+                  <option value="08:00-12:00">12:00 PM -10:00 PM</option>
+                </select>
+                <p className="text-xs text-orange-500">
+                  Note: Please choose one of the available time slots from the
+                  dropdown that works best for your operating hours.
+                </p>
+
+                {error?.timing && (
+                  <p className="text-red-500 mt-1">{error?.timing}</p>
+                )}
+              </div>
+              <div>
+                <label className="block text-sm font-medium">
+                  Working days
+                </label>
+                <select
+                  name="workingDays"
+                  value={formData.workingDays}
+                  onChange={handleChange}
+                  className="mt-1 block w-full p-2 border border-gray-300 rounded"
+                >
+                  <option value="">Select working days</option>
+                  <option value="MON-FRI">Monday to Friday</option>
+                  <option value="MON-SAT">Monday to Saturday</option>
+                  <option value="ALL DAYS">All 7 days</option>
+                </select>
+                {error?.workingDays && (
+                  <p className="text-red-500 mt-1">{error?.workingDays}</p>
+                )}
+              </div>
 
               <div className="col-span-full flex justify-center mt-4">
                 <button
@@ -461,53 +508,52 @@ const BuildingForm: React.FC = () => {
                 className="grid grid-cols-1 md:grid-cols-2  gap-4"
                 onSubmit={handleSubmit}
               >
+                <div className="col-span-full md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Add Photos
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      name="photos"
+                      onChange={handleChange}
+                      multiple
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                    <button className="mt-1 flex items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-green-400 text-white font-semibold hover:bg-green-600 transition duration-150 ease-in-out">
+                      <FaImage className="h-5 w-5 mr-2" />
+                      Choose Photos
+                    </button>
+                  </div>
+                  {error?.imageAdded && (
+                    <p className="mt-2 text-sm text-red-600">
+                      {error?.imageAdded}
+                    </p>
+                  )}
+                </div>
 
-<div className="col-span-full md:col-span-2">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Add Photos
-  </label>
-  <div className="relative">
-    <input
-      type="file"
-      name="photos"
-      onChange={handleChange}
-      multiple
-      className="absolute inset-0 opacity-0 cursor-pointer"
-    />
-    <button className="mt-1 flex items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-green-400 text-white font-semibold hover:bg-green-600 transition duration-150 ease-in-out">
-      <FaImage className="h-5 w-5 mr-2" />
-      Choose Photos
-    </button>
-  </div>
-  {error?.imageAdded && (
-    <p className="mt-2 text-sm text-red-600">{error?.imageAdded}</p>
-  )}
-</div>
+                <div className="col-span-full md:col-span-2">
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Add Video
+                  </label>
+                  <div className="relative">
+                    <input
+                      type="file"
+                      name="video"
+                      onChange={handleChange}
+                      accept="video/*"
+                      className="absolute inset-0 opacity-0 cursor-pointer"
+                    />
+                    <button className="mt-1 flex items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-blue-400 text-white font-semibold hover:bg-blue-600 transition duration-150 ease-in-out">
+                      <FaFilm className="h-5 w-5 mr-2" />
+                      Choose Video
+                    </button>
+                  </div>
+                  {error?.videoAdded && (
+                    <p className="text-red-500 mt-1">{error?.videoAdded}</p>
+                  )}
+                </div>
 
-<div className="col-span-full md:col-span-2">
-  <label className="block text-sm font-medium text-gray-700 mb-1">
-    Add Video
-  </label>
-  <div className="relative">
-    <input
-      type="file"
-      name="video"
-      onChange={handleChange}
-      accept="video/*"
-      className="absolute inset-0 opacity-0 cursor-pointer"
-    />
-    <button className="mt-1 flex items-center justify-center w-full px-4 py-3 border border-gray-300 rounded-lg shadow-sm bg-blue-400 text-white font-semibold hover:bg-blue-600 transition duration-150 ease-in-out">
-      <FaFilm className="h-5 w-5 mr-2" />
-      Choose Video
-    </button>
-  </div>
-  {error?.videoAdded && (
-    <p className="text-red-500 mt-1">{error?.videoAdded}</p>
-  )}
-</div>
-
-
-            
                 <div className="col-span-full flex justify-between mt-4">
                   <button
                     type="button"

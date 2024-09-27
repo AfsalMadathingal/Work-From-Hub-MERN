@@ -70,7 +70,7 @@ const UserRouter = () => {
         }
       />
        <Route
-        path="/workspace/:id/booking/seat/:seatId/date/:date"
+        path="/workspace/:id/booking"
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PrivateRoute element={BookingCheckout} />

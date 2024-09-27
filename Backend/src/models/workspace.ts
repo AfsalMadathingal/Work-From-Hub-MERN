@@ -24,7 +24,9 @@ const workspaceSchema = new Schema<IWorkspace>({
   approved:{type:Boolean,default:false},
   rejected:{type:Boolean,default:false},
   listed:{type:Boolean,default:false},
-  pricePerSeat:{type:Number, required: true}
+  pricePerSeat:{type:Number, required: true},
+  timing:{type:String,required:true},
+  workingDays:{type:String,required:true},
 });
 
 export const WorkspaceModel = model<IWorkspace>('Workspace', workspaceSchema);

@@ -21,7 +21,7 @@ const Listings = () => {
       try {
         dispatch(setLoading(true));
         const response = await getWorkspace();
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 300));
     
         if (response.status === 200) {
           setListings(response.data.data.approvedWorkspaces);

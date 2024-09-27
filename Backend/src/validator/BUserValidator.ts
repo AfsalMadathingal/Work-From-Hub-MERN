@@ -77,7 +77,22 @@ const buildingFormSchema = Joi.object({
       'number.min': 'must be > 2 number',
       'any.required': 'required',
     }),
-  
+    timing: Joi.string()
+    .valid('08:00-12:00', '09:00-06:00', '10:00-07:00', '11:00-08:00', '12:00-10:00')
+    .required()
+    .messages({
+      'any.only': 'Please select a valid time slot from the dropdown',
+      'any.required': 'Timing is required',
+    }),
+
+  // Working days validation
+  workingDays: Joi.string()
+    .valid('MON-FRI', 'MON-SAT', 'ALL DAYS')
+    .required()
+    .messages({
+      'any.only': 'Please select valid working days from the dropdown',
+      'any.required': 'Working days are required',
+    }),
   });
 
 

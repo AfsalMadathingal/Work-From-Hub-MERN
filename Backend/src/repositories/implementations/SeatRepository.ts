@@ -104,13 +104,13 @@ export class SeatRepository implements ISeatRepository {
         // Start a timer to release the seat after 5 minutes
         setTimeout(async () => {
             // Check if the seat is still reserved (i.e., payment completed)
-            const isReserved = await this.checkIfSeatIsReserved(workspaceId, tableNumber, seatNumber);
-            if (!isReserved) {
-                // If not reserved, make the seat available again
-                seat.availability.set(selectedDate, true); // Mark as available
-                await seat.save();
-                console.log(`Seat ${tableNumber}-${seatNumber} released due to non-payment.`);
-            }
+            // const isReserved = await this.checkIfSeatIsReserved(workspaceId, tableNumber, seatNumber);
+            // if (!isReserved) {
+            //     // If not reserved, make the seat available again
+            //     seat.availability.set(selectedDate, true); // Mark as available
+            //     await seat.save();
+            //     console.log(`Seat ${tableNumber}-${seatNumber} released due to non-payment.`);
+            // }
         }, 5 * 60 * 1000); // 5 minutes in milliseconds
 
         return seat;
@@ -120,7 +120,7 @@ export class SeatRepository implements ISeatRepository {
     }
 }
   
-async  checkIfSeatIsReserved(workspaceId: string, tableNumber: number, seatNumber: number): Promise<boolean> {
+async  checkIfSeatIsReserved(seatId : string , date: string): Promise<boolean> {
 
 
   // Implement your logic here (e.g., check payment status)
@@ -131,6 +131,98 @@ async  checkIfSeatIsReserved(workspaceId: string, tableNumber: number, seatNumbe
 
   return false;
 }
+
+
+async getSeatById(seatId: string): Promise<ISeat | null> {
+  
+    try {
+      const seat = await Seat.findById(seatId);
+
+      if (!seat) {
+        throw new Error("Seat not found");
+      }
+
+      return seat;
+    } catch (error) {
+      console.error("Error getting seat by id:", error);
+      return null;
+    }
+}
+
+async reserveSeatForBooking(id: string, date: string): Promise<ISeat | null> {
+  const seat = await this.getSeatById(id);
+  
+  if (!seat) {
+      return null; 
+  }
+
+  const isSeatReserved = seat.availability.get(date) === false; // Check if the seat is already reserved
+
+  console.log(isSeatReserved);
+  
+
+  if (isSeatReserved) {
+      return null; // Seat is already reserved by someone else
+  }
+
+  // Temporarily block the seat for the user (mark as reserved)
+  seat.availability.set(date, false);
+
+  try {
+      await seat.save();
+  } catch (error) {
+      console.error("Error reserving seat:", error);
+      return null;
+  }
+
+  // Set a timeout to release the seat after 5 minutes if payment is not completed
+  setTimeout(async () => {
+      const updatedSeat = await this.getSeatById(id);
+      if (updatedSeat && updatedSeat.availability.get(date) === false) {
+
+          
+          // Release the seat if still marked as reserved and no payment is made
+          updatedSeat.availability.set(date, true); // Mark the seat as available again
+          await updatedSeat.save();
+          console.log(`Seat ${id} has been released for date ${date} after timeout.`);
+      }
+  }, 5 * 60 * 6000); // Timeout for 6 minutes
+
+  return seat; // Return the reserved seat
+}
+
+async listSeatsWithAvailabilityCheck(workspaceId: string, date: string): Promise<any> {
+  const seats = await this.getSeatsByWorkspaceId(workspaceId); // Get all seats for the workspace
+
+  // Check availability for each seat
+  const seatsWithAvailability = await Promise.all(seats.map(async (seat) => {
+      const isAvailable = await this.isSeatAvailableForDate(seat._id as string, date);
+      return {
+          seatId:seat._id,
+          seatNumber: seat.seatNumber,
+          tableNumber: seat.tableNumber,
+          isAvailable, // true if seat is available on the given date
+      };
+  }));
+
+  return seatsWithAvailability; // Return the list with availability status
+}
+
+async isSeatAvailableForDate(id: string, date: string): Promise<boolean> {
+  const seat = await this.getSeatById(id); // Fetch the seat by its ID
+  
+  if (!seat) {
+      throw new Error("Seat not found");
+  }
+
+  const isAvailable = seat.availability.get(date) === true || !seat.availability.has(date); 
+  // true -> Seat is available, false -> Seat is not available, 
+  // undefined (!has(date)) -> no bookings for that date, so it is available by default
+
+  return isAvailable; // Return true if available, otherwise false
+}
+
+
 
   
 }

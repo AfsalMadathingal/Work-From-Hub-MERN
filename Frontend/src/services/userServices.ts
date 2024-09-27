@@ -145,4 +145,16 @@ export const getAvailableSeats = async (workspaceId: string) => {
   }
 
 }
+ 
+export const reserveSeatAPI = async (seatId: string, workspaceId: string,date: string) => {
+  try {
+    
+    const response = await userAxiosInstance.patch(`/api/user/workspace/${workspaceId}/reserve-seat/${seatId}/date/${date}`)
 
+    return response;
+
+  } catch (error) {
+
+    return error.response;
+  }
+}
