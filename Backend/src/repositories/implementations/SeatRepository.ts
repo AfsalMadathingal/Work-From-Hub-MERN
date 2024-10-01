@@ -7,6 +7,8 @@ import { IWorkspace } from "../../entities/workspace";
 
 export class SeatRepository implements ISeatRepository {
 
+  
+
    
   async createSeatsForWorkspace(workspace: IWorkspace): Promise<ISeat[] | null> {
     try {
@@ -19,7 +21,7 @@ export class SeatRepository implements ISeatRepository {
             workspaceId: workspace.id,
             tableNumber,
             seatNumber,
-            availability: {} // Initialize availability as an empty object
+            availability: {} 
           };
   
           seatPromises.push(Seat.create(newSeat) as Promise<ISeat>);
@@ -58,32 +60,32 @@ export class SeatRepository implements ISeatRepository {
   }
   
   
-  async bookSeat(workspaceId: string, tableNumber: number, seatNumber: number, selectedDate: string): Promise<ISeat | null> {
-    try {
-      // Fetch the specific seat
-      const seat = await Seat.findOne({ workspaceId, tableNumber, seatNumber });
+  // async bookSeat(workspaceId: string, tableNumber: number, seatNumber: number, selectedDate: string): Promise<ISeat | null> {
+  //   try {
+  //     // Fetch the specific seat
+  //     const seat = await Seat.findOne({ workspaceId, tableNumber, seatNumber });
     
-      if (!seat) {
-        throw new Error("Seat not found");
-      }
+  //     if (!seat) {
+  //       throw new Error("Seat not found");
+  //     }
     
-      // Check if seat is available on the selected date
-      if (seat.availability.get(selectedDate)) {
-        throw new Error("Seat is already booked on the selected date");
-      }
+  //     // Check if seat is available on the selected date
+  //     if (seat.availability.get(selectedDate)) {
+  //       throw new Error("Seat is already booked on the selected date");
+  //     }
     
-      // Update seat availability for the selected date
-      seat.availability.set(selectedDate, false); // Mark as unavailable
+  //     // Update seat availability for the selected date
+  //     seat.availability.set(selectedDate, false); // Mark as unavailable
     
-      // Save updated seat
-      await seat.save();
+  //     // Save updated seat
+  //     await seat.save();
     
-      return seat;
-    } catch (error) {
-      console.error("Error booking seat:", error);
-      return null;
-    }
-  }
+  //     return seat;
+  //   } catch (error) {
+  //     console.error("Error booking seat:", error);
+  //     return null;
+  //   }
+  // }
 
   
   async  reserveSeat(workspaceId: string, tableNumber: number, seatNumber: number, selectedDate: string): Promise<ISeat | null> {
@@ -162,10 +164,10 @@ async reserveSeatForBooking(id: string, date: string): Promise<ISeat | null> {
   
 
   if (isSeatReserved) {
-      return null; // Seat is already reserved by someone else
+      return null; 
   }
 
-  // Temporarily block the seat for the user (mark as reserved)
+
   seat.availability.set(date, false);
 
   try {
@@ -175,20 +177,9 @@ async reserveSeatForBooking(id: string, date: string): Promise<ISeat | null> {
       return null;
   }
 
-  // Set a timeout to release the seat after 5 minutes if payment is not completed
-  setTimeout(async () => {
-      const updatedSeat = await this.getSeatById(id);
-      if (updatedSeat && updatedSeat.availability.get(date) === false) {
 
-          
-          // Release the seat if still marked as reserved and no payment is made
-          updatedSeat.availability.set(date, true); // Mark the seat as available again
-          await updatedSeat.save();
-          console.log(`Seat ${id} has been released for date ${date} after timeout.`);
-      }
-  }, 5 * 60 * 6000); // Timeout for 6 minutes
 
-  return seat; // Return the reserved seat
+  return seat; 
 }
 
 async listSeatsWithAvailabilityCheck(workspaceId: string, date: string): Promise<any> {
@@ -220,6 +211,29 @@ async isSeatAvailableForDate(id: string, date: string): Promise<boolean> {
   // undefined (!has(date)) -> no bookings for that date, so it is available by default
 
   return isAvailable; // Return true if available, otherwise false
+}
+
+async bookSeatById(workspaceId: string, seatId: string, date: string): Promise<ISeat | null> {
+  
+  
+  const seat = await this.getSeatById(seatId);
+  if (!seat) {
+      throw new Error("Seat not found");
+  }
+
+  if (seat.availability.get(date) === false) {
+      throw new Error("Seat is already booked on the selected date");
+  }
+
+  seat.availability.set(date, false); // Mark as unavailable
+  await seat.save();
+
+  return seat;
+}
+
+
+async bookSeat(workspaceId: string, seatId: string, selectedDate: string): Promise<ISeat | null> {
+    return null
 }
 
 

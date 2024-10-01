@@ -5,17 +5,29 @@ import { IPaymentService } from "../../services/interface/IPaymentService";
 import stripe from "../../config/stripe";
 import { ISubscription } from "entities/SubscriptionEntity";
 import { SubscriptionRepository } from "../../repositories/implementations/subscriptionRepository";
-import { IUsers } from "entities/UserEntity";
+import { IUsers } from "../../entities/UserEntity";
 import Stripe from "stripe";
+import { ISeatRepository } from "../../repositories/interface/ISeatRepository";
+import { SeatRepository } from "../../repositories/implementations/SeatRepository";
+import { IWorkspaceRepository } from "../../repositories/interface/IWorkspaceRepository";
+import { WorkspaceRepository } from "../../repositories/implementations/WorkspaceRepository";
 
 export default class PaymentService implements IPaymentService {
 
     private userRepository: IUserRepository;
     private subscriptionRepository: SubscriptionRepository;
+    private seatRepository : ISeatRepository;
+    private workspaceRepository:IWorkspaceRepository;
+
+
 
     constructor() {
         this.userRepository = new UserRepository();
         this.subscriptionRepository = new SubscriptionRepository();
+        this.seatRepository = new SeatRepository();
+        this.workspaceRepository = new WorkspaceRepository();
+
+
     }
 
     async createCheckoutSession(priceId: string): Promise<any> {
@@ -79,6 +91,60 @@ export default class PaymentService implements IPaymentService {
             throw error;
         }
     }
+
+
+    async createPaymentIntent(seatId: string, userId: string, date: string): Promise<Stripe.PaymentIntent | null> {
+        try {
+
+
+            const seat = await this.seatRepository.getSeatById(seatId);
+
+            if (!seat) {
+                throw new ApiError(
+                    404,
+                    "Seat Not Found",
+                    "Seat is not found with this id"
+                );
+            }
+
+            const workspace = await this.workspaceRepository.findById(seat.workspaceId.toString())
+
+
+
+            const amount = workspace.pricePerSeat * 100;
+
+            const paymentIntent = await stripe.paymentIntents.create({
+                amount,
+                currency: "inr",
+                metadata: {
+                    seatId,
+                    userId,
+                    date,
+                },
+            });
+
+            return paymentIntent;
+        } catch (error) {
+            throw error;
+        }
+    }
+
+    async checkPaymentStatus(paymentIntentId: string): Promise<Stripe.PaymentIntent | null> {
+        try {
+            const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
+
+            return paymentIntent;
+            
+        } catch (error) {
+            if (error instanceof Stripe.errors.StripeError && error.code === "resource_missing") {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+
+
 
 
 

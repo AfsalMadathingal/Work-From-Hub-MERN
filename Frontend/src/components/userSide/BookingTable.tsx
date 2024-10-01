@@ -13,6 +13,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { setLoading } from "../../redux/slices/userSlice";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import ReactLoading from "react-loading";
 
 const BookingTable = () => {
   const now = today(getLocalTimeZone());
@@ -25,20 +26,41 @@ const BookingTable = () => {
   const { loading } = useSelector((state: RootState) => state.user);
   const [tables, setTables] = useState<any[]>([]);
   const { id } = useParams();
-  const { state } = useLocation();
-  const { workspace } = state || {};
-  const [workspaceData, setWorkspace] = useState<IWorkspace>(workspace);
+  const [workspaceData, setWorkspace] = useState<IWorkspace>({});
   const [currentTableIndex, setCurrentTableIndex] = useState(0);
   const navigate = useNavigate();
+  const { locale } = useLocale();
+  const minDate = now;
+  const maxDate = now.add({ days: 10 });
 
   const toggleSeat = (seatKey: string, seatId: string) => {
     setSelectedSeat(selectedSeat === seatKey ? null : seatKey);
     setIdSeatSelected(seatId);
   };
 
-  const { locale } = useLocale();
-  const minDate = now;
-  const maxDate = now.add({ days: 10 });
+  const fetchWorkSpace = async () => {
+    try {
+
+      dispatch(setLoading(true));
+      const response = await getSingleWorkspace(id as string);
+
+      if (response.status === 200) {
+        dispatch(setLoading(false));
+        setWorkspace(response.data.data);
+      } else {
+        toast.error("Failed to fetch workspace details");
+        dispatch(setLoading(false));
+        navigate("/");
+      }
+    } catch (error) {
+          
+      dispatch(setLoading(false));
+      navigate("/");
+      toast.error("Failed to fetch workspace details");
+    }
+  };
+
+
 
   const isDateUnavailable = (date: any) => {
     return (
@@ -65,9 +87,6 @@ const BookingTable = () => {
       ) {
         const seatData = seatsAvailableResponse.data.data;
 
-        console.log("====================================");
-        console.log(selectedDate);
-        console.log("====================================");
 
         const availableSeatsArray = seatData
           .filter((seat: any) => {
@@ -80,9 +99,6 @@ const BookingTable = () => {
           })
           .map((seat: any) => `${seat.tableNumber}-${seat.seatNumber}`);
 
-        console.log("====================================");
-        console.log(availableSeats);
-        console.log("====================================");
 
         setAvailableSeats(availableSeatsArray);
 
@@ -126,6 +142,12 @@ const BookingTable = () => {
     );
   };
 
+  useEffect(() => {
+    fetchWorkSpace();
+  }, []);
+
+
+
   return (
     <div className="flex justify-center items-center p-4">
       <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
@@ -151,7 +173,8 @@ const BookingTable = () => {
             onClick={() => fetchAvailableSeats(selectedDate.toString())}
             className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-400 transition duration-300"
           >
-            Check Available Seats
+            {loading ? <ReactLoading type="spin" height={20} width={20} color="white" /> : "Check Available Seats"}
+            
           </button>
         </div>
 
@@ -253,7 +276,7 @@ const BookingTable = () => {
           </div>
         )}
 
-        {selectedSeat && (
+        {tables.length > 0 && (
           <div className="mt-6 flex justify-center">
             <button
               onClick={handleBooking}

@@ -112,6 +112,37 @@ class PaymentController {
       this.handleStripeError(error, res, next);
     }
   };
+
+  public createPaymentIntent = async (req: Request, res: Response, next: NextFunction) => {
+
+    const { seatId, userId, date } = req.body;
+
+    if (!seatId || !userId || !date) {
+      return res.status(500).json(new ApiError(500, "Input error", "Invalid data"));
+    }
+
+    try {
+      // Create a payment intent
+      const paymentIntent = await this.paymentService.createPaymentIntent(seatId, userId, date);
+
+      if (!paymentIntent) {
+        return res.status(404).json(new ApiError(404, "Payment Intent Not Found", "Payment Intent is not found with this id"));
+      }
+
+      
+
+      res.status(200).json(new ApiResponse(200, { paymentIntent }, "success"));
+
+    } catch (error) {
+
+      this.handleStripeError(error, res, next);
+
+    }
+  };
+
+
+
+
 }
 
 export default new PaymentController();

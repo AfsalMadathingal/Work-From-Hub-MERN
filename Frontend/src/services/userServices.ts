@@ -1,6 +1,8 @@
+import { Stripe } from "@stripe/stripe-js";
 import { IUsers } from "../@types/user";
 import { IWorkspace } from "../@types/workspace";
 import { userAxiosInstance } from "./instance/userInstance";
+import { IBookingDetails } from "../@types/bookingDetails";
 
 const api = userAxiosInstance;
 
@@ -158,3 +160,36 @@ export const reserveSeatAPI = async (seatId: string, workspaceId: string,date: s
     return error.response;
   }
 }
+
+export const createPaymentIntentForBooking = async (seatId: string, userId: string, date: string) => {
+  try {
+
+    const response = await userAxiosInstance.post<{ clientSecret: string }>(`/api/user/payment/create-payment-intent`, {
+      seatId,
+      userId,
+      date,
+    });
+
+    return response;
+
+  } catch (error) {
+    return error.response;
+  }
+};
+
+export const updateBookingStatus = async (result , user: IUsers, bookingDetails: IBookingDetails, stripeResponse) => {
+
+  try {
+    const response = await userAxiosInstance.post(`/api/user/booking`, {
+      result,
+      user,
+      bookingDetails,
+      stripeResponse
+    });
+
+    return response;
+
+  } catch (error) {
+    return error.response;
+  }
+};

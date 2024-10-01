@@ -11,6 +11,8 @@ paymentRouter.post('/create-subscription',paymentController.createSubscription )
 
 paymentRouter.post('/update-status',paymentController.updatePaymentStatus)
 
+paymentRouter.post('/create-payment-intent',paymentController.createPaymentIntent)
+
   
 
 

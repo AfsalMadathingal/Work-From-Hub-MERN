@@ -1,4 +1,5 @@
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -35,22 +36,43 @@ userAxiosInstance.interceptors.response.use(
     const originalRequest = error.config;
     const url = originalRequest.url;
 
-    if (error.response.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      try {
-        const newAccessToken = await getNewAccessToken();
-     
-        localStorage.setItem("accessToken", newAccessToken);
-        originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
-        return userAxiosInstance(originalRequest);
-      } catch (error) {
-        return Promise.reject(error);
+    if (error.response) {
+      // Handle specific error codes
+      if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        try {
+          const newAccessToken = await getNewAccessToken();
+          localStorage.setItem("accessToken", newAccessToken);
+          originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
+          return userAxiosInstance(originalRequest);
+        } catch (err) {
+          toast.error("Session expired, please log in again.");
+          return Promise.reject(err);
+        }
       }
+
+      // Handle other server errors (5xx)
+      if (error.response.status >= 500) {
+        toast.error("Server error, please try again later.");
+      }
+
+      // Handle other client errors (4xx, excluding 401)
+      if (error.response.status >= 400 && error.response.status < 500 && error.response.status !== 401) {
+        toast.error(`Error ${error.response.status}: ${error.response.data.message || 'An error occurred'}`);
+      }
+    } else if (error.request) {
+      // Handle network or request errors
+      toast.error("Network error, please check your connection.");
+    } else {
+      // Any other error
+      toast.error("An unexpected error occurred.");
     }
+
     cancelTokenMap.delete(url);
     return Promise.reject(error);
   }
 );
+
 
 async function getNewAccessToken() {
   const response = await axios.get(
