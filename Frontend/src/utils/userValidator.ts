@@ -27,7 +27,6 @@ const planSchema = Joi.object({
     }),
 });
 
-
 const loginSchema = Joi.object({
   email: Joi.string()
     .email({ tlds: { allow: false } })
@@ -119,6 +118,54 @@ const profileEditSchema = Joi.object({
   }),
 });
 
+
+const passwordChangeSchema = Joi.object({
+  currentPassword: Joi.string()
+    .required()
+    .label('Current Password')
+    .messages({
+      'string.empty': 'Current password is required.',
+    }),
+
+  newPassword: Joi.string()
+    .min(8) // Minimum length of 8 characters
+    .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#\\$%\\^&\\*])')) // At least one lowercase, one uppercase, one digit, and one special character
+    .required()
+    .label('New Password')
+    .messages({
+      'string.empty': 'New password is required.',
+      'string.min': 'New password must be at least 8 characters long.',
+      'string.pattern.base': 'New password must include at least one uppercase letter, one lowercase letter, one number, and one special character.',
+    }),
+
+  confirmPassword: Joi.any()
+    .equal(Joi.ref('newPassword'))
+    .required()
+    .label('Confirm Password')
+    .messages({
+      'any.only': 'Confirm password must match new password.',
+      'any.required': 'Confirm password is required.',
+    }),
+});
+
+
+export const passwordChangeValidator = (data:any) => {
+
+  const { error } = passwordChangeSchema.validate(data, { abortEarly: false });
+
+  if (error) {
+    const formattedErrors: { [key: string]: string } = {};
+    error.details.forEach((detail) => {
+      formattedErrors[detail.path[0]] = detail.message;
+    });
+
+    return formattedErrors;
+  }
+
+  return null;
+};
+
+
 export const validateEditing = (data: Partial<IUsers>) => {
   const { error } = profileEditSchema.validate(data, { abortEarly: false });
 
@@ -204,5 +251,10 @@ export const planValidate= (price:string,discount:string)=>{
 
 
 }
+
+
+
+
+
 
 export default validate;

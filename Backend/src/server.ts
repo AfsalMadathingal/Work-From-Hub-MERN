@@ -56,6 +56,8 @@ app.use('/',router)
 
 
 app.use(errorHandler);
+
+
 connectDatabase();
 app.listen(process.env.PORT || 5000, () => {
     console.log("Server started on port http://localhost:5000");

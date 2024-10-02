@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt, { compare } from "bcryptjs";
 import UserRepository from "../../repositories/implementations/UserRepository";
 import UserModel from "../../models/userModel";
 import { IUsers } from "entities/UserEntity";
@@ -25,6 +25,9 @@ export default class AuthService implements IAuthService {
     this.userRepository = new UserRepository();
     this.OTPRepository = new OTPRepository();
   }
+
+
+
 
   async register(user: IUsers): Promise<{
     user: IUsers;
@@ -196,4 +199,42 @@ export default class AuthService implements IAuthService {
 }
 
 
+async changePassword(email: string, password: string): Promise<IUsers | null> {
+    try {
+      const hashedPassword = await bcrypt.hash(password, 10);
+      const user = await this.userRepository.changePassword( hashedPassword,email);
+
+      console.log(user);
+      
+      return user;
+    } catch (error) {
+      return null;
+    }
+  }
+
+
+  
+async verifyOldPassword(id: string, oldPassword: string): Promise<IUsers | null> {
+
+    try {
+      const user = await this.userRepository.findById(id);
+      if (!user) {
+        return null;
+      }
+      
+      const isPasswordMatched = await bcrypt.compare(
+        oldPassword,
+        user?.password as string
+      );
+
+
+      return isPasswordMatched ? user : null;
+    } catch (error) {
+      return null;
+    }
+
 }
+
+
+}
+

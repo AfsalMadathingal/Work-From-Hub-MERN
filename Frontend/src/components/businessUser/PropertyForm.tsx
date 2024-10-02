@@ -403,11 +403,11 @@ const BuildingForm: React.FC = () => {
                   className="mt-1 block w-full p-2 border border-gray-300 rounded"
                 >
                   <option value="">Select timing</option>
-                  <option value="08:00-12:00">8:00 AM-05:00 PM</option>
-                  <option value="08:00-12:00">9:00 AM-06:00 PM</option>
-                  <option value="08:00-12:00">10:00 AM-07:00 PM</option>
-                  <option value="08:00-12:00">11:00 AM-08:00 PM</option>
-                  <option value="08:00-12:00">12:00 PM -10:00 PM</option>
+                  <option value="08:00-05:00">8:00 AM-05:00 PM</option>
+                  <option value="09:00-06:00">9:00 AM-06:00 PM</option>
+                  <option value="10:00-07:00">10:00 AM-07:00 PM</option>
+                  <option value="11:00-08:00">11:00 AM-08:00 PM</option>
+                  <option value="12:00-10:00">12:00 PM -10:00 PM</option>
                 </select>
                 <p className="text-xs text-orange-500">
                   Note: Please choose one of the available time slots from the

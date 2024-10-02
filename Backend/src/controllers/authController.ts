@@ -5,11 +5,14 @@ import { ApiError } from "../middleware/errorHandler";
 import OTPService from "../services/implementations/OTPService";
 import UserService from "../services/implementations/UserService";
 import { accessTokenForReset, generateAccessToken } from "../utils/jwt";
+import { IAuthService } from "../services/interface/IAuthService";
+import { emit } from "process";
+import { IUserService } from "services/interface/IUserService";
 
 class AuthController {
-  private authService: AuthService;
+  private authService: IAuthService;
   private OTPService: OTPService;
-  private UserService: UserService;
+  private UserService: IUserService;
 
   options = {
     httpOnly: true,
@@ -292,15 +295,9 @@ class AuthController {
   ) => {
     const { user } = req;
 
-    console.log("=============userfromreq=======================");
-    console.log(user);
-    console.log("====================================");
 
     const logoutData = await this.authService.logout(user.rawToken, user.id);
 
-    console.log("=====================logoutData===============");
-    console.log(logoutData);
-    console.log("====================================");
 
     if (logoutData) {
       return res
@@ -350,6 +347,62 @@ class AuthController {
     } catch (error) {
       next(error)
 
+    }
+  };
+
+  public changePassword = async (req: Request, res: Response , next:NextFunction ) => {
+
+    const {currentPassword, newPassword, email } = req.body;
+
+
+
+    try {
+
+
+
+      const userFound = await this.UserService.findByEmail(email)
+
+      if(!userFound){
+        return res
+        .status(404)
+        .json(new ApiResponse(404, null, "something went wrong"));
+  
+      }
+
+
+      const compare = await this.authService.verifyOldPassword(userFound._id.toString(),currentPassword)
+
+
+        if(!compare){
+
+          return res
+          .status(404)
+          .json(new ApiResponse(404, null, "Current Password Is Wrong "));
+    
+          
+        }
+      
+      
+      
+
+      const user = await this.authService.changePassword(email, newPassword);
+
+
+
+      if (user) {
+        return res
+          .status(200)
+          .json(new ApiResponse(200, user, "Password Changed Successfully"));
+      }
+
+
+      return res
+      .status(404)
+      .json(new ApiResponse(404, user, "something went wrong"));
+
+      
+    } catch (error) {
+      next(error)
     }
   };
 }

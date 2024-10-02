@@ -202,6 +202,17 @@ export default class UserRepository implements IUserRepository {
     }
   }
 
+  async findById(id: string): Promise<IUsers | null> {
+    try {
+
+      const user = await Users.findById(id).select("-refreshToken");
+      
+      return user;
+    } catch (error) {
+      return null;
+    }
+  }
+
   
 
 }

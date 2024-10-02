@@ -69,5 +69,19 @@ export default class UserService implements IUserService {
   }
 
 
+  async findByEmail(email: string): Promise<IUsers | null> {
+
+
+    const userFound = await this.userRepository.findByUsername(email)
+
+    if(userFound){
+      return userFound
+    }
+
+    return null
+
+  }
+
+
 
 }

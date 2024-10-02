@@ -193,3 +193,20 @@ export const updateBookingStatus = async (result , user: IUsers, bookingDetails:
     return error.response;
   }
 };
+
+export const changePassword = async (currentPassword: string, newPassword: string , email : string) => {
+  try {
+
+    const response = await userAxiosInstance.patch<{ message: string }>(`/api/user/auth/change-password`, {
+      currentPassword,
+      newPassword,
+      email
+    });
+
+    return response;
+
+  } catch (error) {
+    return error.response;
+  }
+};
+

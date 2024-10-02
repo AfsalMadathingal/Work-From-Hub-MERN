@@ -1,29 +1,31 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FaAd, FaAddressCard, FaBars, FaBook, FaCross, FaSignOutAlt, FaUser, FaWallet, FaWindowClose } from 'react-icons/fa';
+import { FaAd, FaAddressCard, FaBars, FaBook, FaCog, FaCross, FaSignOutAlt, FaUser, FaWallet, FaWindowClose } from 'react-icons/fa';
 import { EditIcon, EyeIcon, PencilIcon } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { logout } from '../../services/UserAuthService';
-import { setIsAuthenticated, setLoading, setUser } from '../../redux/slices/userSlice';
-import { useNavigate } from 'react-router-dom';
+import { setError, setIsAuthenticated, setLoading, setUser } from '../../redux/slices/userSlice';
+import { Link, useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loading from 'react-loading';
 import { editUserProfilePic } from '../../services/userServices';
 import Cropper, { ReactCropperElement } from 'react-cropper';
 import 'cropperjs/dist/cropper.css';
 import AnimatedPage from '../Animation';
+import PasswordResetModal from './PasswordResetModal';
 
 const ProfileSidebar = () => {
   const { user, loading } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const [isSidebarOpen, setSidebarOpen] = useState(false);
   const [editProfilePic, setEditProfilePic] = useState(false);
   const [profilePic, setProfilePic] = useState(user?.profile_pic);
   const [formData, setFormData] = useState(new FormData());
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const cropperRef = useRef<ReactCropperElement>(null);
+  const [changePasswordModal, setChangePasswordModal] = useState(false);
+
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -91,10 +93,18 @@ const ProfileSidebar = () => {
     setSelectedFile(null);
   };
 
+  const handlePasswordResetClose = () => {
+    setChangePasswordModal(false);
+    dispatch(setLoading(false));
+    dispatch(setError({}));
+  }
+
 
 
   return (
     <>
+
+    <PasswordResetModal isOpen={changePasswordModal} onClose={handlePasswordResetClose} />
 
       {/* modal to edit image */}
 
@@ -152,16 +162,19 @@ const ProfileSidebar = () => {
         <div className="mt-6 flex flex-col items-center">
           <p className="text-lg font-semibold">{user?.fullName}</p>
           <p className="text-gray-600 text-small">{user?.email}</p>
+          <p 
+          onClick={()=>{setChangePasswordModal(true)}}
+          className="text-orange-500 text-small cursor-pointer">Change Password</p>
         </div>
         <div className="mt-6 space-y-2">
-          <button className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
+          <Link to="/user/profile" className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
             <FaUser className="mr-2" />
             Profile
-          </button>
-          <button className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
-            <FaBook className="mr-2" />
-            Bookings
-          </button>
+          </Link>
+          <Link to="/user/bookings" className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
+          <FaBook className="mr-2" />
+          Bookings
+          </Link>
           <button className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
             <FaAddressCard className="mr-2" />
             Membership
@@ -182,6 +195,8 @@ const ProfileSidebar = () => {
       <button onClick={toggleSidebar} className="lg:hidden p-2 text-orange-500 focus:outline-none fixed top-4 left-4 z-20">
         ☰
       </button>
+
+
     </>
   );
 };
