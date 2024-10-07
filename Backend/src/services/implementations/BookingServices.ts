@@ -23,6 +23,16 @@ export default class BookingService implements IBookingService {
         
         return null
     }
+    
+
+    async getBookingsByUserId(id: string): Promise<IBooking[] | null> {
+        
+        const bookingResponse = await this.bookingRepository.getBookingsByUserId(id);
+        if(bookingResponse){
+            return bookingResponse
+        }
+        return null
+    }
 
 
 }

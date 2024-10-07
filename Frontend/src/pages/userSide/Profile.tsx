@@ -16,8 +16,9 @@ const Profile = () => {
       <AnimatedPage>
         <div className="min-h-screen flex flex-col">
           <Header />
-          <main className="flex-grow flex">
+          <main className=" flex-grow flex">
             <ProfileSidebar />
+
             <section className="flex-1 p-4">
               <ProfileDetails />
             </section>

@@ -2,7 +2,7 @@ import { Request } from "express";
 import { IWorkspace } from "../../entities/workspace";
 import { WorkspaceRepository } from "../../repositories/implementations/WorkspaceRepository";
 import { GetPendingWorkspace, IWorkspaceRepository } from "../../repositories/interface/IWorkspaceRepository";
-import { IWorkspaceService } from "../../services/interface/IWorkSpaceService";
+import { IFilters, IWorkspaceService } from "../../services/interface/IWorkSpaceService";
 import { IBusinessUser } from "../../entities/BusinessUserEntity";
 import { IUploadService } from "../../services/interface/IUploadService";
 import UploadService from "./UploadService";
@@ -111,6 +111,14 @@ export default class WorkspaceService implements IWorkspaceService{
      
      async getSingleWorkspace(id: string): Promise<IWorkspace | null> {
       const response = await this.workspaceRepository.findById(id);
+      return response;
+     }
+
+
+     async getWithFilters(filter: Partial<IFilters>): Promise<IWorkspace[] | null> {
+
+      const response = await this.workspaceRepository.getWithFilters(filter);
+
       return response;
      }
   

@@ -38,5 +38,26 @@ export default class BookingRepository implements IBookingRepository{
 
     }
 
+    async getBookingsByUserId(id: string): Promise<IBooking[] | null> {
+        
+        try {
+
+            const bookings = await BookingModel.find({userId:id})
+
+            if(bookings){
+                return bookings
+            }
+
+           return null
+            
+        } catch (error) {
+
+            return null
+            
+        }
+    }
+
+     
+
 
 }

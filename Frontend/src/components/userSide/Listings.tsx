@@ -1,5 +1,5 @@
 // components/Listings.tsx
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import ListingCard from './ListingCard';
 import { toast } from 'react-toastify';
 import { useDispatch, useSelector } from 'react-redux';
@@ -8,22 +8,28 @@ import { setLoading } from '../../redux/slices/userSlice';
 import { getWorkspace } from '../../services/userServices';
 import { IWorkspace } from '../../@types/workspace';
 import ListingCardSkeloton from './ListingCardSkeloton';
+import QuickFilters from './QuickFilters';
 
 
 
-const Listings = () => {
+const Listings = ({filters}) => {
 
     const [listings, setListings] = React.useState<IWorkspace[]>([]);
     const {loading } = useSelector((state: RootState) => state.user);
     const dispatch = useDispatch();
 
-    const fetchListings = async () => {
+
+
+    const fetchListings = async (filters) => {
       try {
         dispatch(setLoading(true));
-        const response = await getWorkspace();
+        const response = await getWorkspace(filters);
         await new Promise((resolve) => setTimeout(resolve, 300));
     
         if (response.status === 200) {
+          
+          console.log(response);
+          
           setListings(response.data.data.approvedWorkspaces);
         } else {
           toast.error("Failed to fetch listings");
@@ -37,11 +43,12 @@ const Listings = () => {
 
 
     useEffect(() => {
-      fetchListings();
-    }, []);
+      fetchListings(filters);
+    }, [filters]);
 
   return (
     <>
+
     { loading ? <ListingCardSkeloton /> : null }
     <div className="space-y-6">
       {listings.map((listing, index) => (

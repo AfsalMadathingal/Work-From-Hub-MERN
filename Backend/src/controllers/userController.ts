@@ -10,7 +10,7 @@ import { IUsers } from "entities/UserEntity";
 import { IPlanService } from "../services/interface/IPlanService";
 import PlanService from "../services/implementations/PlanService";
 import WorkspaceService from "../services/implementations/WorkspaceService";
-import { IWorkspaceService } from "../services/interface/IWorkSpaceService";
+import { IFilters, IWorkspaceService } from "../services/interface/IWorkSpaceService";
 import { ISeatService } from "../services/interface/ISeatService";
 import { SeatService } from "../services/implementations/SeatService";
 import { IPaymentService } from "../services/interface/IPaymentService";
@@ -151,7 +151,45 @@ class UserController {
     next: NextFunction
   ) => {
     try {
+
+   
+
+      const {ac,restRoom,powerBackup,wifiAvailable,rating,price} = req.query;
+
+      console.log(req.query);
+      
+
+      if(ac || restRoom || powerBackup || wifiAvailable || rating || price){
+
+        let filter: IFilters = {} as IFilters;
+
+        if(restRoom !== undefined){
+          filter.bathroom = restRoom === 'true'
+        }
+        if (ac !== undefined) {
+            filter.ac = ac === 'true';
+        }
+        if (powerBackup !== undefined) {
+            filter.powerBackup = powerBackup === 'true'; 
+        }
+
+        filter.approved = true;
+
+        console.log(filter);
+        
+
+        const filteredWorkspaces = await this.workspaceService.getWithFilters(filter)
+
+        console.log(filteredWorkspaces);
+        return res
+        .status(200)
+        .json(new ApiResponse(200, {approvedWorkspaces:filteredWorkspaces}, "Fetched Successfully"));
+
+      }
+
       const workspace = await this.workspaceService.getApprovedWorkspaces(1, 4);
+
+
       if (!workspace) {
         return res
           .status(404)
@@ -387,6 +425,23 @@ class UserController {
       return res
         .status(200)
         .json(new ApiResponse(200, null, "Reserved Successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getBookings = async (req: Request, res: Response, next: NextFunction) => {
+
+    try {
+
+      const {userId}= req.params;
+
+      const bookings = await this.bookingService.getBookingsByUserId(userId)
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, bookings, "fetched successfully"));
 
     } catch (error) {
       next(error);

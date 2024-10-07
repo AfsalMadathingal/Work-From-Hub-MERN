@@ -101,10 +101,15 @@ export const validateUserSession = async () => {
   }
 };
 
-export const getWorkspace = async () => {
+export const getWorkspace = async (filters) => {
   try {
 
-    const response = await userAxiosInstance.get<IWorkspace>('/api/user/workspace')
+    const queryParams = new URLSearchParams(filters).toString();
+
+    console.log(queryParams);
+    
+
+    const response = await userAxiosInstance.get<IWorkspace>(`/api/user/workspace/filters?${queryParams}`)
 
 
     
@@ -209,4 +214,20 @@ export const changePassword = async (currentPassword: string, newPassword: strin
     return error.response;
   }
 };
+
+export const getBooking = async (userId:string)=>{
+
+  try {
+
+    const response = await userAxiosInstance.get(`/api/user/bookings/${userId}`)
+
+    return response;
+
+  } catch (error) {
+    
+    return error.response;
+  }
+};
+
+
 

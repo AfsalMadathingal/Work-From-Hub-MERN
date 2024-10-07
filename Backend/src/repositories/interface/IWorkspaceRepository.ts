@@ -1,3 +1,4 @@
+import { IFilters } from "services/interface/IWorkSpaceService";
 import { IWorkspace } from "../../entities/workspace";
 export interface GetPendingWorkspace {
   pendingSubmissions?: IWorkspace[];
@@ -12,7 +13,7 @@ export interface IWorkspaceRepository {
   rejectWorkspace(id: string): Promise<IWorkspace | null>;
   getAllWorkspaces(): Promise<IWorkspace[] | null>;
   findById(id: string): Promise<IWorkspace | null>;
-  
+  getWithFilters(filter:Partial<IFilters>):Promise<IWorkspace[] | null>;
   // update(id: string, IWorkspace: Partial<IWorkspace>): Promise<IWorkspace | null>;
   // delete(id: string): Promise<boolean>;
 

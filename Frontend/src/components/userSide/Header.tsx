@@ -31,7 +31,7 @@ export default function Header() {
         <div 
 
         onClick={() => navigate("/user/home")}
-        className="w-20 cursor-pointer">
+        className="w-20 m-5 cursor-pointer">
         <img src="/logo.png" alt="" />
         </div>
       </NavbarBrand>

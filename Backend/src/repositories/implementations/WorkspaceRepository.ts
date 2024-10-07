@@ -2,6 +2,7 @@ import { GetPendingWorkspace, IWorkspaceRepository } from "../interface/IWorkspa
 import { IWorkspace as Workspace } from "../../entities/workspace";
 import { ObjectId } from "mongodb";
 import { WorkspaceModel } from "../../models/workspace";
+import { IFilters } from "services/interface/IWorkSpaceService";
 
 
 export class WorkspaceRepository implements IWorkspaceRepository {
@@ -115,6 +116,26 @@ export class WorkspaceRepository implements IWorkspaceRepository {
       return null
     }
 
+  }
+
+
+  async getWithFilters(filter: Partial<IFilters>): Promise<Workspace[] | null> {
+
+    try {
+
+      console.log('====================================');
+      console.log(filter);
+      console.log('====================================');
+
+      const workspaces = await this.collection.find(filter).sort({ createdAt: -1 });
+
+      return workspaces;
+
+
+
+    } catch (error) {
+      return null
+    }
   }
   
 

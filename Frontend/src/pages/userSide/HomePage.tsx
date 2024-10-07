@@ -6,7 +6,11 @@ import FeatureSection from "../../components/userSide/FeatureSection";
 import AnimatedPage from "../../components/Animation";
 
 
+
 const HomePage = () => {
+
+
+
   return (
     <>
     <AnimatedPage>
