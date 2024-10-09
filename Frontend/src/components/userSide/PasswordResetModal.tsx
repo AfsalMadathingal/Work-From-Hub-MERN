@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { passwordChangeValidator, validatePassword } from '../../utils/userValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
@@ -18,6 +18,9 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const {user , loading } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
+
+
+
 
   if (!isOpen) return null;
 
@@ -52,17 +55,34 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
            
         } 
 
+        
 
+        clearFields();
         dispatch(setLoading(false));
 
     } catch (error) {
-
+      clearFields();
         toast.error("Something went wrong");
         
     }
 
 
   };
+
+
+  const handleCancel = () => {
+    clearFields();
+    onClose();
+  };
+
+  const  clearFields = () => {
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+    setError({});
+  };
+
+
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
@@ -127,7 +147,7 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
             <button
               type="button"
               className="px-4 py-2 bg-gray-300 rounded-md hover:bg-gray-400"
-              onClick={onClose}
+              onClick={handleCancel}
             >
               Cancel
             </button>

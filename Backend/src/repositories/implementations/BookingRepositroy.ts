@@ -42,7 +42,7 @@ export default class BookingRepository implements IBookingRepository{
         
         try {
 
-            const bookings = await BookingModel.find({userId:id})
+            const bookings = await BookingModel.find({userId:id}).sort({date:-1})
 
             if(bookings){
                 return bookings

@@ -11,7 +11,7 @@ export const subscribe = async (userId: string, planId: string) => {
     const response = await api.post(
       "/api/subscriptions/create-checkout-session",
       {
-        userId,
+        userId, 
         planId,
       }
     );
@@ -45,6 +45,9 @@ export const editUserProfilePic = async (FormData:FormData)=>{
     const response = await userAxiosInstance.patch('/api/user/upload-profile-photo',FormData)
 
 
+     console.log('====================================');
+     console.log("hello");
+     console.log('====================================');
 
     return response 
 

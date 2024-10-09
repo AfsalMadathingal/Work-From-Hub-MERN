@@ -54,6 +54,8 @@ export default function BookingHistory() {
       }
 
       const bookingData = response.data.data;
+
+      
       setBookings(bookingData);
       await fetchWorkspaceNames(bookingData); // Fetch and store workspace names
     } catch (error) {

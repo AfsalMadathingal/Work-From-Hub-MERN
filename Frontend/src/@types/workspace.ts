@@ -1,5 +1,6 @@
 export interface IWorkspace {
     _id?:string;
+    approved?:boolean;
     buildingName: string;
     state: string;
     district: string;

@@ -29,6 +29,9 @@ class UserController {
   private paymentService: IPaymentService;
   private bookingService: IBookingService;
 
+
+
+
   constructor() {
     this.userService = new UserService();
     this.AuthService = new AuthService();
@@ -70,16 +73,30 @@ class UserController {
     next: NextFunction
   ) => {
     try {
+
+
       if (!req.file) {
         return res
           .status(400)
           .json(new ApiError(400, "Upload Error", "No file to Upload"));
       }
 
-      const uploadResult = await this.uploadService.uploadSinglePhoto(
-        req.file.path
-      );
-      const user = { profilePic: uploadResult.url, id: req.user.id };
+      const  file = req.file;
+
+      
+
+
+      // console.log(fileUrl);
+      
+
+      // const uploadResult = await this.uploadService.uploadSinglePhoto(
+      //   req.file.path
+      // );
+
+      const url = await this.uploadService.uploadSinglePhotoToS3(file.buffer)
+
+
+      const user = { profilePic: url, id: req.user.id };
 
       console.log(user);
 
@@ -99,6 +116,7 @@ class UserController {
         .status(500)
         .json(new ApiError(500, "Error While Uploading", "uploading failed"));
     } catch (error) {
+
       next(error);
     }
   };
@@ -127,6 +145,7 @@ class UserController {
         .status(200)
         .json(new ApiResponse(200, activePlan, "Fetched Successfully"));
     } catch (error) {
+
       next(error);
     }
   };
@@ -395,6 +414,8 @@ class UserController {
           .json(new ApiResponse(404, null, "seat Cant Be booked"));
       }
 
+
+
       const booking: Partial<IBooking> = {
         userId: user._id as string,
         seatId: bookingDetails.seatId as string,
@@ -412,9 +433,7 @@ class UserController {
 
       const bookingCreated = await this.bookingService.createBooking(booking);
 
-      console.log('====================================');
-      console.log(bookingCreated);
-      console.log('====================================');
+
 
       if(!bookingCreated){
         return res

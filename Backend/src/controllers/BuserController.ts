@@ -6,6 +6,7 @@ import BusinessUserService from "../services/implementations/BusinessUserService
 import { IBusinessUser } from "../entities/BusinessUserEntity";
 import { ApiError } from "../middleware/errorHandler";
 import ApiResponse from "../utils/ApiResponse";
+import { HttpStatus } from "../enums/HttpStatus";
 
 class BUserController {
 
@@ -28,17 +29,18 @@ class BUserController {
        
 
             if(!req.files){
-                return res.status(500)
+                return res.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .json(
                     new ApiError(
-                        500,
+                        HttpStatus.INTERNAL_SERVER_ERROR,
                         "no files found ",
                         "something wrong with uploading"
                     )
                 )
             }
 
-            console.log('hi from submiting');
+
+            console.log(req.file);
             
 
             const response = await this.workspaceService.submitWorkspaceListing(req)
@@ -46,7 +48,7 @@ class BUserController {
             console.log(response);
             
 
-            res.json(new ApiResponse(200,response,"Workspace listing created successfully"))
+            res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,response,"Workspace listing created successfully"))
             
         } catch (error) {
 
@@ -73,7 +75,7 @@ class BUserController {
 
 
         if(!user){
-            throw new ApiError(500,"something went wrong ", "please trddy again later")
+            throw new ApiError(HttpStatus.INTERNAL_SERVER_ERROR,"something went wrong ", "please trddy again later")
         }
 
         next()
@@ -96,7 +98,7 @@ class BUserController {
 
           
            
-           return res.json(new ApiResponse(200, response, "fetched successfully"))
+           return res.json(new ApiResponse( HttpStatus.OK, response, "fetched successfully"))
             
 
         } catch (error) {
@@ -117,7 +119,7 @@ class BUserController {
 
             console.log(response);
             
-            return res.json(new ApiResponse(200, response, "fetched successfully"));
+            return res.json(new ApiResponse( HttpStatus.OK, response, "fetched successfully"));
             
 
         } catch (error) {
@@ -140,7 +142,7 @@ class BUserController {
 
             console.log(response);
             
-            return res.json(new ApiResponse(200, response, "fetched successfully"));
+            return res.json(new ApiResponse( HttpStatus.OK, response, "fetched successfully"));
             
 
         } catch (error) {

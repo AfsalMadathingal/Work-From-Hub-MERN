@@ -28,7 +28,7 @@ export default function BApprovedWorkspaces() {
     try {
       const response = await getApprovedWorkspaces(page, limit);
       if (response.status === 200) {
-        setWorkspaces(response.data.data);
+        setWorkspaces(response.data.data.approvedWorkspaces);
         setTotalPages(response.data.data.totalPages);
       } else if (response.status === 401) {
         await logout();

@@ -33,7 +33,17 @@ export default function BWorkspaceListing() {
     try {
       const response = await getAllWorkspaces(page, limit);
       if (response.status === 200) {
-        setWorkspaces(response.data.data);
+
+        console.log(response.data.data);
+        
+
+        const filteredData = response.data.data.filter(
+          (workspace: IWorkspace) => !workspace.approved
+        )
+
+        console.log(filteredData);
+        
+        setWorkspaces(filteredData);
         setTotalPages(response.data.data.totalPages);
       } else if (response.status === 401) {
         await logout();

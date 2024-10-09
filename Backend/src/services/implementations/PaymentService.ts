@@ -133,6 +133,8 @@ export default class PaymentService implements IPaymentService {
         try {
             const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
+
+
             return paymentIntent;
             
         } catch (error) {
@@ -142,6 +144,24 @@ export default class PaymentService implements IPaymentService {
             throw error;
         }
     }
+
+     async getInvoice(invoice: string): Promise<Stripe.Invoice | null> {
+
+        try {
+
+            const invoiceData = await stripe.invoices.retrieve(invoice);
+
+            return invoiceData;
+            
+        } catch (error) {
+            if (error instanceof Stripe.errors.StripeError && error.code === "resource_missing") {
+                return null;
+            }
+            throw error;
+        }
+    }
+
+    
 
 
 
