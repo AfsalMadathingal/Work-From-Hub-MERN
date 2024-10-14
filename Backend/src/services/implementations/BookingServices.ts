@@ -35,4 +35,21 @@ export default class BookingService implements IBookingService {
     }
 
 
+    async getBookings(page: number, limit: number):  Promise<{ totalBookings: number; bookings: IBooking[] | null }>{
+
+
+         
+        const bookingResponse = await this.bookingRepository.getBookings(page,limit);
+
+
+        if(bookingResponse){
+            return bookingResponse
+        }
+
+
+        return null
+    }
+    
+
+
 }

@@ -34,5 +34,7 @@ adminRouter.patch('/approve-workspace/:id',authenticate,adminController.approveW
 adminRouter.patch('/reject-workspace/:id',authenticate,adminController.rejectWorkspace)
 adminRouter.get('/approved-workspaces',authenticate,adminController.getApprovedWorkspaces)
 
+adminRouter.get('/bookings',authenticate,adminController.getBookings)
+
 
 export default adminRouter

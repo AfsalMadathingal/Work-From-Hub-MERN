@@ -229,3 +229,17 @@ export const validateAdminSession = async ()=>{
   }
 }
 
+export const getAllBookings = async (page: number, itemsPerPage: number) => {
+
+  try {
+
+    const response = await api.get(`/api/admin/bookings?page=${page}&limit=${itemsPerPage}`)
+
+    return response
+
+  } catch (error) {
+
+    return error.response
+  }
+}
+

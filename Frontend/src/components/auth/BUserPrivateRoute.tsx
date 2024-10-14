@@ -9,6 +9,8 @@ interface PrivateRouteProps {
 
 const PrivateRoute: React.FC<PrivateRouteProps> = ({ element: Element }) => {
 
+  
+
 
 
   const { isAuthenticated } = useSelector((state: RootState) => state.businessUser);

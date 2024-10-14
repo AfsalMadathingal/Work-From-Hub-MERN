@@ -46,7 +46,9 @@ userAxiosInstance.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return userAxiosInstance(originalRequest);
         } catch (err) {
+          
           toast.error("Session expired, please log in again.");
+          // window.location.href = "/login";
           return Promise.reject(err);
         }
       }

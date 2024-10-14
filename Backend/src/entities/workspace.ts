@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, model } from 'mongoose';
+import mongoose, { Schema, Document, model, ObjectId } from 'mongoose';
 
 export interface IWorkspace extends Document {
   buildingName?: string;
@@ -15,7 +15,7 @@ export interface IWorkspace extends Document {
   video?: string;
   tablesAvailable?: number;
   seatsPerTable?: number;
-  ownerId?: string;
+  ownerId?:  ObjectId;
   createdAt?: Date;
   updatedAt?: Date;
   approved?:boolean;

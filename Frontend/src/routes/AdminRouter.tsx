@@ -4,6 +4,7 @@ import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PublicRoute from "../components/auth/AdminPublicRoute";
 import PrivateRoute from "../components/auth/AdminPrivateRoute";
+const BookingHistory = lazy(() => import("../pages/admin/BookingHistory"));
 const WorkspaceSubmission = lazy(() => import("../pages/admin/WorkspaceSubmission"));
 const View = lazy(() => import("../pages/admin/ViewWorkSpace"));
 const WorkspaceManagement = lazy(() => import("../pages/admin/WorkSpaceManagement"));
@@ -143,6 +144,22 @@ const AdminRouter = () => {
             }
           >
             <PrivateRoute element={WorkspaceManagement} />
+          </Suspense>
+        }
+      />
+       <Route
+        path="/bookings"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={BookingHistory} />
           </Suspense>
         }
       />

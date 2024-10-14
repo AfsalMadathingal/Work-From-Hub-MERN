@@ -56,6 +56,37 @@ export default class BookingRepository implements IBookingRepository{
             
         }
     }
+    async getBookings(page: number, limit: number): Promise<{ totalBookings: number; bookings: IBooking[] | null }> {
+        try {
+          const skip = (page - 1) * limit;
+
+          const totalBookings = await BookingModel.countDocuments();
+
+          const bookingResponse = await BookingModel.find()
+            .skip(skip)
+            .limit(limit)
+            .sort('-date')
+            .populate('userId', '-password')
+            .populate('seatId')
+            .populate({
+                path: 'workspaceId', 
+                populate: {
+                  path: 'ownerId', 
+                  select: 'fullName email' 
+                }
+              })
+            .exec();
+
+          return {
+            totalBookings,
+            bookings: bookingResponse || null
+          };
+        } catch (error) {
+          console.error('Error fetching bookings:', error);
+          throw new Error('Unable to fetch bookings.');
+        }
+      }
+      
 
      
 

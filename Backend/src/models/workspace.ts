@@ -18,7 +18,7 @@ const workspaceSchema = new Schema<IWorkspace>({
   video: { type: String },
   tablesAvailable: { type: Number, required: true },
   seatsPerTable: { type: Number, required: true },
-  ownerId: { type: String, required: true },
+  ownerId:{ type: Schema.Types.ObjectId, ref: 'BusinessUser', required: true },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
   approved:{type:Boolean,default:false},

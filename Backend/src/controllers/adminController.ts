@@ -4,16 +4,21 @@ import ApiResponse from "../utils/ApiResponse";
 import BusinessUserService from "../services/implementations/BusinessUserService";
 import { IWorkspaceService } from "../services/interface/IWorkSpaceService";
 import WorkspaceService from "../services/implementations/WorkspaceService";
+import { HttpStatus } from "../enums/HttpStatus";
+import { IBookingService } from "../services/interface/IBookingService";
+import BookingService from "../services/implementations/BookingServices";
 
 class AdminController {
   private userService: UserService;
   private businessUserService: BusinessUserService;
   private workspaceService: IWorkspaceService;
+  private bookingService : IBookingService;
 
   constructor() {
     this.userService = new UserService();
     this.businessUserService = new BusinessUserService();
     this.workspaceService = new WorkspaceService();
+    this.bookingService = new BookingService();
   }
 
   public getAllUser = async (req: Request, res: Response) => {
@@ -224,6 +229,21 @@ class AdminController {
       return res
         .status(200)
         .json(new ApiResponse(200, null, "Success"));
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  public getBookings = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const page = parseInt(req.query.page as string) || 1;
+      const limit = parseInt(req.query.limit as string) || 5;
+
+      const bookings = await this.bookingService.getBookings(page, limit)
+
+      return res
+        .status(200)
+        .json(new ApiResponse(HttpStatus.OK, bookings, "fetched successfully"));
     } catch (error) {
       next(error);
     }

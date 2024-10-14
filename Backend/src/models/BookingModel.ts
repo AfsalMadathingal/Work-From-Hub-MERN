@@ -3,9 +3,9 @@ import mongoose, { Document, Schema } from "mongoose";
 
 
 const BookingSchema: Schema = new Schema({
-  userId: { type: String, required: true },
-  seatId: { type: String, required: true },
-  workspaceId: { type: String, required: true },
+  userId: { type: Schema.Types.ObjectId, ref: 'Users', required: true }, // 'User' should be the User model name
+  seatId: { type: Schema.Types.ObjectId, ref: 'Seat', required: true }, // 'Seat' should be the Seat model name
+  workspaceId: { type: Schema.Types.ObjectId, ref: 'Workspace', required: true }, // 'Workspace' should be the Workspace model name
   date: { type: Date, required: true },
   status: { type: String, default: "pending" },
   paymentIntentId: { type: String },
@@ -18,6 +18,7 @@ const BookingSchema: Schema = new Schema({
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
+
 
 const BookingModel = mongoose.model<IBooking>("Booking", BookingSchema);
 

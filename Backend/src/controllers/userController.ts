@@ -466,6 +466,30 @@ class UserController {
       next(error);
     }
   };
+
+  public getSeatById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+      const { id } = req.params;
+
+      const seat = await this.seatService.getSeatById(id);
+
+      if (!seat) {
+        return res
+          .status(404)
+          .json(new ApiResponse(404, null, "Seat is not found with this id"));
+      }
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, seat, "fetched successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+  
 }
 
 export default new UserController();

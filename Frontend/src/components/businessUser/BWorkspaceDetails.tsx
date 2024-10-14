@@ -88,127 +88,126 @@ const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
   };
 
   return (
-    <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-semibold">{buildingName}</h2>
-        <div
-         className="flex items-center space-x-2 text-sm">
-          <span>Submitted:</span>
-          <span className="font-semibold">
-            {new Date(createdAt).toLocaleString()}
-          </span>
-        </div>
-      </div>
-     
+<div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
+  <div className="flex items-center justify-between mb-4">
+    <h2 className="text-3xl font-semibold text-gray-800">{buildingName}</h2>
+    <div className="flex items-center space-x-2 text-sm text-gray-600">
+      <span>Submitted:</span>
+      <span className="font-semibold">
+        {new Date(createdAt).toLocaleString()}
+      </span>
+    </div>
+  </div>
 
-      {/* Image Slider */}
-      {photos.length > 0 && (
-        <div className="mb-6">
-          <Slider {...sliderSettings}>
-            {photos.map((photoUrl, index) => (
-              <div key={index}>
-                <img
-                  src={photoUrl}
-                  alt={`Workspace Photo ${index + 1}`}
-                  className="w-full h-64 object-cover rounded-lg"
-                />
-              </div>
-            ))}
-          </Slider>
-        </div>
-      )}
-
-      {/* Video Player */}
-      {video && (
-        <div  className="mb-6 w-1/2 mx-auto">
-          <Player  >
-            <source  src={video} />
-          </Player>
-        </div>
-      )}
-
-      {/* Workspace Details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {/* Location */}
-        <div className="flex items-center">
-          <FaMapMarkerAlt className="text-blue-500 mr-2" />
-          <div>
-            <p>
-              <strong>Address:</strong> {street}, {district}, {state}, {pinCode}
-            </p>
-            <p
-              className="text-blue-600 cursor-pointer"
-              onClick={openInGoogleMaps}
-            >
-              View on Google Maps
-            </p>
+  {/* Image Slider */}
+  {photos.length > 0 && (
+    <div className="mb-6">
+      <Slider {...sliderSettings}>
+        {photos.map((photoUrl, index) => (
+          <div key={index}>
+            <img
+              src={photoUrl}
+              alt={`Workspace Photo ${index + 1}`}
+              className="w-full h-64 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
+            />
           </div>
-        </div>
+        ))}
+      </Slider>
+    </div>
+  )}
 
-        {/* Contact */}
-        <div className="flex items-center">
-          <FaPhone className="text-green-500 mr-2" />
-          <p>
-            <strong>Contact:</strong> {contactNo}
-          </p>
-        </div>
+  {/* Video Player */}
+  {video && (
+    <div className="mb-6 w-full mx-auto">
+      <Player>
+        <source src={video} />
+      </Player>
+    </div>
+  )}
 
-        {/* Amenities */}
-        <div className="flex items-center">
-          <FaPowerOff className="text-yellow-500 mr-2" />
-          <p>
-            <strong>Power Backup:</strong> {powerBackup ? "Yes" : "No"}
-          </p>
-        </div>
-
-        <div className="flex items-center">
-          <FaSnowflake className="text-blue-500 mr-2" />
-          <p>
-            <strong>AC:</strong> {ac ? "Available" : "Not Available"}
-          </p>
-        </div>
-
-        <div className="flex items-center">
-          <FaToilet className="text-purple-500 mr-2" />
-          <p>
-            <strong>Bathroom:</strong>{" "}
-            {bathroom ? "Available" : "Not Available"}
-          </p>
-        </div>
-
-        {/* Seating Details */}
-        <div className="flex items-center">
-          <FaTable className="text-indigo-500 mr-2" />
-          <p>
-            <strong>Tables Available:</strong> {tablesAvailable}
-          </p>
-        </div>
-
-        <div className="flex items-center">
-          <FaChair className="text-red-500 mr-2" />
-          <p>
-            <strong>Seats Per Table:</strong> {seatsPerTable}
-          </p>
-        </div>
-        <div className="flex items-center">
-          <FaDollarSign className="text-red-500 mr-2" />
-          <p>
-            <strong>Price Per seat:</strong> ₹ {pricePerSeat}/seat
-          </p>
-        </div>
-
-        {/* Status */}
-        <div className="flex items-center">
-          <span
-            className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white ${
-              approved ? "bg-green-500" : "bg-red-500"
-            }`}
-          >
-            {approved ? "Approved" : "Pending"}
-          </span>
-        </div>
+  {/* Workspace Details */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {/* Location */}
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaMapMarkerAlt className="text-blue-500 mr-2" />
+      <div>
+        <p>
+          <strong>Address:</strong> {street}, {district}, {state}, {pinCode}
+        </p>
+        <p
+          className="text-blue-600 cursor-pointer hover:underline"
+          onClick={openInGoogleMaps}
+        >
+          View on Google Maps
+        </p>
       </div>
     </div>
+
+    {/* Contact */}
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaPhone className="text-green-500 mr-2" />
+      <p>
+        <strong>Contact:</strong> {contactNo}
+      </p>
+    </div>
+
+    {/* Amenities */}
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaPowerOff className="text-yellow-500 mr-2" />
+      <p>
+        <strong>Power Backup:</strong> {powerBackup ? "Yes" : "No"}
+      </p>
+    </div>
+
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaSnowflake className="text-blue-500 mr-2" />
+      <p>
+        <strong>AC:</strong> {ac ? "Available" : "Not Available"}
+      </p>
+    </div>
+
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaToilet className="text-purple-500 mr-2" />
+      <p>
+        <strong>Bathroom:</strong> {bathroom ? "Available" : "Not Available"}
+      </p>
+    </div>
+
+    {/* Seating Details */}
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaTable className="text-indigo-500 mr-2" />
+      <p>
+        <strong>Tables Available:</strong> {tablesAvailable}
+      </p>
+    </div>
+
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaChair className="text-red-500 mr-2" />
+      <p>
+        <strong>Seats Per Table:</strong> {seatsPerTable}
+      </p>
+    </div>
+    
+    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
+      <FaDollarSign className="text-red-500 mr-2" />
+      <p>
+        <strong>Price Per Seat:</strong> ₹ {pricePerSeat}/seat
+      </p>
+    </div>
+
+    {/* Status */}
+    <div className="flex items-center">
+      <span
+        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white ${
+          approved ? "bg-green-500" : "bg-red-500"
+        }`}
+      >
+        {approved ? "Approved" : "Pending"}
+      </span>
+    </div>
+  </div>
+</div>
+
   );
 };
 

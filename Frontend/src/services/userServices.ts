@@ -232,5 +232,21 @@ export const getBooking = async (userId:string)=>{
   }
 };
 
+export const getSeatById = async (seatId: string )=>{
+
+  try {
+
+    const response  = await userAxiosInstance.get(`/api/user/seat/${seatId}`)
+
+    return response
+    
+  } catch (error) {
+    
+   return error.response
+  }
+}
+
+
+
 
 
