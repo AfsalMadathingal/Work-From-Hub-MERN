@@ -104,29 +104,28 @@ export const validateUserSession = async () => {
   }
 };
 
-export const getWorkspace = async (filters) => {
+export const getWorkspace = async (currentPage: number, filters: any ,itemsPerPage:number) => {
   try {
-
-    const queryParams = new URLSearchParams(filters).toString();
+ 
+    const queryParams = new URLSearchParams({ ...filters, page: currentPage , itemsPerPage}).toString();
 
     console.log(queryParams);
-    
-
-    const response = await userAxiosInstance.get<IWorkspace>(`/api/user/workspace/filters?${queryParams}`)
 
 
-    
-
+    const response = await userAxiosInstance.get<IWorkspace>(`/api/user/workspace/filters?${queryParams}`);
 
     return response;
 
   } catch (error) {
 
-
-    
-    return error.response;
+    if (error.response) {
+      return error.response;
+    }
+    console.error("Error fetching workspaces:", error);
+    throw new Error("Unable to fetch workspaces.");
   }
-}
+};
+
 
 export const getSingleWorkspace = async (id: string) => {
   try {

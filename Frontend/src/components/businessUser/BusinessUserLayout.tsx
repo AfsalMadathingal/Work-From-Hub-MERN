@@ -86,7 +86,7 @@ export default function ResponsiveDrawer(props: Props) {
             link: "/business/dashboard",
             icon: <DashboardIcon />,
           },
-          { text: "Booking", link: "/business/booking", icon: <BookIcon /> },
+          { text: "Bookings", link: "/business/bookings", icon: <BookIcon /> },
           { text: "Workspace", link: "/business/workspace-manage", icon: <WorkIcon /> },
           {
             text: "Approved Workspaces",

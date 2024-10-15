@@ -123,15 +123,58 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     }
   }
 
-  async getWithFilters(filter: Partial<IFilters>): Promise<Workspace[] | null> {
+  async getWithFilters( query:string,filter: Partial<IFilters> , page:number,limit:number) : Promise<Workspace[] | null> {
     try {
       console.log("====================================");
       console.log(filter);
       console.log("====================================");
 
+      const searchQuery = {
+        $or: [
+          { buildingName: { $regex: query, $options: "i" } },
+          { district: { $regex: query, $options: "i" } },
+          { street: { $regex: query, $options: "i" } },
+          { state: { $regex: query, $options: "i" } },
+        ],
+      };
+  
+      // Combine search query with filters using $and operator
+      const combinedQuery = {
+        $and: [
+          searchQuery,
+          filter // This includes the filter conditions like ac, bathroom, etc.
+        ]
+      };
+
       const workspaces = await this.collection
-        .find(filter)
-        .sort({ createdAt: -1 });
+        .find(combinedQuery)
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .sort({ createdAt: -1 })
+        
+
+      return workspaces;
+    } catch (error) {
+      return null;
+    }
+  }
+
+
+  async searchWorkspace(query: string, page: number, limit: number): Promise<Workspace[] | null> {
+
+    try {
+      const workspaces = await this.collection
+        .find({
+          $or: [
+            { buildingName: { $regex: query, $options: "i" } },
+            { district: { $regex: query, $options: "i" } },
+            { street: { $regex: query, $options: "i" } },
+            { state: { $regex: query, $options: "i" } },
+
+          ],
+        })
+        .skip((page - 1) * limit)
+        .limit(limit);
 
       return workspaces;
     } catch (error) {

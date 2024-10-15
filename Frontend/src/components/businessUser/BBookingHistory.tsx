@@ -5,9 +5,11 @@ import { IUsers } from "../../@types/user";
 import { ISeat } from "../../@types/seat";
 import { IWorkspace } from "../../@types/workspace";
 import ReactLoading from "react-loading";
-import BookingDetailsModal from "./BookingDetails";
 import jsPDF from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Optional: for table support
+import { getBookingsByOwnerId } from "../../services/BuserService";
+import { useSelector } from "react-redux";
+import { RootState } from "../../redux/store/store";
 
 interface Booking {
   workspaceName: string;
@@ -20,19 +22,20 @@ interface Booking {
   paymentIntentId: string;
 }
 
-const AdminBookingHistory: React.FC = () => {
+const BBookingHistory: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const {user } = useSelector((state: RootState) => state.businessUser);
   const bookingsPerPage = 8;
 
   const fetchBookings = async (page: number) => {
     try {
       setLoading(true);
-      const response = await getAllBookings(page, bookingsPerPage);
+      const response = await getBookingsByOwnerId(user?._id,page, bookingsPerPage);
       if (response.status === 200) {
         setBookings(response.data.data.bookings);
         setTotalPages(
@@ -139,12 +142,12 @@ const AdminBookingHistory: React.FC = () => {
 
   return (
     <>
-      {isModalOpen && (
+      {/* {isModalOpen && (
         <BookingDetailsModal
           booking={selectedBooking}
           onClose={() => setIsModalOpen(false)}
         />
-      )}
+      )} */}
       <div className="container mx-auto px-4">
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-300">
@@ -253,4 +256,4 @@ const AdminBookingHistory: React.FC = () => {
   );
 };
 
-export default AdminBookingHistory;
+export default BBookingHistory;

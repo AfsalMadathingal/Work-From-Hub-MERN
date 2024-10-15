@@ -13,7 +13,8 @@ export interface IWorkspaceRepository {
   rejectWorkspace(id: string): Promise<IWorkspace | null>;
   getAllWorkspaces(): Promise<IWorkspace[] | null>;
   findById(id: string): Promise<IWorkspace | null>;
-  getWithFilters(filter:Partial<IFilters>):Promise<IWorkspace[] | null>;
+  getWithFilters( query:string,filter:Partial<IFilters>  , page:number,limit:number):Promise<IWorkspace[] | null>;
+  searchWorkspace(query: string, page:number,limit:number): Promise<IWorkspace[] | null>;
   // update(id: string, IWorkspace: Partial<IWorkspace>): Promise<IWorkspace | null>;
   // delete(id: string): Promise<boolean>;
 

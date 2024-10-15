@@ -70,6 +70,11 @@ export default function BookingHistory() {
 
       const bookingData = response.data.data;
 
+
+       console.log('====================================');
+       console.log(bookingData);
+       console.log('====================================');
+
       setBookings(bookingData);
       await fetchWorkspaceNames(bookingData); // Fetch and store workspace names
     } catch (error) {
@@ -153,7 +158,7 @@ export default function BookingHistory() {
             <td className="py-3 px-6 text-left whitespace-nowrap">
               <Dropdown>
                 <DropdownTrigger>
-                  <Button variant="text-gray-700">
+                  <Button variant="solid">
                     <MenuIcon />
                   </Button>
                 </DropdownTrigger>

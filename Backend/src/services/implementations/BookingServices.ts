@@ -28,6 +28,8 @@ export default class BookingService implements IBookingService {
     async getBookingsByUserId(id: string): Promise<IBooking[] | null> {
         
         const bookingResponse = await this.bookingRepository.getBookingsByUserId(id);
+
+
         if(bookingResponse){
             return bookingResponse
         }
@@ -49,7 +51,20 @@ export default class BookingService implements IBookingService {
 
         return null
     }
+
+
+    async getBookingsByOwnerId(id: string, page: number, limit: number): Promise<IBooking[] | null> {
+        
+        const bookingResponse = await this.bookingRepository.getBookingsByOwnerId(id, page, limit);
+
+        if(bookingResponse){
+            return bookingResponse
+        }
+        return null
+    }
+
+    
+    }
     
 
 
-}

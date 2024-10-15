@@ -7,16 +7,21 @@ import { IBusinessUser } from "../entities/BusinessUserEntity";
 import { ApiError } from "../middleware/errorHandler";
 import ApiResponse from "../utils/ApiResponse";
 import { HttpStatus } from "../enums/HttpStatus";
+import { IBookingService } from "../services/interface/IBookingService";
+import BookingService from "../services/implementations/BookingServices";
 
 class BUserController {
 
     private workspaceService : IWorkspaceService
     private bUserService : IBusinessUserService
+    private bookingService: IBookingService;
+
 
     constructor()
     {
         this.workspaceService = new WorkspaceService()
         this.bUserService = new BusinessUserService()
+        this.bookingService = new BookingService();
     }
 
 
@@ -151,6 +156,29 @@ class BUserController {
             
         }
     }
+
+    public getBookingsByOwnerId = async (req:Request , res:Response , next:NextFunction)=> {
+
+        try {
+
+            const page = parseInt(req.query.page as string) || 1;
+            const limit = parseInt(req.query.limit as string) || 5;
+            const id = req.query.ownerId.toString();
+
+            const response = await this.bookingService.getBookingsByOwnerId(id,page,limit);
+
+            console.log(response);
+            
+            return res.json(new ApiResponse( HttpStatus.OK, response, "fetched successfully"));
+            
+
+        } catch (error) {
+
+            next(error)
+            
+        }
+    }
+
 
 
     

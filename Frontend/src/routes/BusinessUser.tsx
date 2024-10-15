@@ -5,6 +5,8 @@ import { PRIMARY_COLOR } from "../constant/colors";
 import WorkplaceManage from "../pages/BusinessUserAuth/WorkplaceManage";
 import PublicRoute from "../components/auth/BUsesrPublicRoute";
 import PrivateRoute from "../components/auth/BUserPrivateRoute";
+import BBookingHistory from "../components/businessUser/BBookingHistory";
+import BUserBookingHistory from "../pages/Buser/BBookingHistory";
 const BWorkspaceManage = lazy(() => import("../pages/Buser/WorkspaceManage"));
 const ViewWorkSpace = lazy(() => import("../pages/BusinessUserAuth/ViewWorkSpace"));
 const BWorkspaceSubmissions = lazy(() => import("../pages/Buser/BWorkspaceSubmissions"));
@@ -167,6 +169,22 @@ const BusinessUser = () => {
             }
           >
             <PrivateRoute element={ViewWorkSpace} />
+          </Suspense>
+        }
+      />
+           <Route
+        path="/bookings"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={BUserBookingHistory} />
           </Suspense>
         }
       />

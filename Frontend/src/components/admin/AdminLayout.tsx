@@ -102,7 +102,7 @@ export default function ResponsiveDrawer(props: Props) {
             link: "/admin/membership",
             icon: <FaMoneyBill />,
           },
-          { text: "Booking", link: "/admin/booking", icon: <BookIcon /> },
+          { text: "Booking", link: "/admin/bookings", icon: <BookIcon /> },
           { text: "Workspace", link: "/admin/workspace-management", icon: <WorkIcon /> },
           {
             text: "Workspace Submission",

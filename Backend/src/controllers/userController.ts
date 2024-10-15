@@ -173,40 +173,64 @@ class UserController {
 
    
 
-      const {ac,restRoom,powerBackup,wifiAvailable,rating,price} = req.query;
+      const {ac,restRoom,powerBackup,wifiAvailable,rating,price , page , itemsPerPage , search} = req.query;
 
       console.log(req.query);
       
 
-      if(ac || restRoom || powerBackup || wifiAvailable || rating || price){
+      if (ac || restRoom || powerBackup || wifiAvailable || rating || price) {
 
-        let filter: IFilters = {} as IFilters;
-
-        if(restRoom !== undefined){
-          filter.bathroom = restRoom === 'true'
+        let filter: IFilters = { approved: true  } as IFilters;
+    
+        if (restRoom === 'true') {
+            filter.bathroom = true; // Include only if restRoom is defined and true
         }
-        if (ac !== undefined) {
-            filter.ac = ac === 'true';
+        if (ac === 'true') {
+            filter.ac = true; // Include only if ac is defined and true
         }
-        if (powerBackup !== undefined) {
-            filter.powerBackup = powerBackup === 'true'; 
+        if (powerBackup === 'true') {
+            filter.powerBackup = true; // Include only if powerBackup is defined and true
         }
-
-        filter.approved = true;
-
+        if (wifiAvailable === 'true') {
+            filter.wifiAvailable = true; // Include wifi filter
+        }
+   
+        const query = search ? search : ""
+    
         console.log(filter);
-        
-
-        const filteredWorkspaces = await this.workspaceService.getWithFilters(filter)
-
+    
+        const filteredWorkspaces = await this.workspaceService.getWithFilters(filter , Number(page),Number(itemsPerPage),query?.toString());
+    
         console.log(filteredWorkspaces);
         return res
-        .status(200)
-        .json(new ApiResponse(200, {approvedWorkspaces:filteredWorkspaces}, "Fetched Successfully"));
+            .status(200)
+            .json(new ApiResponse(200, { approvedWorkspaces: filteredWorkspaces }, "Fetched Successfully"));
+    
+    } 
 
+
+      if(search){
+        const workspace = await this.workspaceService.searchWorkspace(search.toString(), Number(page),Number(itemsPerPage))
+
+
+        console.log('====================================');
+        console.log(workspace);
+        console.log('====================================');
+
+        if (!workspace) {
+          return res
+            .status(404)
+            .json(new ApiResponse(404, null, "Workspace not found"));
+        }
+
+        return res
+        .status(200)
+        .json(new ApiResponse(200, workspace, "Fetched Successfully"));
       }
 
-      const workspace = await this.workspaceService.getApprovedWorkspaces(1, 4);
+
+
+      const workspace = await this.workspaceService.getApprovedWorkspaces(Number(page), Number(itemsPerPage));
 
 
       if (!workspace) {
@@ -218,6 +242,8 @@ class UserController {
       return res
         .status(200)
         .json(new ApiResponse(200, workspace, "Fetched Successfully"));
+
+
     } catch (error) {
       next(error);
     }
@@ -457,6 +483,10 @@ class UserController {
       const {userId}= req.params;
 
       const bookings = await this.bookingService.getBookingsByUserId(userId)
+
+      console.log('================bookings====================');
+      console.log(bookings);
+      console.log('====================================');
 
       return res
         .status(200)

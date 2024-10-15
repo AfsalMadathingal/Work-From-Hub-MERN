@@ -75,3 +75,15 @@ export const getAllPendingSubmission = async (
       return error.response;
     }
   };
+
+export const getBookingsByOwnerId = async (ownerId: string, page: number, itemsPerPage: number) => {
+  try {
+    const response = await api.get(
+      `/api/business/bookings?ownerId=${ownerId}&page=${page}&limit=${itemsPerPage}`
+    );
+
+    return response;
+  } catch (error) {
+    return error.response;
+  }
+};

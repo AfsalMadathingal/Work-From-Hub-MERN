@@ -145,10 +145,22 @@ export default class WorkspaceService implements IWorkspaceService {
   }
 
   async getWithFilters(
-    filter: Partial<IFilters>
+    filter: Partial<IFilters>,
+    page:number,limit:number,
+    query:string
   ): Promise<IWorkspace[] | null> {
-    const response = await this.workspaceRepository.getWithFilters(filter);
+    const response = await this.workspaceRepository.getWithFilters(query,filter,page,limit);
 
+    return response;
+  }
+
+  async searchWorkspace(query: string, page: number, limit: number): Promise<IWorkspace[] | null> {
+
+    const response = await this.workspaceRepository.searchWorkspace(
+      query,
+      page,
+      limit
+    );
     return response;
   }
 }
