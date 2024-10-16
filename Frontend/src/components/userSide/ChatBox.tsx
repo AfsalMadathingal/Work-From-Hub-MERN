@@ -6,6 +6,7 @@ import { Tooltip } from '@nextui-org/react';
 import { FaBan } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
+
 const SOCKET_URL = 'http://localhost:5000';
 
 const ChatBox: React.FC = () => {
@@ -16,6 +17,7 @@ const ChatBox: React.FC = () => {
   const [isChatStarted, setIsChatStarted] = useState(false); // Start chat state
   const messageListRef = useRef<HTMLDivElement>(null); // Scroll to bottom for messages
   const { user } = useSelector((state: RootState) => state.user);
+  const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
   const currentUserId = user?._id;
 
 
@@ -56,6 +58,9 @@ const ChatBox: React.FC = () => {
     // Listen for admin-specific messages
     newSocket.on('adminMessage', (msg) => {
       if (msg.to === currentUserId) {
+        if (audioRef.current) {
+          audioRef.current.play(); // Play audio when message is received
+        }
         setMessages((prev) => [...prev, { ...msg, isAdmin: true }]);
       }
     });
@@ -106,6 +111,8 @@ const ChatBox: React.FC = () => {
 
   return (
 <div>
+  <audio ref={audioRef} src="/messgeIncoming.mp3" />
+  
   {/* Chat Box */}
   <div
     className={`fixed bottom-2 right-2 z-50 ${isChatOpen ? 'w-full max-w-sm sm:max-w-md h-96' : 'w-16 h-16'} 
