@@ -1,31 +1,32 @@
-import express  from 'express';
+import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import compression from 'compression';
-import 'dotenv/config'
+import 'dotenv/config';
 import { connectDatabase } from './config/database';
-import  { errorHandler } from './middleware/errorHandler';
+import { errorHandler } from './middleware/errorHandler';
 import logger from "../src/utils/logger";
 import morgan from "morgan";
 import router from './routes/router';
 import bodyParser from 'body-parser';
-
-
-
+import http from "http";
+import { initializeSocket } from "./utils/socket"; // Import the socket module
 
 const app = express();
+const server = http.createServer(app);
 
+// Initialize Socket.IO
+initializeSocket(server);
 
+// Express middlewares
 app.use(cors({
   origin: ['http://localhost:5173', "https://29g0hjwd-5173.inc1.devtunnels.ms"],
   credentials: true,
 }));
-
 app.use(compression());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(bodyParser.raw({ type: 'application/json' }));
 
 const morganFormat = ":method :url :status :response-time ms";
@@ -45,22 +46,16 @@ app.use(
   })
 );
 
+// API routes
+app.use('/', router);
 
-
-
-app.use('/',router)
-
-
-
-
-
-
+// Error handler middleware
 app.use(errorHandler);
 
-
+// Database connection
 connectDatabase();
-app.listen(process.env.PORT || 5000, () => {
-    console.log("Server started on port http://localhost:5000");
+
+// Start server
+server.listen(process.env.PORT || 5000, () => {
+  console.log(`Server running on port http://localhost:${process.env.PORT || 5000}`);
 });
-
-
