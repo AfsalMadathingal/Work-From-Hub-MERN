@@ -163,4 +163,8 @@ export default class WorkspaceService implements IWorkspaceService {
     );
     return response;
   }
+
+  async getTotalWorkspaces(): Promise<number> {
+      return this.workspaceRepository.getTotalWorkspace()
+  }
 }

@@ -7,21 +7,51 @@ import { IPlan } from "entities/PlanEntity";
 
 export default class UserRepository implements IUserRepository {
 
-  async createUser(user: IUsers): Promise<IUsers | null> {
-    
-    const isUserExists = await Users.findOne({ email: user.email });
 
-    if (isUserExists) {
-      throw new ApiError(400, "User Already Exists");
+
+
+  async  getTotalUser(): Promise<any> {
+
+    try {
+      const users = await Users.find().sort({date:-1}).limit(5)
+
+      const userCount =  await Users.countDocuments();
+        
+      return  {users,userCount}
+    } catch (error) {
+
+      return null
+      
     }
 
-    const newUser = new Users(user);
-    const result = await newUser.save();
-    const registeredUser = await Users.findById(result?._id).select(
-      "-password -refreshToken"
-    );
 
-    return registeredUser;
+
+  }
+
+  async createUser(user: IUsers): Promise<IUsers | null> {
+
+    try {
+      const isUserExists = await Users.findOne({ email: user.email });
+
+      if (isUserExists) {
+        throw new ApiError(400, "User Already Exists");
+      }
+  
+      const newUser = new Users(user);
+      const result = await newUser.save();
+      const registeredUser = await Users.findById(result?._id).select(
+        "-password -refreshToken"
+      );
+  
+      return registeredUser;
+      
+    } catch (error) {
+
+      return null
+      
+    }
+    
+   
   }
 
   async findByUsername(email: string): Promise<IUsers | null> {

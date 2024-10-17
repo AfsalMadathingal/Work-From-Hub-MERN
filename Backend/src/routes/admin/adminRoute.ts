@@ -36,5 +36,7 @@ adminRouter.get('/approved-workspaces',authenticate,adminController.getApprovedW
 
 adminRouter.get('/bookings',authenticate,adminController.getBookings)
 
+adminRouter.get('/dashboard',authenticate, adminController.dashboard)
+
 
 export default adminRouter

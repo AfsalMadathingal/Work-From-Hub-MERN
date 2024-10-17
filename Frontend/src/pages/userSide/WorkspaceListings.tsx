@@ -8,6 +8,7 @@ import AllListings from '../../components/userSide/AllListings'
 
 const WorkspaceListingsPage = (): JSX.Element => {
   const { user } = useSelector((state: RootState) => state.user)
+  // const {query }= location?.state?.query
 
   return (
     <>

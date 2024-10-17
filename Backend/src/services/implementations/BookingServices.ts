@@ -63,6 +63,16 @@ export default class BookingService implements IBookingService {
         return null
     }
 
+    async getTotalBookings(): Promise<any> {
+
+        const totalBookings = await this.bookingRepository.getTotalBookings();
+
+        if(totalBookings){
+            return totalBookings
+        }
+
+    }
+
     
     }
     

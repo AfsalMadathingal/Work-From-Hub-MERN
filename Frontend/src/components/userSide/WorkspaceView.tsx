@@ -175,8 +175,11 @@ const WorkspaceView = () => {
                   </button>
                 </Link>
 
-                <button className="border border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-lg hover:bg-orange-100 transition">
-                  Book for Team
+                <button
+                onClick={() => window.open(`tel:${workspace?.contactNo}`)}
+                className="border border-orange-500 text-orange-500 font-semibold px-6 py-3 rounded-lg flex items-center gap-2 hover:bg-orange-100 transition">
+                  <FaPhoneAlt />
+                  Call Us
                 </button>
               </div>
             </div>

@@ -1,4 +1,4 @@
-import { NextFunction, Request, response, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import UserService from "../services/implementations/UserService";
 import ApiResponse from "../utils/ApiResponse";
 import BusinessUserService from "../services/implementations/BusinessUserService";
@@ -7,6 +7,9 @@ import WorkspaceService from "../services/implementations/WorkspaceService";
 import { HttpStatus } from "../enums/HttpStatus";
 import { IBookingService } from "../services/interface/IBookingService";
 import BookingService from "../services/implementations/BookingServices";
+import { workerData } from "worker_threads";
+import { http } from "winston";
+import { error } from "console";
 
 class AdminController {
   private userService: UserService;
@@ -248,6 +251,34 @@ class AdminController {
       next(error);
     }
   };
+
+
+  public dashboard = async (req: Request, res: Response, next: NextFunction) => {
+
+
+    try {
+
+
+      const [userData, bookingData, workspaceData] = await Promise.all([
+        this.userService.getTotalUsers(),
+        this.bookingService.getTotalBookings(),
+        this.workspaceService.getTotalWorkspaces(),
+      ]);
+
+
+      if(userData && bookingData && workspaceData ){
+        return res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{userData,bookingData , workspaceData}))
+      }
+      
+
+      throw new Error("something went wrong")
+
+      
+    } catch (error) {
+      next(error)
+    }
+  };
+
 
 }
 

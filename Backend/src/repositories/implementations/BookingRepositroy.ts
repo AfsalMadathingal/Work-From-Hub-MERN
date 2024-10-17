@@ -89,20 +89,59 @@ export default class BookingRepository implements IBookingRepository {
 
       const ownerId = new mongoose.Types.ObjectId(id);
   
-      const bookingResponse = await BookingModel.find({ "workspaceId.ownerId": ownerId }) // Match bookings with the ownerId
-        .skip(skip)
-        .limit(limit)
-        .sort("-date")
-        .populate("userId", "-password")
-        .populate("seatId")
-        .populate({
-          path: "workspaceId",
-          populate: {
-            path: "ownerId",
-            select: "fullName email",
+      const bookingResponse = await BookingModel.aggregate([
+        {
+          $lookup: {
+            from: 'workspaces',  // Collection name for workspace
+            localField: 'workspaceId',
+            foreignField: '_id',
+            as: 'workspaceInfo',
           },
-        })
-        .exec();
+        },
+        {
+          $unwind: '$workspaceInfo',
+        },
+        {
+          $match: {
+            'workspaceInfo.ownerId': id,
+          },
+        },
+        {
+          $sort: { date: -1 },
+        },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: limit,
+        },
+        {
+          $lookup: {
+            from: 'users',  // Collection name for user
+            localField: 'userId',
+            foreignField: '_id',
+            as: 'userInfo',
+          },
+        },
+        {
+          $lookup: {
+            from: 'seats',  // Collection name for user
+            localField: 'seatId',
+            foreignField: '_id',
+            as: 'seatInfo',
+          },
+        },
+      
+        {
+          $project: {
+            'userInfo.password': 0,
+            'userInfo.refreshToken': 0,
+            'workspaceInfo.ownerId.password': 0,
+          },
+        },
+      ]);
+      
+      const bookings = await BookingModel.find()
   
       console.log('==================from db==================');
       console.log(bookingResponse);
@@ -115,6 +154,29 @@ export default class BookingRepository implements IBookingRepository {
     }
   }
   
+
+  async getTotalBookings(): Promise<any> {
+
+    try {
+
+
+      const bookingsCount = await  BookingModel.countDocuments()
+
+      const bookingsData = await BookingModel.find()
+      .limit(5)
+      .populate('userId','-password')
+      .exec()
+
+
+      return {bookingsCount, bookingsData}
+
+
+   
+    } catch (error) {
+      console.error("Error fetching total bookings:", error);
+      throw new Error("Unable to fetch total bookings.");
+    }
+  }
 
 
 }

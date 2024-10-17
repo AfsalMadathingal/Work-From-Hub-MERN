@@ -1,6 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Link } from 'react-router-dom';
 
 const HeroSection = function HeroSection() {
+
+
+  const [query, setQuery] = useState("");
+
+
     return (
 <div className="relative bg-gray-100 py-16 px-4">
   <div className="absolute inset-0 z-0">
@@ -17,17 +23,15 @@ const HeroSection = function HeroSection() {
     <div className="max-w-3xl mx-auto">
       <form className="flex">
         <input
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
           type="text"
           placeholder="Search by city, state or town"
           className="flex-grow p-3 rounded-l-lg"
         />
-        <select className="p-3 border-l">
-          <option>Duration</option>
-          {/* Add duration options */}
-        </select>
-        <button type="submit" className="bg-orange-500 text-white p-3 rounded-r-lg">
+        <Link state={{ query }}  to={`/workspace?search=${query}` }className="bg-orange-500 text-white p-3 rounded-r-lg">
           Search
-        </button>
+        </Link>
       </form>
     </div>
   </div>

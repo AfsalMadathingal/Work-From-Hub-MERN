@@ -1,20 +1,18 @@
 import React from 'react';
-import Sidebar from './components/Sidebar';
-import Header from './components/Header';
-import UserManagement from './components/UserManagement';
+import AdminLayout from '../../components/admin/AdminLayout';
+import Dashboard from '../../components/admin/Dashboard';
 
-const Dashboard = () => {
+
+const AdminDashboard = () => {
+
+
   return (
     <div className="flex h-screen">
-      <Sidebar />
       <div className="flex-1 flex flex-col">
-        <Header />
-        <main className="flex-1 p-6 bg-gray-100">
-          <UserManagement />
-        </main>
+        <AdminLayout component={<Dashboard />} />
       </div>
     </div>
   );
 };
 
-export default Dashboard;
+export default AdminDashboard;

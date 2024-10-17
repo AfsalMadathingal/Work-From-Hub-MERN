@@ -15,6 +15,7 @@ export interface IWorkspaceRepository {
   findById(id: string): Promise<IWorkspace | null>;
   getWithFilters( query:string,filter:Partial<IFilters>  , page:number,limit:number):Promise<IWorkspace[] | null>;
   searchWorkspace(query: string, page:number,limit:number): Promise<IWorkspace[] | null>;
+  getTotalWorkspace():Promise<number>;
   // update(id: string, IWorkspace: Partial<IWorkspace>): Promise<IWorkspace | null>;
   // delete(id: string): Promise<boolean>;
 

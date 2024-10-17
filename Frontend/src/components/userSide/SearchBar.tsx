@@ -1,12 +1,12 @@
-
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
+  defaultValue?: string; // Allow an initial value to be passed
 }
 
-const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
-  const [query, setQuery] = useState('');
+const SearchBar: React.FC<SearchBarProps> = ({ onSearch, defaultValue = '' }) => {
+  const [query, setQuery] = useState(defaultValue);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setQuery(e.target.value);
@@ -16,6 +16,11 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
     e.preventDefault();
     onSearch(query);
   };
+
+  // Update the local query state when the defaultValue changes
+  useEffect(() => {
+    setQuery(defaultValue);
+  }, [defaultValue]);
 
   return (
     <form onSubmit={handleSubmit} className="flex justify-center items-center mt-6">
@@ -34,5 +39,3 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch }) => {
 };
 
 export default SearchBar;
-
-

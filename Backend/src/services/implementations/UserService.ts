@@ -12,6 +12,13 @@ export default class UserService implements IUserService {
     this.userRepository = new UserRepository();
   }
 
+
+  async getTotalUsers(): Promise<any> {
+
+      const result = await this.userRepository.getTotalUser()
+      return result;
+  }
+
   async createUser(user: IUsers): Promise<IUsers | null> {
 
     

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { GiHamburgerMenu } from 'react-icons/gi'; // Importing a hamburger icon
-import { MdClose } from 'react-icons/md'; // Importing a close icon
+import { GiHamburgerMenu } from 'react-icons/gi';
+import { MdClose } from 'react-icons/md';
 
 const Navbar: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,7 +12,7 @@ const Navbar: React.FC = () => {
   return (
     <header className="sticky top-0 bg-white/70 backdrop-blur-sm py-4 shadow-md px-4 md:px-12 z-50">
       <div className="container mx-auto flex justify-between items-center">
-        <img className='h-14' src="/logo.png" alt="Company Logo" />
+        <img className="h-14" src="/logo.png" alt="Company Logo" />
         <nav className="hidden md:flex space-x-6">
           <a href="#" className="text-gray-700 hover:text-orange-500">Work Spaces</a>
           <a href="#" className="text-gray-700 hover:text-orange-500">Pricing</a>
@@ -32,21 +32,23 @@ const Navbar: React.FC = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="md:hidden bg-white shadow-lg mt-2 rounded-md">
-          <nav className="flex flex-col space-y-4 px-4 py-2">
-            <a href="#" className="text-gray-700 hover:text-orange-500">Work Spaces</a>
-            <a href="#" className="text-gray-700 hover:text-orange-500">Pricing</a>
-            <a href="#" className="text-gray-700 hover:text-orange-500">About Us</a>
-            <a href="#" className="text-gray-700 hover:text-orange-500">Login/Register</a>
-            <div className="flex flex-col space-y-2">
-              <button className="bg-orange-500 text-white px-4 py-2 rounded">Book a Seat</button>
-              <button className="border border-orange-500 text-orange-500 px-4 py-2 rounded">Call Us</button>
-            </div>
-          </nav>
-        </div>
-      )}
+      {/* Mobile Menu with smooth animation */}
+      <div
+        className={`md:hidden bg-white shadow-lg mt-2 rounded-md overflow-hidden transition-all duration-500 ease-in-out ${
+          isOpen ? 'max-h-screen opacity-100' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <nav className="flex flex-col space-y-4 px-4 py-2">
+          <a href="#" className="text-gray-700 hover:text-orange-500">Work Spaces</a>
+          <a href="#" className="text-gray-700 hover:text-orange-500">Pricing</a>
+          <a href="#" className="text-gray-700 hover:text-orange-500">About Us</a>
+          <a href="#" className="text-gray-700 hover:text-orange-500">Login/Register</a>
+          <div className="flex flex-col space-y-2">
+            <button className="bg-orange-500 text-white px-4 py-2 rounded">Book a Seat</button>
+            <button className="border border-orange-500 text-orange-500 px-4 py-2 rounded">Call Us</button>
+          </div>
+        </nav>
+      </div>
     </header>
   );
 };

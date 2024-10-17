@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 
 const SOCKET_URL = 'http://localhost:5000';
 
-const ChatBox: React.FC = () => {
+const ChatBoxForBuser: React.FC = () => {
 
   const [socket, setSocket] = useState<Socket | null>(null);
   const [message, setMessage] = useState<string>('');
@@ -17,7 +17,7 @@ const ChatBox: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false); // Chatbox toggle state
   const [isChatStarted, setIsChatStarted] = useState(false); // Start chat state
   const messageListRef = useRef<HTMLDivElement>(null); // Scroll to bottom for messages
-  const { user , isAuthenticated} = useSelector((state: RootState) => state.user);
+  const { user , isAuthenticated} = useSelector((state: RootState) => state.businessUser);
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
   const currentUserId = user?._id;
 
@@ -223,4 +223,4 @@ const ChatBox: React.FC = () => {
   );
 };
 
-export default ChatBox;
+export default ChatBoxForBuser;

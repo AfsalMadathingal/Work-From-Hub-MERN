@@ -38,23 +38,50 @@ const faqs = [
 export default function FAQAccordion() {
   return (
     <section className="flex flex-col justify-center items-center container mx-auto mt-12">
-      <h3 className=" text-2xl font-bold text-gray-900 text-center">FAQ</h3>
-      <div className=" mt-8 w-2/3">
-        {faqs.map((faq, index) => (
-          <Accordion key={index}>
-            <AccordionSummary
-              expandIcon={<ExpandMoreIcon />}
-              aria-controls={`panel${index + 1}-content`}
-              id={`panel${index + 1}-header`}
-            >
-              <span className="text-gray-700 font-semibold">{faq.question}</span>
-            </AccordionSummary>
-            <AccordionDetails>
-              <p className="text-gray-600">{faq.answer}</p>
-            </AccordionDetails>
-          </Accordion>
-        ))}
-      </div>
-    </section>
+    <h3 className="text-3xl font-bold text-gray-900 text-center">Frequently Asked Questions</h3>
+    <div className="mt-8 w-full md:w-2/3 px-4">
+      {faqs.map((faq, index) => (
+        <Accordion 
+          key={index} 
+          className="rounded-lg shadow-md overflow-hidden transition-all duration-300 ease-in-out mb-4 bg-white"
+          sx={{
+            '&:before': { display: 'none' },  // Remove the default MUI Accordion border
+            '&.Mui-expanded': { 
+              margin: 0, 
+              transition: 'all 0.3s' 
+            }
+          }}
+        >
+          <AccordionSummary
+            expandIcon={<ExpandMoreIcon className="text-gray-600" />}
+            aria-controls={`panel${index + 1}-content`}
+            id={`panel${index + 1}-header`}
+            sx={{
+              backgroundColor: 'white',
+              padding: '12px 24px',
+              '&:hover': {
+                backgroundColor: '#f5f5f5', // Subtle hover effect
+              },
+              transition: 'all 0.3s',
+            }}
+          >
+            <span className="text-gray-900 font-semibold text-lg">
+              {faq.question}
+            </span>
+          </AccordionSummary>
+          <AccordionDetails
+            sx={{
+              backgroundColor: '#fff',
+              padding: '16px 24px',
+            }}
+          >
+            <p className="text-gray-700 leading-relaxed">
+              {faq.answer}
+            </p>
+          </AccordionDetails>
+        </Accordion>
+      ))}
+    </div>
+  </section>
   );
 }

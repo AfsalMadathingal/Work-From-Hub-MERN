@@ -10,15 +10,13 @@ import morgan from "morgan";
 import router from './routes/router';
 import bodyParser from 'body-parser';
 import http from "http";
-import { initializeSocket } from "./utils/socket"; // Import the socket module
+import { initializeSocket } from "./utils/socket"; 
 
 const app = express();
 const server = http.createServer(app);
 
-// Initialize Socket.IO
 initializeSocket(server);
 
-// Express middlewares
 app.use(cors({
   origin: ['http://localhost:5173', "https://29g0hjwd-5173.inc1.devtunnels.ms"],
   credentials: true,
@@ -46,16 +44,15 @@ app.use(
   })
 );
 
-// API routes
+
 app.use('/', router);
 
-// Error handler middleware
+
 app.use(errorHandler);
 
-// Database connection
 connectDatabase();
 
-// Start server
+
 server.listen(process.env.PORT || 5000, () => {
   console.log(`Server running on port http://localhost:${process.env.PORT || 5000}`);
 });

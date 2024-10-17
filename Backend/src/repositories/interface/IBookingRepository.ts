@@ -7,6 +7,7 @@ export interface IBookingRepository {
     getBookingsByUserId(id:string):Promise <IBooking[] | null>;
     getBookings(page: number, limit: number):  Promise<{ totalBookings: number; bookings: IBooking[] | null }>
     getBookingsByOwnerId(id: string, page: number, limit: number): Promise<IBooking[] | null>
+    getTotalBookings(): Promise<any>
     // findBookingById(id: string): Promise<IBooking | null>;
     // findBookingByUserId(userId: string): Promise<IBooking[] | null>;
     // updateBooking(booking: IBooking): Promise<IBooking | null>;

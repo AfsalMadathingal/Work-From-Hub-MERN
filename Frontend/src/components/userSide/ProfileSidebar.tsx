@@ -182,7 +182,7 @@ const ProfileSidebar = () => {
           className={`fixed lg:relative bg-white shadow-md lg:transform-none z-40 
               ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
               transition-transform duration-300 ease-in-out 
-              w-60 lg:w-60 overflow-y-auto h-full`}
+              w-60 lg:w-60 overflow-y-auto h-screen lg:h-screen`}
         >
         <div className="flex flex-col justify-center items-center p-4">
           <img

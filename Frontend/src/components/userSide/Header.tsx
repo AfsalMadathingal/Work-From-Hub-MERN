@@ -26,17 +26,17 @@ export default function Header() {
   }
 
   return (
-    <Navbar>
+    <Navbar className="">
       <NavbarBrand>
         <div 
 
         onClick={() => navigate("/user/home")}
-        className="w-20 m-5 cursor-pointer">
+        className="w-20 ms-5 cursor-pointer">
         <img src="/logo.png" alt="" />
         </div>
       </NavbarBrand>
 
-      <NavbarContent className="hidden sm:flex gap-4" justify="center">
+      <NavbarContent className="hidden sm:flex gap-6" justify="center">
         <NavbarItem>
           <Link color="foreground" href="#">
             Complaints
@@ -45,7 +45,7 @@ export default function Header() {
         <NavbarItem isActive>
           <Link 
           className=" cursor-pointer"
-          onPress={()=>navigate("/workspace")}
+          onPress={()=>navigate(`/workspace?search=`)}
           color="warning">
           View all Workspace
           </Link>

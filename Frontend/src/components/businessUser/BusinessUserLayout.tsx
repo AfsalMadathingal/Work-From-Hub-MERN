@@ -93,7 +93,6 @@ export default function ResponsiveDrawer(props: Props) {
             link: "/business/workspace/approved",
             icon: <FaCheck />,
           },
-          { text: "Support", link: "/business/support", icon: <SupportIcon /> },
         ].map((item) => (
           <Link to={`${item.link.toLowerCase()}`} key={item.text}>
             <ListItem disablePadding>

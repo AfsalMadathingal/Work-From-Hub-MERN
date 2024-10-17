@@ -15,6 +15,7 @@ export interface IUserRepository {
    removeRefreshToken(userId:string,refreshToken:string):Promise<IUsers | null>;
    updateUser(user: Partial<IUsers>, id: string): Promise<IUsers | null>;
    findById(id:string):Promise <IUsers | null > ;
+   getTotalUser():Promise<any> 
    
 
 }

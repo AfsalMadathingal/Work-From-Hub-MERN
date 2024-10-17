@@ -29,9 +29,9 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
                 {"★".repeat(5)} {"☆".repeat(5 - 4)}
               </div>
               <div className="flex flex-col sm:flex-row gap-4 w-full">
-                <button className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 w-full">
+                <Link to={`/workspace/${listing._id}/book`} className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 w-full">
                   Book Now
-                </button>
+                </Link>
                 <Link to={`/workspace/${listing._id}/view`} className="w-full">
                   <button className="border border-orange-500 text-orange-500 px-4 py-2 rounded-lg hover:bg-orange-100 w-full">
                     View Details

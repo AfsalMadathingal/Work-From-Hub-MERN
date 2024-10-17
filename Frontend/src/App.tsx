@@ -8,6 +8,7 @@ import BusinessUser from "./routes/BusinessUser";
 import AdminRouter from "./routes/AdminRouter";
 import { useEffect } from "react";
 import ChatBox from "./components/userSide/ChatBox";
+import ChatBoxForBuser from "./components/businessUser/ChatBoxForBuser";
 
 const App: React.FC = () => {
   const location = useLocation();
@@ -17,6 +18,9 @@ const App: React.FC = () => {
   }, [location]);
 
   const isUserRoute = location.pathname.startsWith("/admin") || location.pathname.startsWith("/business"); 
+  const isBusinessRoute = location.pathname.startsWith("/business");
+
+
 
   return (
     <MuiThemeProvider>
@@ -28,6 +32,7 @@ const App: React.FC = () => {
       </Routes>
       {/* Render ChatBox only if it's a user route */}
       {!isUserRoute && <ChatBox />}
+      {isBusinessRoute && <ChatBoxForBuser />}
     </MuiThemeProvider>
   );
 };

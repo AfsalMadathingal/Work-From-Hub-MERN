@@ -13,9 +13,9 @@ import { RootState } from "../../redux/store/store";
 
 interface Booking {
   workspaceName: string;
-  userId: IUsers;
-  seatId: ISeat;
-  workspaceId: IWorkspace;
+  userInfo: IUsers[];
+  seatInfo: ISeat[];
+  workspaceInfo: IWorkspace;
   date: string;
   amount: string;
   status: string;
@@ -36,8 +36,14 @@ const BBookingHistory: React.FC = () => {
     try {
       setLoading(true);
       const response = await getBookingsByOwnerId(user?._id,page, bookingsPerPage);
+
+      console.log('====================================');
+      console.log(response);
+      console.log('====================================');
+
+
       if (response.status === 200) {
-        setBookings(response.data.data.bookings);
+        setBookings(response.data.data);
         setTotalPages(
           Math.ceil(response.data.data.totalBookings / bookingsPerPage)
         );
@@ -76,21 +82,21 @@ const BBookingHistory: React.FC = () => {
     // Add Company Name and Info
     doc.setFontSize(12);
     doc.setTextColor("#000000");
-    doc.text(`Workspace: ${booking.workspaceId?.buildingName}`, 20, 55);
+    doc.text(`Workspace: ${booking.workspaceInfo?.buildingName}`, 20, 55);
     doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 65);
     doc.text(`Transaction ID: ${booking.paymentIntentId}`, 20, 75);
   
     // Add Recipient Info (User Details)
     doc.text(`Billed To:` , 140, 55);
-    doc.text(`${booking.userId?.fullName}`, 140, 65); // Replace with actual user details
-    doc.text(`${booking.userId?.email}`, 140, 75);
+    doc.text(`${booking.userInfo[0]?.fullName}`, 140, 65); // Replace with actual user details
+    doc.text(`${booking.userInfo[0]?.email}`, 140, 75);
   
     // Section for Booking Information
     doc.setFontSize(14);
     doc.text("Booking Details", 20, 90);
     doc.setFontSize(12);
     doc.text(`Amount Paid: ${booking.amount}`, 20, 100);
-    doc.text(`Seat: ${booking.seatId?.tableNumber}-${booking.seatId?.seatNumber}`, 20, 110);
+    doc.text(`Seat: ${booking.seatInfo[0]?.tableNumber}-${booking.seatInfo[0]?.seatNumber}`, 20, 110);
     doc.text(`Status: ${booking.status}`, 20, 120);
   
     // Add another line for separation
@@ -100,8 +106,8 @@ const BBookingHistory: React.FC = () => {
     doc.autoTable({
       head: [['Booking Details', 'Description']],
       body: [
-        ['Workspace', booking.workspaceId?.buildingName],
-        ['Seat', `${booking.seatId?.tableNumber}-${booking.seatId?.seatNumber}`],
+        ['Workspace', booking.workspaceInfo?.buildingName],
+        ['Seat', `${booking.seatInfo[0]?.tableNumber}-${booking.seatInfo[0]?.seatNumber}`],
         ['Date', booking.date.split("T")[0]],
         ['Amount', booking.amount],
         ['Status', booking.status],
@@ -179,19 +185,19 @@ const BBookingHistory: React.FC = () => {
               </tbody>
             ) : (
               <tbody className="text-gray-700 text-sm font-light">
-                {bookings.map((booking, index) => (
+                {bookings?.map((booking, index) => (
                   <tr
                     key={index}
                     className="border-b border-gray-200 hover:bg-gray-100"
                   >
                     <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {booking.workspaceId?.buildingName}
+                      {booking.workspaceInfo?.buildingName}
                     </td>
                     <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {booking.userId?.fullName}
+                      {booking.userInfo[0]?.fullName}
                     </td>
                     <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {booking.seatId?.seatNumber}
+                      {"S" +booking.seatInfo[0]?.seatNumber + " -" + " T" + booking.seatInfo[0]?.tableNumber}
                     </td>
                     <td className="py-3 px-6 text-left whitespace-nowrap">
                       {new Date(booking.date).toDateString()}

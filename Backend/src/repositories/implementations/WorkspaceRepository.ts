@@ -181,4 +181,17 @@ export class WorkspaceRepository implements IWorkspaceRepository {
       return null;
     }
   }
+
+  async getTotalWorkspace(): Promise<number> {
+    try {
+      
+    const totalWorkspaces = await this.collection.countDocuments({ approved: true });
+
+    return totalWorkspaces;
+    } catch (error) {
+      return null
+    }
+
+      
+  }
 }

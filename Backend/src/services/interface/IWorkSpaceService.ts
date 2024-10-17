@@ -35,4 +35,8 @@ export interface IWorkspaceService {
     page: number,
     limit: number
   ): Promise<IWorkspace[] | null>;
+
+
+  getTotalWorkspaces():Promise<number>;
+  
 }

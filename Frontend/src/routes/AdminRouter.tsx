@@ -5,6 +5,7 @@ import { PRIMARY_COLOR } from "../constant/colors";
 import PublicRoute from "../components/auth/AdminPublicRoute";
 import PrivateRoute from "../components/auth/AdminPrivateRoute";
 import Support from "../pages/admin/Support";
+import AdminDashboard from "../pages/admin/Dashboard";
 const BookingHistory = lazy(() => import("../pages/admin/BookingHistory"));
 const WorkspaceSubmission = lazy(() => import("../pages/admin/WorkspaceSubmission"));
 const View = lazy(() => import("../pages/admin/ViewWorkSpace"));
@@ -47,7 +48,7 @@ const AdminRouter = () => {
               />
             }
           >
-            <PrivateRoute element={UserManagement} />
+            <PrivateRoute element={AdminDashboard} />
           </Suspense>
         }
       />

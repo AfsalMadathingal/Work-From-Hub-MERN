@@ -2,6 +2,7 @@ import { adminAxiosInstance } from "./instance/adminInstance";
 import { IUsers } from "../@types/user";
 import { IBUsers } from "../@types/businessUser";
 import { userAxiosInstance } from "./instance/userInstance";
+import { Axios, AxiosError } from "axios";
 
 const api = adminAxiosInstance;
 
@@ -240,6 +241,21 @@ export const getAllBookings = async (page: number, itemsPerPage: number) => {
   } catch (error) {
 
     return error.response
+  }
+}
+
+
+export const getDashboardData = async ()=>{
+  try {
+    
+    const response = await api.get('/api/admin/dashboard')
+
+    return response; 
+
+  } catch (error) {
+
+    return error.response 
+
   }
 }
 
