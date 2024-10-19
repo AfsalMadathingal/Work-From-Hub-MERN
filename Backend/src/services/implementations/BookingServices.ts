@@ -1,15 +1,21 @@
+import { IUserRepository } from "repositories/interface/IUserRepository";
 import { IBooking } from "../../entities/BookingEntity";
 import BookingRepository from "../../repositories/implementations/BookingRepositroy";
 import { IBookingRepository } from "../../repositories/interface/IBookingRepository";
 import { IBookingService } from "../../services/interface/IBookingService";
+import UserRepository from "../../repositories/implementations/UserRepository";
+import sendMailNotification from "../../utils/mailNotification";
 
 export default class BookingService implements IBookingService {
 
     private bookingRepository : IBookingRepository
+    private userRepository:  IUserRepository;
+
 
 
     constructor(){
         this.bookingRepository = new BookingRepository();
+        this.userRepository = new UserRepository();
     }
 
 
@@ -18,6 +24,23 @@ export default class BookingService implements IBookingService {
         const createdBooking = await this.bookingRepository.createBooking(booking)
 
         if(createdBooking){
+
+            const userData = await this.userRepository.findById(booking.userId.toString())
+
+            
+
+            if(userData){
+        
+                sendMailNotification(
+                  userData.email,
+                  "Booking Confirmed",
+                  userData.fullName.toString(),
+                  `Congratulations ${userData.fullName}, your booking has been confirmed for details check the booking history`
+                )
+
+        
+            }
+
             return createdBooking
         }
         

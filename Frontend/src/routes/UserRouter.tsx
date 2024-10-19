@@ -5,6 +5,8 @@ import { PRIMARY_COLOR } from "../constant/colors";
 import PrivateRoute from '../components/auth/PrivateRoute';
 import PublicRoute from '../components/auth/PublicRoute';  
 import Bookings from "../pages/userSide/Bookings";
+import MembershipDetails from "../components/userSide/MembershipDetails";
+import MembershipInfor from "../pages/userSide/MembershipInfo";
 const WorkspaceListingsPage = lazy(() => import('../pages/userSide/WorkspaceListings'));
 const ViewWorkspacePage = lazy(() => import('../pages/userSide/ViewWorkspace'));
 const BookingFrom = lazy(() => import('../pages/userSide/BookingFrom'));
@@ -99,6 +101,14 @@ const UserRouter = () => {
         element={
           <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
             <PrivateRoute element={Bookings} />
+          </Suspense>
+        }
+      />
+         <Route
+        path="/user/membership"
+        element={
+          <Suspense fallback={<LoadingPageWithReactLoading transparent={false} type="bars" color={PRIMARY_COLOR} />}>
+            <PrivateRoute element={MembershipInfor} />
           </Suspense>
         }
       />

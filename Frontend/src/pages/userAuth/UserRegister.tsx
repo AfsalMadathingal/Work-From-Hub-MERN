@@ -83,12 +83,13 @@ const UserRegister: React.FC = () => {
       const response = await signInWithGoogle();
 
       if (response.success) {
-        const { user, accessToken } = response.data;
 
+        const { user, accessToken } = response.data;
         dispatch(setUser(user));
         dispatch(setIsAuthenticated(true));
         dispatch(setLoading(false));
         dispatch(setAccessToken(accessToken));
+        
       }
     } catch (error) {
       dispatch(setLoading(false));
@@ -114,7 +115,7 @@ const UserRegister: React.FC = () => {
 
         {modal && <OTPForm />}
 
-        <div className="min-h-screen bg-[#fcefe7] flex items-center justify-center p-4 ">
+        <div className="min-h-screen  bg-[#fcefe7] flex items-center justify-center p-4 ">
           <div className="bg-white rounded-lg shadow-2xl flex max-w-4xl w-full">
             <div className="w-full md:w-1/2 p-8">
               <h1 className="text-1xl font-bold mb-1 text-center">
@@ -239,7 +240,7 @@ const UserRegister: React.FC = () => {
                 </Link>
               </p>
             </div>
-            <div className="hidden md:block md:w-1/2">
+            <div className="hidden  md:block md:w-1/2">
               <Image
            
                 src="/loginpageimage.webp"

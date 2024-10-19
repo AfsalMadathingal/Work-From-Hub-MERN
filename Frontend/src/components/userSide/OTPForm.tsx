@@ -93,7 +93,7 @@ const OTPForm: React.FC = () => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       {verified ? <Checkmark size='96px' /> :
         <form
           

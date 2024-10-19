@@ -15,5 +15,4 @@ router.use('/api/user', userRouter);
 router.use('/api/business', businessRoute)
 router.use('/webhook',webhookRoute)
 
-
 export default router;

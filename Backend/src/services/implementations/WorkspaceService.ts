@@ -15,16 +15,21 @@ import UploadService from "./UploadService";
 import { ISeatRepository } from "../../repositories/interface/ISeatRepository";
 import { SeatRepository } from "../../repositories/implementations/SeatRepository";
 import uploadFileToS3 from "../../utils/s3UploadService";
+import { IBusinessUserRepository } from "../../repositories/interface/IBusinessRepository";
+import BusinessRepository from "../../repositories/implementations/BusinessRepository";
+import sendMailNotification from "../../utils/mailNotification";
 
 export default class WorkspaceService implements IWorkspaceService {
   private workspaceRepository: IWorkspaceRepository;
   private uploadService: IUploadService;
   private seatRepository: ISeatRepository;
+  private bUserRepository:IBusinessUserRepository
 
   constructor() {
     this.workspaceRepository = new WorkspaceRepository();
     this.uploadService = new UploadService();
     this.seatRepository = new SeatRepository();
+    this.bUserRepository = new BusinessRepository();
   }
 
   async submitWorkspaceListing(
@@ -118,11 +123,48 @@ export default class WorkspaceService implements IWorkspaceService {
 
   async approveWorkspace(id: string): Promise<IWorkspace | null> {
     const response = await this.workspaceRepository.approveWorkspace(id);
+
+    const ownerData = await this.bUserRepository.findById(response.ownerId.toString())
+
+  
+
+    if(response && ownerData){
+
+        sendMailNotification(
+          ownerData.email,
+          "You're submission is approved",
+          ownerData.fullName,
+          `Congratulations ${ownerData.fullName}, your submission has been approved. From now on, you will start getting booking from customers.`
+        )
+
+    }
+
+
+
+
     return response;
   }
 
   async rejectWorkspace(id: string): Promise<IWorkspace | null> {
     const response = await this.workspaceRepository.rejectWorkspace(id);
+
+
+    const ownerData = await this.bUserRepository.findById(response.ownerId.toString())
+
+  
+
+    if(response && ownerData){
+
+        sendMailNotification(
+          ownerData.email,
+          "You're submission is rejected",
+          ownerData.fullName,
+          `Sorry ${ownerData.fullName}, your submission has been rejected. Please try to resubmit with correct information.`
+        )
+
+    }
+
+
     return response;
   }
 

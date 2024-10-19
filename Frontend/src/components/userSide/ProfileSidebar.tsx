@@ -182,7 +182,7 @@ const ProfileSidebar = () => {
           className={`fixed lg:relative bg-white shadow-md lg:transform-none z-40 
               ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
               transition-transform duration-300 ease-in-out 
-              w-60 lg:w-60 overflow-y-auto h-screen lg:h-screen`}
+              w-60 lg:w-60 overflow-y-auto rounded-lg `}
         >
         <div className="flex flex-col justify-center items-center p-4">
           <img
@@ -233,10 +233,10 @@ const ProfileSidebar = () => {
             <FaBook className="mr-2" />
             Bookings
           </Link>
-          <button className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
+          <Link to="/user/membership"  className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
             <FaAddressCard className="mr-2" />
             Membership
-          </button>
+          </Link>
           <button className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
             <FaWallet className="mr-2" />
             Wallet
