@@ -246,6 +246,33 @@ export const getSeatById = async (seatId: string )=>{
 }
 
 
+export const createReview = async(rating:number,comment:string,workspaceId:string) =>{
+
+
+  try {
+
+    const response = await userAxiosInstance.post(`/api/user/reviews/${workspaceId}`,{rating,comment})
+
+    return response
+    
+  } catch (error) {
+    return error.response
+  }
+}
+
+
+export const getReviews = async (workspaceId: string) => {
+  try {
+
+    const response = await userAxiosInstance.get(`/api/user/reviews/${workspaceId}`)
+
+    return response;
+
+  } catch (error) {
+
+    return error.response;
+  }
+};
 
 
 

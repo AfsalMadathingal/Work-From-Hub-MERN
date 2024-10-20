@@ -234,7 +234,7 @@ export const decodedUserRefreshToken = (req: Request  & Partial<{ user: string |
 };
 
 
-export const authenticateUser = (req: Request  & Partial<{ user: string | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
+export const authenticateUser = (req: Request  & Partial<{ user: {} | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
   const token = req.headers['authorization']?.split(' ')[1] || req.header('authorization');
 
 

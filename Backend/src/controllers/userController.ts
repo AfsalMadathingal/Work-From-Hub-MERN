@@ -17,7 +17,11 @@ import { IPaymentService } from "../services/interface/IPaymentService";
 import PaymentService from "../services/implementations/PaymentService";
 import { IBookingService } from "../services/interface/IBookingService";
 import BookingService from "../services/implementations/BookingServices";
-import { IBooking } from "entities/BookingEntity";
+import { IBooking } from "../entities/BookingEntity";
+import jwt, { JwtPayload } from 'jsonwebtoken';
+import { IReviewService } from "../services/interface/IReviewService";
+import { reviewService } from "../services/implementations/ReviewService";
+import { HttpStatus } from "../enums/HttpStatus";
 
 class UserController {
   private userService: UserService;
@@ -28,6 +32,8 @@ class UserController {
   private seatService: ISeatService;
   private paymentService: IPaymentService;
   private bookingService: IBookingService;
+  private reviewService: IReviewService;
+
 
 
 
@@ -41,7 +47,8 @@ class UserController {
     this.seatService = new SeatService();
     this.paymentService = new PaymentService();
     this.bookingService = new BookingService();
-  }
+    this.reviewService = new reviewService();
+    }
 
   public editUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -513,6 +520,36 @@ class UserController {
       return res
         .status(200)
         .json(new ApiResponse(200, seat, "fetched successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+  public saveReview = async (req: Request   & Partial<{ user: {id:string} | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
+    try {
+
+      const { workspaceId } = req.params;
+      const {  comment, rating } = req.body;
+
+      const bookings = await this.bookingService.getBookingsByUserId(req.user?.id)
+
+      console.log('====================================');
+      console.log(bookings );
+      console.log('====================================');
+
+      if(bookings.length<1){
+        return res
+        .status(HttpStatus.FORBIDDEN)
+        .json(new ApiResponse(HttpStatus.FORBIDDEN,null, "You cant write review for this workspace"))
+      }
+
+      const review = await this.reviewService.createReview(workspaceId,req.user?.id, comment, rating);
+
+      return res
+        .status(201)
+        .json(new ApiResponse(201, review, "review saved successfully"));
 
     } catch (error) {
       next(error);

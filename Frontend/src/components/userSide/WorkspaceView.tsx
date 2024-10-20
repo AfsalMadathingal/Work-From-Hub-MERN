@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
   getAvailableSeats,
+  getReviews,
   getSingleWorkspace,
 } from "../../services/userServices";
 import ReactPlayer from "react-player";
@@ -27,9 +28,11 @@ import {
   FaRupeeSign,
   FaTicketAlt,
 } from "react-icons/fa";
+import ReviewForm from "./Review";
 
 const WorkspaceView = () => {
   const [workspace, setWorkspace] = useState({});
+  const [reviews, setReviews] = useState([]);
   const [availableSeats, setAvailableSeats] = useState(0);
   const { loading } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
@@ -61,10 +64,27 @@ const WorkspaceView = () => {
       toast.error("An error occurred. Please try again.");
     }
   };
+  
+  const fetchReviews = async () => {
+
+    try {
+
+      const response = await getReviews(id as string);
+
+      if (response.status === 200) {
+        setReviews(response.data.data.reviews);
+      }
+
+    } catch (error) {
+
+      toast.error("An error occurred. Please try again.");
+    }
+  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
     fetchDetails();
+    fetchReviews();
   }, []);
 
   return (
@@ -220,24 +240,25 @@ const WorkspaceView = () => {
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="border-b pb-4">
-                <h4 className="font-semibold text-gray-800">
-                  Afsal Madathingal
-                </h4>
-                <p className="text-gray-600">
-                  I am a regular customer at this place. It's a great atmosphere
-                  to work in, with no disturbances. The workspace is fresh and
-                  clean, making it an ideal place to be productive.
-                </p>
-              </div>
-            </div>
-
+            {workspace.reviews && workspace.reviews.length > 0 ? (
+              workspace.reviews.map((review: any, index: number) => (
+                <div key={index} className="border-b pb-4">
+                  <h4 className="font-semibold text-gray-800">
+                    {review.name}
+                  </h4>
+                  <p className="text-gray-600">{review.comment}</p>
+                </div>
+              ))
+            ) : (
+              <p className="text-gray-600">No reviews yet.</p>
+            )}
             <button className="text-orange-500 mt-6 hover:underline">
               View More
             </button>
           </div>
+          <ReviewForm workspaceId={workspace?._id} />
         </div>
+
       )}
     </>
   );

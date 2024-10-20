@@ -27,10 +27,11 @@ userRouter.patch('/workspace/:workspaceId/reserve-seat/:seatId/date/:date',authe
 userRouter.post('/workspace/:workspaceId/book-seat/:seatId/date/:date',authenticateUser,userController.bookSeat)
 
 
- userRouter.get('/seat/:id',authenticateUser,userController.getSeatById)
+userRouter.get('/seat/:id',authenticateUser,userController.getSeatById)
 
 userRouter.post('/booking',authenticateUser,userController.confirmBooking)
 userRouter.get('/bookings/:userId',authenticateUser,userController.getBookings)
+userRouter.post('/reviews/:workspaceId',authenticateUser,userController.saveReview)
 
 
 

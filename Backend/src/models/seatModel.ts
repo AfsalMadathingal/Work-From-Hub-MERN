@@ -30,5 +30,5 @@ const seatSchema = new Schema<ISeat>({
   },
 });
 
-// Create the model
+
 export const Seat: Model<ISeat & Document> = mongoose.model('Seat', seatSchema);
