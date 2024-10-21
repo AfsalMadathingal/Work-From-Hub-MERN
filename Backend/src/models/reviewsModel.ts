@@ -4,7 +4,7 @@ import { IReview } from "entities/ReviewEntity";
 const reviewSchema = new Schema<IReview>({
   userId: {
     type: Schema.Types.ObjectId,
-    ref: "users",
+    ref: "Users",
     required: true,
   },
   workspaceId: {

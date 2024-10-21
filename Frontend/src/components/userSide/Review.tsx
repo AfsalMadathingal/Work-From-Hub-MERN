@@ -2,14 +2,24 @@ import { useState } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { createReview } from '../../services/userServices';
+import { reviewValidator } from '../../utils/userValidator';
 
 const ReviewForm = ({ workspaceId }: { workspaceId: string }) => {
 
   const [rating, setRating] = useState<number>(0);
   const [comment, setComment] = useState<string>('');
 
+
   const submitReview = async () => {
     try {
+
+      const error = reviewValidator({comment, rating});
+
+      
+      if(error){
+        return toast.error(error.comment || error.rating);
+      }
+
 
     const response = await  createReview(rating,comment,workspaceId)
 
@@ -24,7 +34,10 @@ const ReviewForm = ({ workspaceId }: { workspaceId: string }) => {
     }
   };
 
+  
+
   return (
+
     <div className="p-4">
       <h3 className="text-lg font-bold">Submit a Review</h3>
       <div className="mt-4">

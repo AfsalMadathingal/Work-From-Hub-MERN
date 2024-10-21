@@ -11,26 +11,41 @@ export class reviewService implements IReviewService {
     this.reviewRepository = new ReviewRepository();
   }
 
-  async createReview(id: string, uId: string, comment: string, rating: number): Promise<IReview | null> {
+  async createReview(
+    id: string,
+    uId: string,
+    comment: string,
+    rating: number
+  ): Promise<IReview | null> {
     try {
-  
+      const workspace = new mongoose.Types.ObjectId(id);
+      const user = new mongoose.Types.ObjectId(uId);
 
+      const review = await this.reviewRepository.create({
+        workspaceId: workspace,
+        userId: user,
+        comment,
+        rating,
+      });
 
-
-        const workspace = new mongoose.Types.ObjectId(id);
-        const user = new mongoose.Types.ObjectId(uId);
-
-        const review = await this.reviewRepository.create({
-            workspaceId: workspace,
-            userId: user,          
-            comment,
-            rating
-        });
-
-        return review;
+      return review;
     } catch (error) {
-      
-        return null
+      return null;
     }
-}
+  }
+
+  async getReviews(workspaceId: string): Promise<IReview[] | null> {
+
+    try {
+    
+      const reviews = await this.reviewRepository.getReviews(workspaceId);
+
+      return reviews;
+    } catch (error) {
+      return null;
+    }
+
+  }
+
+  
 }

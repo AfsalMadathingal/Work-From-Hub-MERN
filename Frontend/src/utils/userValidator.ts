@@ -119,6 +119,35 @@ const profileEditSchema = Joi.object({
 });
 
 
+const reviewSchema = Joi.object({
+  rating: Joi.number()
+    .integer()
+    .min(1)
+    .max(5)
+    .required()
+    .messages({
+      "number.base": "Rating must be a number.",
+      "number.integer": "Rating must be an integer.",
+      "number.min": "Rating must be at least 1.",
+      "number.max": "Rating must be less than 5.",
+      "any.required": "Rating is required.",
+    }),
+  comment: Joi.string()
+    .max(500)
+    .pattern(
+      new RegExp(
+        /^(?:(?!spam|bad|worst|poor|awful|terrible|fake|fraud|illegal|unlawful|forbidden|prohibited|banned|blocked|not allowed|not permitted|unauthorized|unapproved|disapproved|rejected|denied|refused|unacceptable|objectionable|offensive|inappropriate|inadmissible|invalid|null|void|none|undefined|unspecified|unknown|unidentified|unrecognizable|unreadable|unusable|unavailable|unaccessible|unattainable|unrealizable|unfeasible|impossible|unimaginable|unbelievable|unthinkable|unconscionable|egregious|heinous|atrocious|abominable|abhorrent|odious|loathsome|despicable|contemptible|detestable|execrable|abysmal|appalling|ghastly|grisly|grim|ghastful|fearful|frightful|dreadful|direful|calamitous|catastrophic|disastrous|unmitigated|unrelieved|unremitting|unrelenting|incessant|unending|uninterrupted|unceasing|unabated|unbridled|unchecked|unfettered|unconstrained|unrestricted|uninhibited|unbound|unlimited|endless|boundless|infinite|immeasurable|inestimable|incalculable|priceless|invaluable|incomparable|unparalleled|unmatched|unequaled|unexcelled|unsurpassed|unbeaten|unrivaled|unrivaled|unrivaled|unrivaled|unrivaled|un).*)$/i
+      )
+    )
+    .messages({
+      "string.pattern.base":
+        "Comment contains forbidden words. Please refrain from using offensive language.",
+      "string.max": "Comment must be less than 500 characters long.",
+      "any.required": "Rating is required.",
+    }),
+});
+
+
 const passwordChangeSchema = Joi.object({
   currentPassword: Joi.string()
     .required()
@@ -147,6 +176,27 @@ const passwordChangeSchema = Joi.object({
       'any.required': 'Confirm password is required.',
     }),
 });
+
+
+export const reviewValidator = (data: any) => {
+
+  console.log('====================================');
+  console.log(data);
+  console.log('====================================');
+
+  const { error } = reviewSchema.validate(data, { abortEarly: false });
+
+  if (error) {
+    const formattedErrors: { [key: string]: string } = {};
+    error.details.forEach((detail) => {
+      formattedErrors[detail.path[0]] = detail.message;
+    });
+
+    return formattedErrors;
+  }
+
+  return null;
+};
 
 
 export const passwordChangeValidator = (data:any) => {

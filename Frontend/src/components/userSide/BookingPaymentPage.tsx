@@ -109,11 +109,16 @@ const BookingPaymentPage = () => {
     try {
      const response =  await reserveSeatAPI(seatId as string, id as string, date as string);
 
+      if(response?.status === 403){
+        navigate('/user/bookings')
+      }
+
      if(response?.status === 404){
        toast.error("The seat is already reserved.");
        navigate('/workspace');
      }
     } catch (error) {
+     
       toast.error("Failed to reserve seat. Please try again.");
     }
   };

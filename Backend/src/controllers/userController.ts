@@ -22,6 +22,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import { IReviewService } from "../services/interface/IReviewService";
 import { reviewService } from "../services/implementations/ReviewService";
 import { HttpStatus } from "../enums/HttpStatus";
+import { IDecode } from "entities/decode";
 
 class UserController {
   private userService: UserService;
@@ -314,12 +315,26 @@ class UserController {
   };
 
   public reserveSeat = async (
-    req: Request,
+    req: Request & IDecode,
     res: Response,
     next: NextFunction
   ) => {
     try {
       const { seatId, workspaceId, date } = req.params;
+
+      const booking = await this.bookingService.getBookingsByUserId(req.user.id)
+
+      const dateToCompare = new Date(date);
+
+  
+      const isBookedSameDate = booking.filter((value)=>value.date.getTime()==dateToCompare.getTime())
+
+      if(isBookedSameDate.length > 0 ){
+        return res
+        .status(HttpStatus.FORBIDDEN)
+        .json(new ApiError(404, "cant book multiple seat same day booking", "booking not allowed"));
+
+      }
 
       const workspace = await this.workspaceService.getSingleWorkspace(
         workspaceId
@@ -372,13 +387,28 @@ class UserController {
     }
   };
 
-  public bookSeat = async (req: Request, res: Response, next: NextFunction) => {
+  public bookSeat = async (req: Request & IDecode, res: Response, next: NextFunction) => {
     try {
-      console.log("====================================");
-      console.log(req.body);
-      console.log("====================================");
+
+
+      
       const { seatId, workspaceId, date } = req.params;
 
+      const booking = await this.bookingService.getBookingsByUserId(req.user.id)
+
+      const dateToCompare = new Date(date);
+
+  
+      const isBookedSameDate = booking.filter((value)=>value.date.getTime()==dateToCompare.getTime())
+
+      if(isBookedSameDate.length > 0 ){
+        return res
+        .status(HttpStatus.FORBIDDEN)
+        .json(new ApiError(404, "cant book multiple seat same day booking", "booking not allowed"));
+
+      }
+
+    
       const workspace = await this.workspaceService.getSingleWorkspace(
         workspaceId
       );
@@ -550,6 +580,23 @@ class UserController {
       return res
         .status(201)
         .json(new ApiResponse(201, review, "review saved successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+  public getReviews = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+      const { workspaceId } = req.params;
+
+      const reviews = await this.reviewService.getReviews(workspaceId);
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, reviews, "reviews fetched successfully"));
 
     } catch (error) {
       next(error);

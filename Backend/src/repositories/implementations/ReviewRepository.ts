@@ -32,6 +32,24 @@ export class ReviewRepository implements IReviewRepository {
   }
 
 
+  async getReviews(workspaceId: string): Promise<IReview[] | null> {
+    try {
+
+      const reviews = await Review.find({ workspaceId }).populate('userId', '-password');
+      
+
+      console.log('====================================');
+      console.log(reviews);
+      console.log('====================================');
+
+      return reviews;
+    } catch (error) {
+      console.error('Error getting reviews:', error);
+      return null;
+    }
+  }
+
+
 
 
 }

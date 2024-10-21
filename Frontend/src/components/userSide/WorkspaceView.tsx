@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Star, Wifi, Battery } from "lucide-react";
+import { Star, Wifi, Battery, Rewind } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import {
@@ -72,7 +72,8 @@ const WorkspaceView = () => {
       const response = await getReviews(id as string);
 
       if (response.status === 200) {
-        setReviews(response.data.data.reviews);
+ 
+        setReviews(response.data.data);
       }
 
     } catch (error) {
@@ -231,21 +232,26 @@ const WorkspaceView = () => {
             </h3>
             <div className="flex items-center mb-6">
               <div className="bg-green-500 text-white p-4 rounded-lg mr-4">
-                <span className="text-2xl font-bold">3.7</span>
+                <span className="text-2xl font-bold">{(reviews.reduce((acc, curr) => acc + curr?.rating, 0) / reviews.length).toFixed(1)}</span>
                 <Star className="inline-block ml-1 text-white" />
               </div>
               <div>
                 <p className="font-semibold text-gray-800">GOOD</p>
-                <p className="text-sm text-gray-500">100 Ratings</p>
+                <p className="text-sm text-gray-500">{reviews?.length}</p>
               </div>
             </div>
 
-            {workspace.reviews && workspace.reviews.length > 0 ? (
-              workspace.reviews.map((review: any, index: number) => (
+            {reviews && reviews.length > 0 ? (
+              reviews.map((review: any, index: number) => (
                 <div key={index} className="border-b pb-4">
                   <h4 className="font-semibold text-gray-800">
-                    {review.name}
+                    {review.userId.fullName}
                   </h4>
+                  <div className="flex items-center text-gray-600">
+                    {Array.from({ length: review.rating }).map((_, i) => (
+                      <Star key={i} className="inline-block text-yellow-500" />
+                    ))}
+                  </div>
                   <p className="text-gray-600">{review.comment}</p>
                 </div>
               ))

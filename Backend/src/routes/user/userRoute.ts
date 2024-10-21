@@ -24,16 +24,16 @@ userRouter.get('/workspace/filters',authenticateUser,userController.getWorkspace
 userRouter.get('/workspace/:workspaceId/available-seats',authenticateUser,userController.getAvailableSeatsOfWorkspace)
 userRouter.get('/workspace/:id',authenticateUser,userController.getSingleWorkspace)
 userRouter.patch('/workspace/:workspaceId/reserve-seat/:seatId/date/:date',authenticateUser,userController.reserveSeat)
+
 userRouter.post('/workspace/:workspaceId/book-seat/:seatId/date/:date',authenticateUser,userController.bookSeat)
-
-
-userRouter.get('/seat/:id',authenticateUser,userController.getSeatById)
 
 userRouter.post('/booking',authenticateUser,userController.confirmBooking)
 userRouter.get('/bookings/:userId',authenticateUser,userController.getBookings)
 userRouter.post('/reviews/:workspaceId',authenticateUser,userController.saveReview)
+userRouter.get('/reviews/:workspaceId', authenticateUser,userController.getReviews)
 
 
+userRouter.get('/seat/:id',authenticateUser,userController.getSeatById)
 
 
 
