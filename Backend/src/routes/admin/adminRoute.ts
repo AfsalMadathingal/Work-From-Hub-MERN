@@ -33,10 +33,12 @@ adminRouter.get('/workspace-submission',authenticate,adminController.getWorkspac
 adminRouter.patch('/approve-workspace/:id',authenticate,adminController.approveWorkspace)
 adminRouter.patch('/reject-workspace/:id',authenticate,adminController.rejectWorkspace)
 adminRouter.get('/approved-workspaces',authenticate,adminController.getApprovedWorkspaces)
+adminRouter.get('/approved-workspace/:id',authenticate,adminController.approvedWorkspaceById)
 
 adminRouter.get('/bookings',authenticate,adminController.getBookings)
-
 adminRouter.get('/dashboard',authenticate, adminController.dashboard)
+adminRouter.get('/booking-data',authenticate,adminController.getBookingsForDashboard)
+adminRouter.get('/booking-report',authenticate,adminController.getBookingsReport)
 
 
 export default adminRouter

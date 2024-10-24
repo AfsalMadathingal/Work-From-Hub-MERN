@@ -259,15 +259,16 @@ class AdminController {
     try {
 
 
-      const [userData, bookingData, workspaceData] = await Promise.all([
+      const [userData, bookingData, workspaceData, lastSevenBookings] = await Promise.all([
         this.userService.getTotalUsers(),
         this.bookingService.getTotalBookings(),
         this.workspaceService.getTotalWorkspaces(),
+        this.bookingService.getBookingForDashboard()
       ]);
 
 
       if(userData && bookingData && workspaceData ){
-        return res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{userData,bookingData , workspaceData}))
+        return res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{userData,bookingData , workspaceData ,lastSevenBookings}))
       }
       
 
@@ -278,6 +279,59 @@ class AdminController {
       next(error)
     }
   };
+
+  public getBookingsForDashboard = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+
+      const bookings = await this.bookingService.getBookingForDashboard()
+      return res
+        .status(200)
+        .json(new ApiResponse(HttpStatus.OK, bookings, "fetched successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+  public getBookingsReport = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+
+
+
+      const bookings = await this.bookingService.getBookingsReport(req.query)
+
+      return res
+        .status(200)
+        .json(new ApiResponse(HttpStatus.OK, bookings, "fetched successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
+  public approvedWorkspaceById = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { id } = req.params;
+
+      const workspace = await this.workspaceService.getApprovedWorkspaceById(id);
+
+      if (!workspace) {
+        throw new Error("Workspace not found");
+      }
+
+      return res
+        .status(200)
+        .json(new ApiResponse(HttpStatus.OK, workspace, "fetched successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
 
 
 }

@@ -9,6 +9,11 @@ import { getDashboardData } from "../../services/adminService";
 const Dashboard = () => {
   const [summaryData, setSummaryData] = useState({});
   const [newUsers, setNewUsers] = useState([]);
+  const [recentBookings, setRecentBookings] = useState([]);
+   const [chartData, setChartData] = useState([{
+    date: new Date().toISOString().split('T')[0],
+    bookings: 0
+   }]);
 
   const fetchDashboardData = async () => {
     try {
@@ -26,10 +31,44 @@ const Dashboard = () => {
         0
       );
 
-console.log(data);
+      const lastSevenBookings = data.lastSevenBookings
 
+      setRecentBookings(lastSevenBookings);
+
+      const getLastSevenDays = () => {
+        const days = [];
+        const today = new Date();
+      
+        for (let i = 0; i < 7; i++) {
+          const date = new Date();
+          date.setDate(today.getDate() - i);
+          days.push(date.toISOString().split('T')[0]); 
+        }
+      
+        return days;
+      };
+      
+      // Step 1: Group bookings by date
+      const groupedBookings = lastSevenBookings.reduce((acc, booking) => {
+        const date = new Date(booking.date).toISOString().split('T')[0]; // Extract only the date part
+        if (!acc[date]) {
+          acc[date] = { date, bookings: 1 };
+        } else {
+          acc[date].bookings += 1;
+        }
+        return acc;
+      }, {});
+      
+      // Step 2: Get the last 7 days and ensure each date has a booking count
+      const lastSevenDays = getLastSevenDays();
+      
+      const finalResult = lastSevenDays.map(date => {
+        return groupedBookings[date] || { date, bookings: 0 }; // If date not found, add with 0 bookings
+      });
+      
+
+      setChartData(finalResult);
       setNewUsers(data?.userData?.users);
-
       setSummaryData(summary);
     } catch (error) {
       toast.error("Something went wrong");
@@ -40,14 +79,24 @@ console.log(data);
     fetchDashboardData();
   }, []);
   return (
-    <div className="p-8 bg-gray-100 min-h-screen">
+    <div className="p-1 bg-gray-100 min-h-screen">
+    <div>
       <SummaryStatics summaryData={summaryData} />
-      <RevenueChart />
-      <div className="grid grid-cols-2 gap-4">
+    </div>
+    
+    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
+      <RevenueChart chartData={chartData}  />
+            
+      <RecentBookings recentBookings={recentBookings} />
+    </div>
+  
+    <div className="grid  mt-8">
+      <div>
         <NewUsers newUsersData={newUsers} />
-        <RecentBookings />
       </div>
     </div>
+  </div>
+  
   );
 };
 

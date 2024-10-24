@@ -4,8 +4,9 @@ import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PublicRoute from "../components/auth/AdminPublicRoute";
 import PrivateRoute from "../components/auth/AdminPrivateRoute";
-import Support from "../pages/admin/Support";
-import AdminDashboard from "../pages/admin/Dashboard";
+const Support = lazy(() => import("../pages/admin/Support"));
+const AdminDashboard = lazy(() => import("../pages/admin/Dashboard"));
+const BookingReportPage = lazy(() => import("../pages/admin/BookingReportPage"));
 const BookingHistory = lazy(() => import("../pages/admin/BookingHistory"));
 const WorkspaceSubmission = lazy(() => import("../pages/admin/WorkspaceSubmission"));
 const View = lazy(() => import("../pages/admin/ViewWorkSpace"));
@@ -49,6 +50,22 @@ const AdminRouter = () => {
             }
           >
             <PrivateRoute element={AdminDashboard} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/dashboard/detailed-report"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={BookingReportPage} />
           </Suspense>
         }
       />

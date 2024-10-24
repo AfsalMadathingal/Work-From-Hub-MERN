@@ -3,7 +3,6 @@ import adminRouter from "./admin/adminRoute";
 import userRouter from "./user/userRoute";
 import businessRoute from "./business/businessRoute";
 import webhookRoute from "./webhook/webhookRoutes";
-import BUserController from "../controllers/BUserController";
 const router = Router();
 
 

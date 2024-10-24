@@ -77,7 +77,7 @@ export default function RevenueChart({ chartData }) {
         </div>
       </div>
       <Link
-        to={"/admin/dashboard/detailed-report"}
+        to={"/business/dashboard/report"}
         className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-md transition duration-300"
       >
         View Detailed Report

@@ -10,12 +10,13 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.13.0",
+    "@emotion/react": "^11.13.3",
     "@emotion/styled": "^11.13.0",
     "@fontsource/poppins": "^5.0.14",
     "@heroicons/react": "^2.1.5",
     "@mui/icons-material": "^5.16.7",
     "@mui/material": "^5.16.7",
+    "@mui/x-charts": "^7.21.0",
     "@nextui-org/react": "^2.4.6",
     "@react-google-maps/api": "^2.19.3",
     "@reduxjs/toolkit": "^2.2.7",
@@ -28,6 +29,7 @@
     "file-saver": "^2.0.5",
     "firebase": "^10.13.0",
     "framer-motion": "^11.3.29",
+    "html2canvas": "^1.4.1",
     "joi": "^17.13.3",
     "jspdf": "^2.5.2",
     "jspdf-autotable": "^3.8.3",
@@ -57,10 +59,12 @@
     "recharts": "^2.13.0",
     "redux-persist": "^6.0.0",
     "slick-carousel": "^1.8.1",
+    "slsx": "^0.0.3",
     "socket.io-client": "^4.8.0",
     "styled-components": "^6.1.13",
     "swiper": "^11.1.14",
-    "video-react": "^0.16.0"
+    "video-react": "^0.16.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

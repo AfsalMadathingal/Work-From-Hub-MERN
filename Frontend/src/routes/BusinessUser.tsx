@@ -5,24 +5,34 @@ import { PRIMARY_COLOR } from "../constant/colors";
 import WorkplaceManage from "../pages/BusinessUserAuth/WorkplaceManage";
 import PublicRoute from "../components/auth/BUsesrPublicRoute";
 import PrivateRoute from "../components/auth/BUserPrivateRoute";
-import BBookingHistory from "../components/businessUser/BBookingHistory";
-import BUserBookingHistory from "../pages/Buser/BBookingHistory";
+import BBookingReportPage from "../pages/Buser/BBookingReportPage";
+const BUserBookingHistory = lazy(
+  () => import("../pages/Buser/BBookingHistory")
+);
+const BUserDashBoard = lazy(() => import("../pages/Buser/BUserDashBoard"));
 const BWorkspaceManage = lazy(() => import("../pages/Buser/WorkspaceManage"));
-const ViewWorkSpace = lazy(() => import("../pages/BusinessUserAuth/ViewWorkSpace"));
-const BWorkspaceSubmissions = lazy(() => import("../pages/Buser/BWorkspaceSubmissions"));
-const SubmitNewWorkspace = lazy(() => import("../pages/Buser/SubmitNewWorkspace"));
-const ApprovedWorkspaces = lazy(() => import("../pages/Buser/ApprovedWorkspaces"));
+const ViewWorkSpace = lazy(
+  () => import("../pages/BusinessUserAuth/ViewWorkSpace")
+);
+const BWorkspaceSubmissions = lazy(
+  () => import("../pages/Buser/BWorkspaceSubmissions")
+);
+const SubmitNewWorkspace = lazy(
+  () => import("../pages/Buser/SubmitNewWorkspace")
+);
+const ApprovedWorkspaces = lazy(
+  () => import("../pages/Buser/ApprovedWorkspaces")
+);
 
 const BusinessLogin = lazy(
-  () => import("../pages/BusinessUserAuth/BusinessUserLogin"));
+  () => import("../pages/BusinessUserAuth/BusinessUserLogin")
+);
 const BusinessUserRegister = lazy(
   () => import("../pages/BusinessUserAuth/BusinessUserRegister")
 );
 
 const BusinessUser = () => {
   const location = useLocation();
-
-
 
   return (
     <Routes location={location} key={location.pathname}>
@@ -70,11 +80,27 @@ const BusinessUser = () => {
               />
             }
           >
-            <PrivateRoute element={WorkplaceManage} />
+            <PrivateRoute element={BUserDashBoard} />
           </Suspense>
         }
       />
 
+      <Route
+        path="/dashboard/report"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={BBookingReportPage} />
+          </Suspense>
+        }
+      />
       <Route
         path="/workspace-submission"
         element={
@@ -124,7 +150,7 @@ const BusinessUser = () => {
           </Suspense>
         }
       />
-       <Route
+      <Route
         path="/workspace-manage/submit"
         element={
           <Suspense
@@ -172,7 +198,7 @@ const BusinessUser = () => {
           </Suspense>
         }
       />
-           <Route
+      <Route
         path="/bookings"
         element={
           <Suspense
@@ -193,5 +219,3 @@ const BusinessUser = () => {
 };
 
 export default BusinessUser;
-
-

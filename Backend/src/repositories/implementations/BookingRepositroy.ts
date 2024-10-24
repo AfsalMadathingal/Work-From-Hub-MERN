@@ -1,9 +1,115 @@
 import { IBooking } from "entities/BookingEntity";
 import { IBookingRepository } from "../../repositories/interface/IBookingRepository";
 import BookingModel from "../../models/BookingModel";
-import mongoose, { Mongoose } from "mongoose";
+import mongoose, { ObjectId } from "mongoose";
+import Users from "../../models/userModel";
+import { IUsers } from "../../entities/UserEntity";
+import { WorkspaceModel } from "../../models/workspace";
 
-export default class BookingRepository implements IBookingRepository {
+
+export default class BookingRepository implements IBookingRepository{
+
+
+  private userModel:any;
+
+  constructor(){
+    this.userModel = Users;
+  }
+
+  async getBookingsReport(
+    filter: {fullName?:string , userId:{}},
+    pageNum: number,
+    limitNum: number
+  ): Promise<{ bookings: IBooking[]; totalPages: number } | null> {
+    try {
+
+      let userIds = [];
+
+
+    if (filter.fullName) {
+
+      const users = await this.userModel.find({ fullName: { $regex: filter.fullName? filter.fullName : " ", $options: 'i' } }, '_id');
+      userIds = users.map((user:IUsers) => user._id);
+    }
+
+    const bookingFilter = { ...filter };
+    if (userIds.length > 0) {
+      bookingFilter.userId = { $in: userIds };
+      delete bookingFilter.fullName;
+    }
+
+
+      const totalBookings = await BookingModel.countDocuments(bookingFilter);
+      const bookings = await BookingModel.find(bookingFilter)
+        .populate('userId')
+        .limit(limitNum)
+        .skip((pageNum - 1) * limitNum)
+        .sort({ date: -1 });
+
+        const result = {bookings , totalPages:Math.ceil(totalBookings/limitNum)}
+
+        return result
+
+    } catch (error) {
+      throw error;
+    }
+  }
+  async reportByOwnerId(
+    filter: { buildingName?: string; ownerId: string; workspaceId?: {} },
+    pageNum: number,
+    limitNum: number
+  ): Promise<{ bookings: IBooking[]; totalPages: number } | null> {
+    try {
+      let workspaceIds: ObjectId[] = [];
+  
+      if (filter.ownerId) {
+        const workspaceQuery: any = { ownerId: filter.ownerId };
+  
+        if (filter.buildingName) {
+          workspaceQuery.buildingName = {
+            $regex: filter.buildingName,
+            $options: 'i',
+          };
+        }
+  
+        const workspaces = await WorkspaceModel.find(workspaceQuery);
+        workspaceIds = workspaces.map((space: IUsers) => space._id);
+      }
+  
+      const bookingFilter = { ...filter };
+  
+      if (workspaceIds.length > 0) {
+        bookingFilter.workspaceId = { $in: workspaceIds };
+        delete bookingFilter.buildingName;
+        delete bookingFilter.ownerId; 
+      }
+  
+      console.log('==================bookingFilter==================');
+      console.log(bookingFilter);
+      console.log('====================================');
+  
+      const totalBookings = await BookingModel.countDocuments(bookingFilter);
+  
+      const bookings = await BookingModel.find(bookingFilter)
+        .populate('userId')
+        .populate('workspaceId')
+        .limit(limitNum)
+        .skip((pageNum - 1) * limitNum)
+        .sort({ date: -1 });
+  
+      const result = { bookings, totalPages: Math.ceil(totalBookings / limitNum) };
+  
+      return result;
+  
+    } catch (error) {
+      console.log('====================================');
+      console.log(error);
+      console.log('====================================');
+      throw error;
+    }
+  }
+  
+
   async createBooking(booking: Partial<IBooking>): Promise<IBooking | null> {
     try {
       const createdBooking = await BookingModel.create(booking);
@@ -42,7 +148,6 @@ export default class BookingRepository implements IBookingRepository {
 
       return null;
     } catch (error) {
-
       return null;
     }
   }
@@ -80,70 +185,72 @@ export default class BookingRepository implements IBookingRepository {
     }
   }
 
-
-
-
-  async getBookingsByOwnerId(id: string, page: number, limit: number): Promise<IBooking[] | null> {
+  async getBookingsByOwnerId(
+    id: string,
+    page?: number, 
+    limit?: number 
+  ): Promise<IBooking[] | null> {
     try {
-      const skip = (page - 1) * limit;
+
 
       const ownerId = new mongoose.Types.ObjectId(id);
-  
-      const bookingResponse = await BookingModel.aggregate([
+
+      const bookingPipeline: any[] = [
         {
           $lookup: {
-            from: 'workspaces',  // Collection name for workspace
-            localField: 'workspaceId',
-            foreignField: '_id',
-            as: 'workspaceInfo',
+            from: "workspaces",
+            localField: "workspaceId",
+            foreignField: "_id",
+            as: "workspaceInfo",
           },
         },
         {
-          $unwind: '$workspaceInfo',
+          $unwind: "$workspaceInfo",
         },
         {
           $match: {
-            'workspaceInfo.ownerId': id,
+            "workspaceInfo.ownerId": ownerId,
           },
         },
         {
           $sort: { date: -1 },
         },
         {
-          $skip: skip,
-        },
-        {
-          $limit: limit,
-        },
-        {
           $lookup: {
-            from: 'users',  // Collection name for user
-            localField: 'userId',
-            foreignField: '_id',
-            as: 'userInfo',
+            from: "users",
+            localField: "userId",
+            foreignField: "_id",
+            as: "userInfo",
           },
         },
         {
           $lookup: {
-            from: 'seats',  // Collection name for user
-            localField: 'seatId',
-            foreignField: '_id',
-            as: 'seatInfo',
+            from: "seats",
+            localField: "seatId",
+            foreignField: "_id",
+            as: "seatInfo",
           },
         },
-      
         {
           $project: {
-            'userInfo.password': 0,
-            'userInfo.refreshToken': 0,
-            'workspaceInfo.ownerId.password': 0,
+            "userInfo.password": 0,
+            "userInfo.refreshToken": 0,
+            "workspaceInfo.ownerId.password": 0,
           },
         },
-      ]);
-      
-      const bookings = await BookingModel.find()
+      ];
+
+      if (page && limit) {
+        const skip = (page - 1) * limit;
+        bookingPipeline.push(
+          { $skip: skip },
+          { $limit: limit }
+        );
+      }
   
-      console.log('==================from db==================');
+      const bookingResponse = await BookingModel.aggregate(bookingPipeline);
+
+      console.log('==============bookingResponse======================');
       console.log(bookingResponse);
       console.log('====================================');
   
@@ -156,27 +263,37 @@ export default class BookingRepository implements IBookingRepository {
   
 
   async getTotalBookings(): Promise<any> {
-
     try {
-
-
-      const bookingsCount = await  BookingModel.countDocuments()
+      const bookingsCount = await BookingModel.countDocuments();
 
       const bookingsData = await BookingModel.find()
-      .limit(5)
-      .populate('userId','-password')
-      .exec()
+        .limit(5)
+        .populate("userId", "-password")
+        .exec();
 
-
-      return {bookingsCount, bookingsData}
-
-
-   
+      return { bookingsCount, bookingsData };
     } catch (error) {
       console.error("Error fetching total bookings:", error);
       throw new Error("Unable to fetch total bookings.");
     }
   }
 
+  async getLastSevenBookings(): Promise<IBooking[]> {
+    try {
+      const currentDate = new Date();
+      const tillDate = new Date(currentDate.setDate(currentDate.getDate() + 7));
 
+      const data = await BookingModel.find({ date: { $lte: tillDate } })
+        .populate("userId", "-password")
+        .exec();
+
+      if (!data) {
+        throw new Error("No data Found ");
+      }
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

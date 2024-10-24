@@ -1,8 +1,6 @@
 import { adminAxiosInstance } from "./instance/adminInstance";
 import { IUsers } from "../@types/user";
 import { IBUsers } from "../@types/businessUser";
-import { userAxiosInstance } from "./instance/userInstance";
-import { Axios, AxiosError } from "axios";
 
 const api = adminAxiosInstance;
 
@@ -259,3 +257,30 @@ export const getDashboardData = async ()=>{
   }
 }
 
+export const getDetailedReport = async (filters:URLSearchParams)=>{
+  try {
+    
+
+    const response = await api.get(`/api/admin/booking-report?${filters.toString()}`)
+
+    return response
+
+  } catch (error) {
+    
+    return error.response
+  }
+}
+
+
+export const getWorkspaceById = async  (id:string) =>{
+  try {
+
+    const response  =  await api.get(`/api/admin/approved-workspace/${id}`)
+
+    return response;
+
+    
+  } catch (error) {
+    return error.response
+  }
+}

@@ -34,7 +34,7 @@ const BookingDetailsPage = () => {
   return (
     <div className="flex h-screen">
       <div className="flex-1 flex flex-col">
-        <AdminLayout component={<BookingDetails />} />
+        <AdminLayout component={<BookingDetails pr />} />
       </div>
     </div>
   );

@@ -54,7 +54,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
       return { pendingSubmissions, totalPages };
 
-      return;
+
     } catch (error) {
       return null;
     }
@@ -182,6 +182,18 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     }
   }
 
+async findByOwnerId(id: string): Promise<Workspace[] | null> {
+    try {
+        const workspaces = await this.collection.find({ ownerId: id });
+        return workspaces;
+    } catch (error) {
+
+       throw error
+       
+    }
+}
+  
+
   async getTotalWorkspace(): Promise<number> {
     try {
       
@@ -194,4 +206,25 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
       
   }
+
+   async findApprovedByOwnerId(id: string, page: number, limit: number): Promise<GetPendingWorkspace | null> {
+       try {
+        
+
+        const data = await WorkspaceModel.find({ approved :true ,ownerId:id })
+        .skip((page - 1) * limit)
+        .limit(limit)
+
+      const approvedWorkspaces =  data 
+      const totalUser = await WorkspaceModel.countDocuments({ approved:true , ownerId:id });
+      const totalPages = Math.ceil(totalUser / limit);
+
+
+        return { approvedWorkspaces, totalPages };
+
+
+       } catch (error) {
+        
+       }
+   }
 }

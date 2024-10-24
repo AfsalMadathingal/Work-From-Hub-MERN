@@ -2,8 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { getAllApprovedWorkspaces } from "../../services/adminService";
-
-import { Pagination } from "@nextui-org/react";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
 import { FaEye } from "react-icons/fa";
@@ -42,85 +40,81 @@ const ApprovedWorkspaces = () => {
   };
 
   return (
-    <div className="container mx-auto py-12 px-4 md:px-0">
-      <h3 className="text-3xl font-bold text-gray-900 mb-8 text-center">
+    <div className="container mx-auto py-10 px-4">
+      {/* Page title */}
+      <h3 className="text-2xl font-bold text-gray-900 mb-8 text-center">
         Approved Workspaces
       </h3>
-      <div className="overflow-x-auto shadow rounded-lg border border-gray-200">
-        <table className="table-auto w-full bg-white rounded-lg">
-          <thead className="bg-gray-100 border-b">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
-                Workspace Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
-                Location
-              </th>
-              <th className="px-6 py-3 text-left text-xs leading-4 font-semibold text-gray-600 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="bg-white">
-            {workspaces.map((workspace) => (
-              <tr
-                key={workspace._id}
-                className="hover:bg-gray-50 transition-colors duration-150"
-              >
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 h-10 w-10">
-                      <img
-                        className="h-10 w-10 rounded-full object-cover"
-                        src={workspace.photos[0]}
-                        alt="Workspace"
-                      />
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {workspace.buildingName}
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                  <div className="text-sm text-gray-700">
-                    {workspace.location}
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-no-wrap border-b border-gray-200">
-                  <Link
-                    state={{ workspace }}
-                    to={`/admin/workspace-view/${workspace?._id}`}
-                  >
-                    <button className="text-white bg-blue-500 hover:bg-blue-600 rounded-full p-2 transition-colors">
-                      <FaEye />
-                    </button>
-                  </Link>
-                  {/* <button
-                    onClick={() =>
-                      navigate(`/admin/workspace-detail/${workspace._id}`)
-                    }
-                    type="button"
-                    className="px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white text-sm font-medium rounded-md shadow focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500"
-                  >
-                    View
-                  </button> */}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+
+      {/* Cards container */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {workspaces.map((workspace) => (
+          <div
+            key={workspace._id}
+            className="bg-white shadow-lg rounded-lg overflow-hidden"
+          >
+            <img
+              className="h-36 w-full object-cover"
+              src={workspace.photos[0]}
+              alt={workspace.buildingName}
+            />
+            <div className="p-4">
+              <h4 className="text-lg font-semibold text-gray-800 mb-1">
+                {workspace.buildingName}
+              </h4>
+              <p className="text-gray-600 text-sm mb-3">{workspace.location}</p>
+              <Link to={`/admin/workspace-view/${workspace._id}`}>
+                <button className="flex items-center justify-center bg-blue-500 hover:bg-blue-600 text-white font-medium py-1 px-3 rounded-md transition-colors">
+                  <FaEye className="mr-2" /> View
+                </button>
+              </Link>
+            </div>
+          </div>
+        ))}
       </div>
-      <div className="flex justify-center mt-8">
-        <Pagination
-          total={totalPages}
-          initialPage={currentPage}
-          onChange={handleChangePage}
-          color="warning" // This will give it the orange theme
-          className="bg-orange-500 text-white rounded-full shadow-md"
-          size="lg"
-        />
+
+      {/* Pagination */}
+      <div className="flex justify-center mt-12 space-x-2">
+        {/* Previous Button */}
+        <button
+          onClick={() => handleChangePage(currentPage - 1)}
+          disabled={currentPage === 1}
+          className={`px-4 py-2 rounded-md ${
+            currentPage === 1
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          } transition-colors`}
+        >
+          Previous
+        </button>
+
+        {/* Page Numbers */}
+        {Array.from({ length: totalPages }, (_, index) => (
+          <button
+            key={index}
+            onClick={() => handleChangePage(index + 1)}
+            className={`px-4 py-2 rounded-md ${
+              currentPage === index + 1
+                ? "bg-orange-500 text-white"
+                : "bg-gray-200 hover:bg-gray-300"
+            } transition-colors`}
+          >
+            {index + 1}
+          </button>
+        ))}
+
+        {/* Next Button */}
+        <button
+          onClick={() => handleChangePage(currentPage + 1)}
+          disabled={currentPage === totalPages}
+          className={`px-4 py-2 rounded-md ${
+            currentPage === totalPages
+              ? "bg-gray-300 cursor-not-allowed"
+              : "bg-blue-500 hover:bg-blue-600 text-white"
+          } transition-colors`}
+        >
+          Next
+        </button>
       </div>
     </div>
   );

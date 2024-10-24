@@ -271,9 +271,7 @@ class AuthController {
         decode.email
       );
 
-      console.log("====================================");
-      console.log(passwordUpdated);
-      console.log("====================================");
+
 
       if (passwordUpdated) {
         return res

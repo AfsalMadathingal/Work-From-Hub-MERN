@@ -1,5 +1,7 @@
 import axios from "axios";
 import { toast } from "react-toastify";
+import store from "../../redux/store/store";
+import { resetUser } from "../../redux/slices/userSlice";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -48,7 +50,8 @@ userAxiosInstance.interceptors.response.use(
           originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
           return userAxiosInstance(originalRequest);
         } catch (err) {
-          toast.error("Session expired, please log in again.");
+          toast.error("Session expired");
+          store.dispatch(resetUser())
           return Promise.reject(err);
         }
       }

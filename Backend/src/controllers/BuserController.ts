@@ -9,6 +9,7 @@ import ApiResponse from "../utils/ApiResponse";
 import { HttpStatus } from "../enums/HttpStatus";
 import { IBookingService } from "../services/interface/IBookingService";
 import BookingService from "../services/implementations/BookingServices";
+import { IDecode } from "entities/decode";
 
 class BUserController {
 
@@ -136,16 +137,15 @@ class BUserController {
     }
 
     
-    public getApprovedWorkspaces = async (req:Request , res:Response , next:NextFunction)=> {
+    public getApprovedWorkspaces = async (req:Request & IDecode , res:Response , next:NextFunction)=> {
 
         try {
 
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 5;
 
-            const response = await this.workspaceService.getApprovedWorkspaces(page,limit);
+            const response = await this.workspaceService.findApprovedByOwnerId(req.user.id, page,limit);
 
-            console.log(response);
             
             return res.json(new ApiResponse( HttpStatus.OK, response, "fetched successfully"));
             
@@ -178,6 +178,61 @@ class BUserController {
             
         }
     }
+
+
+    public getDashboardData = async (req: Request & IDecode, res: Response, next: NextFunction) => {
+    try {
+       
+
+        const [bookingData, workspaceData , countBooking] = await Promise.all([
+            this.bookingService.getBookingsByOwnerId(req.user.id),
+            this.workspaceService.getWorkspaceByOwnerId(req.user.id),
+            this.bookingService.countByOwnerId(req.user.id),
+            // this.workspaceService.countByOwnerId(req.user.id)
+
+          ]);
+
+          
+        
+    
+    
+          if(bookingData && workspaceData && countBooking ){
+            return res.status(HttpStatus.OK).json(new ApiResponse(HttpStatus.OK,{bookingData , workspaceData , countBooking}))
+          }
+          
+    
+          throw new Error("something went wrong")
+
+
+
+    } catch (error) {
+        next(error);
+    }
+}
+
+public getReport = async (req:Request & IDecode, res:Response,next:NextFunction )=>{
+
+try {
+    let filter :{
+    } = {}
+    const ownerId = req.user.id;
+    filter = {ownerId,...req.query};
+
+    const data = await this.bookingService.ReportByOwnerId(filter)
+
+    if(!data){
+        throw new Error('something went Wrong')
+    }
+
+    res.status(HttpStatus.OK )
+    .json(new ApiResponse(HttpStatus.OK,data,"successfully fetched "))
+    
+} catch (error) {
+    next(error)
+}
+ 
+
+}
 
 
 

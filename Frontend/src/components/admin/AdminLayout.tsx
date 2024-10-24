@@ -28,6 +28,7 @@ import { logout } from "../../services/adminAuth";
 import { useDispatch, useSelector } from "react-redux";
 import { resetAdmin, setModal, setModalConfig } from "../../redux/slices/adminSlice";
 import { RootState } from "../../redux/store/store";
+import { useLocation } from "react-router-dom";
 
 
 const drawerWidth = 240;
@@ -35,17 +36,14 @@ const drawerWidth = 240;
 interface Props {
   component: React.ReactNode;
 }
-
 export default function ResponsiveDrawer(props: Props) {
   const { component } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-  const { pageTitle, modal , modalConfig } = useSelector((state: RootState) => state.admin);
+  const { pageTitle } = useSelector((state: RootState) => state.admin);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  // New state for modal
-
+  const location = useLocation(); // Get the current path
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -62,20 +60,16 @@ export default function ResponsiveDrawer(props: Props) {
     }
   };
 
-
-
   const handleLogout = async () => {
-   
-        await logout();
-        dispatch(resetAdmin());
-        navigate("/admin/login");
-
+    await logout();
+    dispatch(resetAdmin());
+    navigate("/admin/login");
   };
 
   const drawer = (
     <div>
       <div className="flex flex-col items-center justify-center">
-        <img src="/logo.png" className="h-20 " alt="" />
+        <img src="/logo.png" className="h-20" alt="" />
         <p className="text-md font-bold">Admin Panel</p>
       </div>
 
@@ -111,12 +105,23 @@ export default function ResponsiveDrawer(props: Props) {
           },
           { text: "Support", link: "/admin/support", icon: <SupportIcon /> },
         ].map((item) => (
-          <Link to={`${item.link.toLowerCase()}`} key={item.text}>
+          <Link to={item.link.toLowerCase()} key={item.text}>
             <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemButton
+                sx={{
+                  bgcolor: location.pathname === item.link ? "warning.main" : "transparent",
+                  color: location.pathname === item.link ? "#fff" : "inherit",
+                  "&:hover": {
+                    bgcolor: "warning.main",
+                    color: "#fff",
+                  },
+                }}
+              >
+                <ListItemIcon sx={{ color: location.pathname === item.link ? "#fff" : "inherit" }}>
+                  {item.icon}
+                </ListItemIcon>
                 <ListItemText
-                  className="hover:text-orange-600"
+                  className="hover:text-white-600"
                   primary={item.text}
                 />
               </ListItemButton>
@@ -203,15 +208,13 @@ export default function ResponsiveDrawer(props: Props) {
         component="main"
         sx={{
           flexGrow: 1,
-          p: 3,
+          p: 1,
           width: { sm: `calc(100% - ${drawerWidth}px)` },
         }}
       >
         <Toolbar />
         {component}
       </Box>
-
-
     </Box>
   );
 }

@@ -6,10 +6,14 @@ export interface IBookingRepository {
     findBySeatId(id:string):Promise <IBooking| null>;
     getBookingsByUserId(id:string):Promise <IBooking[] | null>;
     getBookings(page: number, limit: number):  Promise<{ totalBookings: number; bookings: IBooking[] | null }>
-    getBookingsByOwnerId(id: string, page: number, limit: number): Promise<IBooking[] | null>
+    getBookingsByOwnerId(id: string, page?: number, limit?: number): Promise<IBooking[] | null>
     getTotalBookings(): Promise<any>
-    // findBookingById(id: string): Promise<IBooking | null>;
-    // findBookingByUserId(userId: string): Promise<IBooking[] | null>;
-    // updateBooking(booking: IBooking): Promise<IBooking | null>;
-    // deleteBooking(id: string): Promise<boolean>;
+    getLastSevenBookings ():Promise<IBooking[]>;
+    getBookingsReport(filter:{},page:number,limit:number):Promise <{bookings:IBooking[] , totalPages: number} | null >
+    reportByOwnerId(
+        filter: {buildingName?:string , ownerId?:string, workspaceId?:{}},
+        pageNum: number,
+        limitNum: number
+      ): Promise<{ bookings: IBooking[]; totalPages: number } | null> 
+
 }

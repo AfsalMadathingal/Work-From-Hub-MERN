@@ -22,6 +22,7 @@ import {
   rejectWorkspace,
 } from "../../services/adminService";
 import Dialog from "./Dialog";
+import { AxiosError } from "axios";
 
 interface WorkspaceDetailProps {
   workspace: {
@@ -51,7 +52,6 @@ interface WorkspaceDetailProps {
 }
 
 const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
-  const domLocation = useLocation();
   const [ownerName, setOwnerName] = useState<string>("");
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
   const [onDialogConfirm, setOnDialogConfirm] = useState<() => void>(() => {});
@@ -80,7 +80,7 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     approved,
     createdAt,
     ownerId,
-  } = domLocation.state.workspace as WorkspaceDetailProps["workspace"];
+  } = workspace as WorkspaceDetailProps["workspace"];
 
   const openInGoogleMaps = () => {
     window.open(`https://www.google.com/maps/search/${location}`, "_blank");
@@ -89,9 +89,11 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
   const getOwner = async (ownerId: string) => {
     try {
       const response = await getOwnerById(ownerId);
-
       setOwnerName(response.data.data.email);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
+      
       toast.error("Something went wrong");
     }
   };
@@ -152,9 +154,6 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     }
   };
 
-  useEffect(() => {
-    getOwner(ownerId);
-  }, [workspace]);
 
   const sliderSettings = {
     dots: true,
@@ -186,7 +185,7 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
                 {new Date(createdAt).toLocaleString()}
               </span>
               <span>by:</span>
-              <span className="font-semibold">{ownerName}</span>
+              <span className="font-semibold">{"ownerName"}</span>
             </div>
           </div>
 
@@ -284,7 +283,7 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
           {/* Carousel for Images and Video on Right */}
           <div>
             <Slider {...sliderSettings}>
-              {photos.map((photo, index) => (
+              {photos?.map((photo, index) => (
                 <div key={index}>
                   <img
                     src={photo}

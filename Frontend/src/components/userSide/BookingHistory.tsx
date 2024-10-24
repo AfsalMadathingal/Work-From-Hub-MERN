@@ -21,6 +21,7 @@ import { IWorkspace } from "../../@types/workspace";
 import { ISeat } from "../../@types/seat";
 import ModalForBookingDetails from "./ModalForBookingDetails";
 import { FaEye } from "react-icons/fa";
+import CancelBookingModal from "./CancelBookingModal";
 
 export default function BookingHistory() {
   const [bookings, setBookings] = useState([]);
@@ -35,6 +36,7 @@ export default function BookingHistory() {
   const { user } = useSelector((state: RootState) => state.user);
   const rowsPerPage = 4;
   const pages = Math.ceil(bookings.length / rowsPerPage);
+  const [cancelBooking, setCancelBooking] = useState(false);
 
   // Fetch the workspace names for all bookings
   const fetchWorkspaceNames = async (bookings) => {
@@ -106,9 +108,19 @@ export default function BookingHistory() {
 
   };
 
-   const handleSupport = () => {
-    toast.error("Sorry! Support is not available at the moment. Please try again later.");
+   const handleCancelBooking = async () => {
+    try {
+      const response = await reserveSeatAPI(selectedSeat?._id, selectedWorkspace?._id);
+
+      if (response.status === 200) {
+        setCancelBooking(false);
+        fetchBookings();
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
   };
+
 
   useEffect(() => {
     fetchBookings();
@@ -123,6 +135,7 @@ export default function BookingHistory() {
   return (
     <>
     <ModalForBookingDetails isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} workspace={selectedWorkspace} seat={selectedSeat} booking={selectedBooking} />
+    <CancelBookingModal isOpen={cancelBooking} onClose={() => setCancelBooking(false)} onConfirm={handleCancelBooking} />
     <div className="container mx-auto px-4">
   <h1 className="text-2xl font-bold mb-4">Booking History</h1>
   <div className="overflow-x-auto">
@@ -174,10 +187,10 @@ export default function BookingHistory() {
                   <DropdownItem
     
                     onClick={() => {
-                      handleSupport();
+                      setCancelBooking(true);
                     }}
                   >
-                    Support
+                    Cancel Booking
                   </DropdownItem>
 
                 </DropdownMenu>
@@ -194,7 +207,7 @@ export default function BookingHistory() {
     <button
       onClick={() => setPage(page - 1)}
       disabled={page === 1}
-      className="px-4 py-2 mx-1 bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50"
+      className="px-4 py-2 mx-1 bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50 "
     >
       Previous
     </button>

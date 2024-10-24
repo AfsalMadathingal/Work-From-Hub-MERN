@@ -1,4 +1,6 @@
 import axios from "axios";
+import store from "../../redux/store/store";
+import { resetBUser } from "../../redux/slices/businessUserSlice";
 
 const API_URL = import.meta.env.VITE_API_URL;
 
@@ -46,6 +48,7 @@ businessUserApi.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return businessUserApi(originalRequest);
       } catch (error) {
+        store.dispatch(resetBUser())
         return Promise.reject(error);
       }
     }

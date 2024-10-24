@@ -59,7 +59,7 @@ export default function Header() {
             </Link>
           </NavbarItem>
           <NavbarItem>
-            <Link color="foreground" href="#">
+            <Link href="/business/login" color="foreground" >
               List your space
             </Link>
           </NavbarItem>

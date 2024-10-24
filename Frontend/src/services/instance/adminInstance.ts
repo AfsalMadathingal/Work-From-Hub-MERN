@@ -1,4 +1,6 @@
 import axios from "axios";
+import store from "../../redux/store/store";
+import { resetAdmin } from "../../redux/slices/adminSlice";
 
 const API_URL = import.meta.env.VITE_API_URL;
 export const adminAxiosInstance = axios.create({
@@ -46,6 +48,7 @@ adminAxiosInstance.interceptors.response.use(
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`;
         return adminAxiosInstance(originalRequest);
       } catch (error) {
+        store.dispatch(resetAdmin())
         return Promise.reject(error);
       }
     }

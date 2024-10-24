@@ -11,6 +11,8 @@ export interface IFilters {
 }
 
 export interface IWorkspaceService {
+
+  getApprovedWorkspaceById(id: string): Promise<IWorkspace | null>;
   submitWorkspaceListing(data: Request): Promise<IWorkspace | null>;
   getWorkSpaceSubmission(
     page: number,
@@ -38,5 +40,8 @@ export interface IWorkspaceService {
 
 
   getTotalWorkspaces():Promise<number>;
+
+  getWorkspaceByOwnerId(id:string): Promise <IWorkspace[]| null> ;
+  findApprovedByOwnerId(id:string,page: number,limit: number):Promise  <GetPendingWorkspace | null >;
   
 }

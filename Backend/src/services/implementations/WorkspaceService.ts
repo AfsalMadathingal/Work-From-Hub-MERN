@@ -23,7 +23,7 @@ export default class WorkspaceService implements IWorkspaceService {
   private workspaceRepository: IWorkspaceRepository;
   private uploadService: IUploadService;
   private seatRepository: ISeatRepository;
-  private bUserRepository:IBusinessUserRepository
+  private bUserRepository: IBusinessUserRepository;
 
   constructor() {
     this.workspaceRepository = new WorkspaceRepository();
@@ -92,12 +92,8 @@ export default class WorkspaceService implements IWorkspaceService {
       video: videoUploads.url, // Add video URLs if available
     };
 
-
-
     // Save the data using the repository pattern
     const response = await this.workspaceRepository.create(dataToSave);
-
-
 
     await this.seatRepository.createSeatsForWorkspace(response);
 
@@ -124,23 +120,18 @@ export default class WorkspaceService implements IWorkspaceService {
   async approveWorkspace(id: string): Promise<IWorkspace | null> {
     const response = await this.workspaceRepository.approveWorkspace(id);
 
-    const ownerData = await this.bUserRepository.findById(response.ownerId.toString())
+    const ownerData = await this.bUserRepository.findById(
+      response.ownerId.toString()
+    );
 
-  
-
-    if(response && ownerData){
-
-        sendMailNotification(
-          ownerData.email,
-          "You're submission is approved",
-          ownerData.fullName,
-          `Congratulations ${ownerData.fullName}, your submission has been approved. From now on, you will start getting booking from customers.`
-        )
-
+    if (response && ownerData) {
+      sendMailNotification(
+        ownerData.email,
+        "You're submission is approved",
+        ownerData.fullName,
+        `Congratulations ${ownerData.fullName}, your submission has been approved. From now on, you will start getting booking from customers.`
+      );
     }
-
-
-
 
     return response;
   }
@@ -148,22 +139,18 @@ export default class WorkspaceService implements IWorkspaceService {
   async rejectWorkspace(id: string): Promise<IWorkspace | null> {
     const response = await this.workspaceRepository.rejectWorkspace(id);
 
+    const ownerData = await this.bUserRepository.findById(
+      response.ownerId.toString()
+    );
 
-    const ownerData = await this.bUserRepository.findById(response.ownerId.toString())
-
-  
-
-    if(response && ownerData){
-
-        sendMailNotification(
-          ownerData.email,
-          "You're submission is rejected",
-          ownerData.fullName,
-          `Sorry ${ownerData.fullName}, your submission has been rejected. Please try to resubmit with correct information.`
-        )
-
+    if (response && ownerData) {
+      sendMailNotification(
+        ownerData.email,
+        "You're submission is rejected",
+        ownerData.fullName,
+        `Sorry ${ownerData.fullName}, your submission has been rejected. Please try to resubmit with correct information.`
+      );
     }
-
 
     return response;
   }
@@ -181,6 +168,20 @@ export default class WorkspaceService implements IWorkspaceService {
     return response;
   }
 
+  async findApprovedByOwnerId(
+    id: string,
+    page: number,
+    limit: number
+  ): Promise<GetPendingWorkspace | null> {
+    const response = await this.workspaceRepository.findApprovedByOwnerId(
+      id,
+      page,
+      limit
+    );
+
+    return response;
+  }
+
   async getSingleWorkspace(id: string): Promise<IWorkspace | null> {
     const response = await this.workspaceRepository.findById(id);
     return response;
@@ -188,16 +189,31 @@ export default class WorkspaceService implements IWorkspaceService {
 
   async getWithFilters(
     filter: Partial<IFilters>,
-    page:number,limit:number,
-    query:string
+    page: number,
+    limit: number,
+    query: string
   ): Promise<IWorkspace[] | null> {
-    const response = await this.workspaceRepository.getWithFilters(query,filter,page,limit);
+    const response = await this.workspaceRepository.getWithFilters(
+      query,
+      filter,
+      page,
+      limit
+    );
 
     return response;
   }
 
-  async searchWorkspace(query: string, page: number, limit: number): Promise<IWorkspace[] | null> {
+  async getWorkspaceByOwnerId(id: string): Promise<IWorkspace[] | null> {
+    const response = await this.workspaceRepository.findByOwnerId(id);
 
+    return response;
+  }
+
+  async searchWorkspace(
+    query: string,
+    page: number,
+    limit: number
+  ): Promise<IWorkspace[] | null> {
     const response = await this.workspaceRepository.searchWorkspace(
       query,
       page,
@@ -207,6 +223,18 @@ export default class WorkspaceService implements IWorkspaceService {
   }
 
   async getTotalWorkspaces(): Promise<number> {
-      return this.workspaceRepository.getTotalWorkspace()
+    return this.workspaceRepository.getTotalWorkspace();
+  }
+
+  async getApprovedWorkspaceById(id: string): Promise<IWorkspace | null> {
+
+    const response = await this.workspaceRepository.findById(id);
+
+    if (response && response.approved) {
+      return response;
+    }
+
+    return null;
+    
   }
 }

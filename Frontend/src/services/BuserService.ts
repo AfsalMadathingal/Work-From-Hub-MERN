@@ -87,3 +87,31 @@ export const getBookingsByOwnerId = async (ownerId: string, page: number, itemsP
     return error.response;
   }
 };
+
+
+export const getDataForDashboard = async()=>{
+  try {
+     const response = await api.get('/api/business/dashboard')
+
+     return response
+    
+  } catch (error) {
+
+    return error.response;
+  }
+}
+
+
+export const getDetailedReport = async (filters:URLSearchParams)=>{
+  try {
+    
+
+    const response = await api.get(`/api/business/booking-report?${filters.toString()}`)
+
+    return response
+
+  } catch (error) {
+    
+    return error.response
+  }
+}

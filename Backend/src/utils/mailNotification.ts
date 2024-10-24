@@ -47,7 +47,7 @@ const sendMailNotification = async  (email:string , subject:string, name:string 
             <!-- Footer Section -->
             <div style="text-align: center; padding-top: 20px; font-size: 12px; color: #888;">
               <p>&copy; ${new Date().getFullYear()} Your Company Name. All rights reserved.</p>
-              <p><a href="https://your-website.com" style="color: #ff6f00; text-decoration: none;">Visit our website</a></p>
+              <p><a href='${CLIENT_HOST_URL}' style="color: #ff6f00; text-decoration: none;">Visit our website</a></p>
             </div>
           </div>
         `,
