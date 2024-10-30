@@ -1,8 +1,8 @@
-import { Stripe } from "@stripe/stripe-js";
 import { IUsers } from "../@types/user";
 import { IWorkspace } from "../@types/workspace";
 import { userAxiosInstance } from "./instance/userInstance";
 import { IBookingDetails } from "../@types/bookingDetails";
+import { AxiosError } from "axios";
 
 const api = userAxiosInstance;
 
@@ -45,9 +45,9 @@ export const editUserProfilePic = async (FormData:FormData)=>{
     const response = await userAxiosInstance.patch('/api/user/upload-profile-photo',FormData)
 
 
-     console.log('====================================');
-     console.log("hello");
-     console.log('====================================');
+     ;
+     ;
+     ;
 
     return response 
 
@@ -104,12 +104,19 @@ export const validateUserSession = async () => {
   }
 };
 
-export const getWorkspace = async (currentPage: number, filters: any ,itemsPerPage:number) => {
+export const getWorkspace = async (currentPage: number, filters: {
+  ac?: string,
+  restRoom?: string,
+  powerBackup?: string,
+  wifiAvailable?: string,
+  rating?: string, // e.g., '4' for 4 stars
+  price?: string,
+} ,itemsPerPage:number) => {
   try {
  
-    const queryParams = new URLSearchParams({ ...filters, page: currentPage , itemsPerPage}).toString();
+    const queryParams = new URLSearchParams({ ...filters, page: currentPage.toString() , itemsPerPage : itemsPerPage.toString()}).toString();
 
-    console.log(queryParams);
+    ;
 
 
     const response = await userAxiosInstance.get<IWorkspace>(`/api/user/workspace/filters?${queryParams}`);
@@ -196,8 +203,14 @@ export const updateBookingStatus = async (result , user: IUsers, bookingDetails:
 
     return response;
 
-  } catch (error) {
-    return error.response;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      console.error(error.message);
+       return error.response;
+    }
+
+    return null
+   
   }
 };
 
@@ -274,5 +287,18 @@ export const getReviews = async (workspaceId: string) => {
   }
 };
 
+
+export const  cancelBooking = async (bookingId:string)=>{
+  try {
+    
+    const response = await api.patch(`/api/user/bookings/cancel-booking/${bookingId}`)
+
+    return response;
+  } catch (error) {
+
+    return error.response
+
+  }
+}
 
 

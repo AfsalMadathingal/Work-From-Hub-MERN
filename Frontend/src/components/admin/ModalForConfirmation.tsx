@@ -1,9 +1,18 @@
-import React from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
 import { AlertCircle } from "lucide-react";
-import UserProfileDialog from './UserProfileDialog';
 
-const ModalForConfirmation = ({ 
+
+interface IProps {
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  onConfirm: () => void;
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+const ModalForConfirmation : React.FC<IProps> = ({ 
   title, 
   message, 
   confirmText = "Confirm", 

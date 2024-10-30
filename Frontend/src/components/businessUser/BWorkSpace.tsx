@@ -1,29 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { FaEdit, FaEye, FaLocationArrow, FaTrash } from "react-icons/fa";
-import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
+import { FaLocationArrow, FaTrash } from "react-icons/fa";
+import toast from "react-hot-toast";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
-import { setModal, setTempData } from "../../redux/slices/adminSlice";
-import { getAllPendingSubmission } from "../../services/adminService";
 import { Pagination } from "@nextui-org/react";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { getAllWorkspaces } from "../../services/BuserService";
 import AnimatedPage from "../Animation";
 import { EyeIcon } from "../admin/EyeIcon";
 import { Tooltip } from "@mui/material";
-import { EditIcon } from "../admin/Editicon";
-import { DeleteIcon, TrashIcon } from "lucide-react";
+import { EditIcon } from "lucide-react";
+
 
 export default function BWorkspaceListing() {
   const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit] = useState(5); // Keep the limit static for now
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const { modal } = useSelector((state: RootState) => state.admin);
+
 
   useEffect(() => {
     fetchWorkspaces(currentPage);
@@ -34,14 +28,14 @@ export default function BWorkspaceListing() {
       const response = await getAllWorkspaces(page, limit);
       if (response.status === 200) {
 
-        console.log(response.data.data);
+        ;
         
 
         const filteredData = response.data.data.filter(
           (workspace: IWorkspace) => !workspace.approved
         )
 
-        console.log(filteredData);
+        ;
         
         setWorkspaces(filteredData);
         setTotalPages(response.data.data.totalPages);

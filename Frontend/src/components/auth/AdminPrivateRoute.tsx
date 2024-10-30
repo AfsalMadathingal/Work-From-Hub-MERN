@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { validateAdminSession } from "../../services/adminService";
 import { logout } from "../../services/adminAuth";
 import { resetAdmin } from "../../redux/slices/adminSlice";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 interface PrivateRouteProps {
   element: React.ComponentType; 

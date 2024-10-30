@@ -14,7 +14,7 @@ import { RootState } from "../../redux/store/store";
 import validate from "../../utils/userValidator";
 import { login } from "../../services/BUserAuthService";
 import ReactLoading from "react-loading";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 
 const BusinessLogin: React.FC = () => {
   const [email, setEmail] = useState("");

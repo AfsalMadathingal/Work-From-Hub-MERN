@@ -10,25 +10,24 @@ import {
   Chip,
   Tooltip,
 } from "@nextui-org/react";
-import { EditIcon } from "./Editicon";
-import { DeleteIcon } from "./DeleteIcon";
 import { EyeIcon } from "./EyeIcon";
 import {
   EditUser,
   getAllUsers,
   manageBlockAndUnblock,
 } from "../../services/adminService";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { logout } from "../../services/adminAuth";
 import { IUsers } from "../../@types/user";
 import { FaBan } from "react-icons/fa";
-import ModalForConfirmation from "./ModalForConfirmation";
+
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { setModal, setModalConfig } from "../../redux/slices/adminSlice";
+import { setModal } from "../../redux/slices/adminSlice";
 import Dialog from "./Dialog";
 import UserProfileDialog from "./UserProfileDialog";
 import EditUserProfile from "./EditUserProfile";
+import { EditIcon } from "./EditIcon";
 
 
 const columns = [
@@ -73,7 +72,7 @@ export default function UserManagementTable() {
 
  
     try {
-      const response = await manageBlockAndUnblock(selectedUser);
+      const response = await manageBlockAndUnblock(selectedUser as IUsers);
 
       if (response.status === 200) {
         toast.success(response.data.message);
@@ -146,16 +145,16 @@ export default function UserManagementTable() {
     pageNumbers.push(i);
   }
 
-  const renderCell = React.useCallback((user, columnKey) => {
+  const renderCell = React.useCallback((user : IUsers, columnKey : string) => {
     const cellValue = user[columnKey];
 
     switch (columnKey) {
       case "fullName":
         return (
           <User
-            avatarProps={{ radius: "lg", src: user.profilePic }}
+            avatarProps={{ radius: "lg", src: user.profilePic || "" }}
             description={user.email}
-            name={cellValue}
+            name={cellValue  as string || ""}
           >
             {user.fullName}
           </User>
@@ -232,10 +231,10 @@ export default function UserManagementTable() {
             )}
           </TableHeader>
           <TableBody items={users}>
-            {(item) => (
+            {(item : IUsers) => (
               <TableRow key={item._id}>
                 {(columnKey) => (
-                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  <TableCell>{renderCell(item , columnKey.toString())}</TableCell>
                 )}
               </TableRow>
             )}
@@ -259,9 +258,9 @@ export default function UserManagementTable() {
         </div>
       </div>
 
-{userDetailsModal && <UserProfileDialog setUserDetailsModal={setUserDetailsModal}  user={selectedUser}/>}
+{userDetailsModal  && selectedUser && <UserProfileDialog setUserDetailsModal={setUserDetailsModal}  user={selectedUser as IUsers }/>}
 
-{editUserModal && <EditUserProfile onCancel={() => setEditUserModal(false)} onSave={saveEditedUser} user={selectedUser}/>}
+{editUserModal && selectedUser && <EditUserProfile onCancel={() => setEditUserModal(false)} onSave={saveEditedUser} user={selectedUser as IUsers}/>}
       
     </>
   );

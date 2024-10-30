@@ -52,7 +52,7 @@ export const validate = (data:  Partial<IUsers>,)   =>{
     const formattedErrors: { [key: string]: string } = {};
     error.details.forEach((detail) => {
       formattedErrors[detail.path[0]] = detail.message;
-      console.log(detail.path[0]);
+      ;
       
     });
 

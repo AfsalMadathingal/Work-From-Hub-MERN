@@ -2,7 +2,7 @@ import React from 'react';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#211717] text-white py-8 mt-12 px-8">
+    <footer className="bg-[#211717] text-white py-8  px-8">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
         <div>
           <h4 className="font-bold mb-4">Download WFHUB App for Exciting Offers</h4>

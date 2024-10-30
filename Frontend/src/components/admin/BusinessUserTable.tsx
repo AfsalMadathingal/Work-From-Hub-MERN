@@ -10,19 +10,15 @@ import {
   Chip,
   Tooltip,
 } from "@nextui-org/react";
-import { EditIcon } from "./Editicon";
+
 import { EyeIcon } from "./EyeIcon";
 import {
-    blockAndUnblockBUser,
+  blockAndUnblockBUser,
   editBusinessUser,
-  EditUser,
   getAllBusinessUsers,
-  getAllUsers,
-  manageBlockAndUnblock,
 } from "../../services/adminService";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { logout } from "../../services/adminAuth";
-import { IUsers } from "../../@types/user";
 import { FaBan } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -30,7 +26,9 @@ import { setModal } from "../../redux/slices/adminSlice";
 import Dialog from "./Dialog";
 import UserProfileDialog from "./UserProfileDialog";
 import EditUserProfile from "./EditUserProfile";
-
+import { IBUsers } from "../../@types/businessUser";
+import { EditIcon } from "lucide-react";
+import { IUsers } from "../../@types/user";
 
 const columns = [
   { name: "NAME", uid: "fullName" },
@@ -39,27 +37,23 @@ const columns = [
 ];
 
 export default function BusinessUserTable() {
-  const [users, setUsers] = useState([]);
+  const [users, setUsers] = useState<IBUsers[]>([]);
   const [itemsPerPage] = useState(5);
   const [totalPages, setTotalPages] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedUser, setSelectedUser] = useState<IUsers | null>(null);
-  const [userDetailsModal , setUserDetailsModal] = useState<boolean>(false);
-  const [editUserModal , setEditUserModal] = useState<boolean>(false);
+  const [selectedUser, setSelectedUser] = useState<IBUsers | null>(null);
+  const [userDetailsModal, setUserDetailsModal] = useState(false);
+  const [editUserModal, setEditUserModal] = useState(false);
   const dispatch = useDispatch();
   const { modal } = useSelector((state: RootState) => state.admin);
 
-
-  const openBlockModal = (user: IUsers) => {
-    
+  const openBlockModal = (user: IBUsers) => {
     setSelectedUser(user);
     dispatch(setModal(true));
   };
 
   const fetchUsers = async (page: number, itemsPerPage: number) => {
-
     const response = await getAllBusinessUsers(page, itemsPerPage);
-
     if (response.status === 200) {
       setUsers(response.data.data.allUsers);
       setTotalPages(response.data.data.totalPages);
@@ -72,11 +66,8 @@ export default function BusinessUserTable() {
   };
 
   const handleBlock = async () => {
-
- 
     try {
       const response = await blockAndUnblockBUser(selectedUser);
-
       if (response.status === 200) {
         toast.success(response.data.message);
         await fetchUsers(currentPage, itemsPerPage);
@@ -84,80 +75,59 @@ export default function BusinessUserTable() {
         dispatch(setModal(false));
       } else if (response.status === 401) {
         await logout();
-        setSelectedUser(null);
-        dispatch(setModal(false));
         toast.error("Session expired");
       } else {
-        setSelectedUser(null);
-        dispatch(setModal(false));
         toast.error("Something went wrong");
       }
-    } catch (error) {
+    } catch {
+      toast.error("An error occurred");
+    } finally {
       setSelectedUser(null);
       dispatch(setModal(false));
-      toast.error("An error occurred");
     }
   };
 
-
-  const handleView = (user : IUsers) => {
-
+  const handleView = (user: IBUsers) => {
     setSelectedUser(user);
     setUserDetailsModal(true);
-  }
+  };
 
-  const handleEdit = (user : IUsers) => {
-
+  const handleEdit = (user: IBUsers) => {
     setSelectedUser(user);
     setEditUserModal(true);
+  };
 
-  }
-
-
-  const saveEditedUser = async (user: Partial<IUsers>) => {
-
-    const response = await editBusinessUser(user);
-
-    if (response.status === 200  ) {
+  const saveEditedUser = async (user: Partial<IBUsers>) => {
+    
+    const response = await editBusinessUser(user as IUsers);
+    if (response.status === 200) {
       toast.info(response.data.message);
+      await fetchUsers(currentPage, itemsPerPage);
       setEditUserModal(false);
     } else if (response.status === 401) {
       await logout();
       toast.error("session expired");
-      return
-    }else if(response.status === 409){
-
+    } else if (response.status === 409) {
       toast.error(response.data.message);
-      return
-    }else {
+    } else {
       toast.error("something went wrong");
-      return
     }
-
-    setEditUserModal(false);
-
-    fetchUsers(currentPage, itemsPerPage);
-  }
+  };
 
   useEffect(() => {
     fetchUsers(currentPage, itemsPerPage);
   }, [currentPage]);
 
-  const pageNumbers = [];
-  for (let i = 1; i <= totalPages; i++) {
-    pageNumbers.push(i);
-  }
-
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+  const renderCell = React.useCallback((user: IBUsers, columnKey: string) => {
+    const cellValue = user[columnKey as keyof IBUsers];
 
     switch (columnKey) {
       case "fullName":
         return (
           <User
-            avatarProps={{ radius: "lg", src: user.profilePic }}
+            avatarProps={{ radius: "lg", src: user.profilePic || "" }}
             description={user.email}
-            name={cellValue}
+            name={cellValue as string}
           >
             {user.fullName}
           </User>
@@ -166,20 +136,21 @@ export default function BusinessUserTable() {
         return (
           <Chip
             className="capitalize"
-            color={user.isBlocked ? "danger" : "success"}
+            color={user?.isBlocked ? "danger" : "success"}
             size="sm"
             variant="flat"
           >
-            {user.isBlocked ? "Blocked" : "Active"}
+            {user?.isBlocked ? "Blocked" : "Active"}
           </Chip>
         );
       case "actions":
         return (
           <div className="relative flex items-center gap-2">
             <Tooltip content="Details">
-              <span 
-              onClick={() => handleView(user)}
-              className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <span
+                onClick={() => handleView(user)}
+                className="text-lg text-default-400 cursor-pointer active:opacity-50"
+              >
                 <EyeIcon />
               </span>
             </Tooltip>
@@ -211,24 +182,21 @@ export default function BusinessUserTable() {
 
   return (
     <>
-    
-      <Dialog 
-      isOpen={modal}
-      title="Confirm Action"
-      message={`Are you sure you want to ${selectedUser?.isBlocked ? "unblock" : "block"} ${selectedUser?.fullName}?`}
-      onConfirm={handleBlock}
-      onCancel={() => dispatch(setModal(false))}
+      <Dialog
+        isOpen={modal}
+        title="Confirm Action"
+        message={`Are you sure you want to ${
+          selectedUser?.isBlocked ? "unblock" : "block"
+        } ${selectedUser?.fullName}?`}
+        onConfirm={handleBlock}
+        onCancel={() => dispatch(setModal(false))}
       />
-      
+
       <div>
-        
         <Table aria-label="User management table with pagination">
           <TableHeader columns={columns}>
             {(column) => (
-              <TableColumn
-                key={column.uid}
-                align={column.uid === "actions" ? "start" : "start"}
-              >
+              <TableColumn key={column.uid} align="start">
                 {column.name}
               </TableColumn>
             )}
@@ -237,7 +205,9 @@ export default function BusinessUserTable() {
             {(item) => (
               <TableRow key={item._id}>
                 {(columnKey) => (
-                  <TableCell>{renderCell(item, columnKey)}</TableCell>
+                  <TableCell>
+                    {renderCell(item, columnKey.toString())}
+                  </TableCell>
                 )}
               </TableRow>
             )}
@@ -245,26 +215,35 @@ export default function BusinessUserTable() {
         </Table>
 
         <div className="flex justify-center mt-4">
-          {pageNumbers.map((number) => (
+          {Array.from({ length: totalPages }, (_, i) => (
             <button
-              key={number}
+              key={i + 1}
               className={`mx-1 px-3 py-1 rounded ${
-                currentPage === number
+                currentPage === i + 1
                   ? "bg-orange-500 text-white"
                   : "bg-gray-200"
               }`}
-              onClick={() => setCurrentPage(number)}
+              onClick={() => setCurrentPage(i + 1)}
             >
-              {number}
+              {i + 1}
             </button>
           ))}
         </div>
       </div>
 
-{userDetailsModal && <UserProfileDialog setUserDetailsModal={setUserDetailsModal}  user={selectedUser}/>}
-
-{editUserModal && <EditUserProfile onCancel={() => setEditUserModal(false)} onSave={saveEditedUser} user={selectedUser}/>}
-      
+      {userDetailsModal && selectedUser && (
+        <UserProfileDialog
+          setUserDetailsModal={setUserDetailsModal}
+          user={selectedUser as IUsers}
+        />
+      )}
+      {editUserModal && selectedUser && (
+        <EditUserProfile
+          onCancel={() => setEditUserModal(false)}
+          onSave={saveEditedUser}
+          user={selectedUser as IUsers}
+        />
+      )}
     </>
   );
 }

@@ -90,7 +90,7 @@ export const manageBlockAndUnblock = async (user: IUsers) => {
   }
 };
 
-export const blockAndUnblockBUser = async (user: IBUsers) => {
+export const blockAndUnblockBUser = async (user: IBUsers | null) => {
   try {
     const response = await adminAxiosInstance.patch(
       `/api/admin/business-user/block-and-unblock/${user._id}`
@@ -152,7 +152,7 @@ export const getAllPendingSubmission = async (
       `/api/admin/workspace-submission?page=${page}&limit=${itemsPerPage}`
     );
 
-    console.log(response);
+    ;
     
 
     return response;
@@ -208,9 +208,9 @@ export const getAllApprovedWorkspaces = async (page: number, itemsPerPage: numbe
   try {
       const response = await api.get(`/api/admin/approved-workspaces?page=${page}&limit=${itemsPerPage}`)
 
-      console.log('===================fromapi=================');
-      console.log(response);
-      console.log('====================================');
+      ;
+      ;
+      ;
 
       return response
 

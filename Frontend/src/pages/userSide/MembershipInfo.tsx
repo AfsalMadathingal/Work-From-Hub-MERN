@@ -1,4 +1,3 @@
-import React, { useEffect, useState } from "react";
 import Header from "../../components/userSide/Header";
 import Footer from "../../components/userSide/Footer";
 import ProfileSidebar from "../../components/userSide/ProfileSidebar";

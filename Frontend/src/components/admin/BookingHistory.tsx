@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { getAllBookings } from "../../services/adminService";
 import { IUsers } from "../../@types/user";
 import { ISeat } from "../../@types/seat";
 import { IWorkspace } from "../../@types/workspace";
 import ReactLoading from "react-loading";
-import BookingDetailsModal from "./BookingDetails";
+import BookingDetailsModal from "./BookingDetailsModal";
 import jsPDF from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Optional: for table support
 
@@ -51,7 +51,7 @@ const AdminBookingHistory: React.FC = () => {
   }, [currentPage]);
 
   const handleViewDetails = (booking: Booking) => {
-    console.log("View details for booking:", booking);
+    ;
   };
 
   const handleDownloadInvoice = (booking: Booking) => {

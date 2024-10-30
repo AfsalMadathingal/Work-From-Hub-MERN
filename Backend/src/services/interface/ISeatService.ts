@@ -8,6 +8,7 @@ export interface ISeatService {
     getSeatById(id: string): Promise<ISeat | null>
     reserveSeatForBooking(id:string, date:string):Promise <ISeat | null >;
     bookSeat(workspaceId:string,seatId:string,date:string):Promise<ISeat | null>;
+    makeAvailableByDate(seatId: string, date: string): Promise<ISeat | null>;
 
     // updateSeat(id: string, data: Partial<ISeat>): Promise<ISeat | null>
     // deleteSeat(id: string): Promise<ISeat | null>

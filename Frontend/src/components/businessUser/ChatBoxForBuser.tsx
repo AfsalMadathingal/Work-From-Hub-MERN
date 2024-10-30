@@ -5,6 +5,7 @@ import { RootState } from '../../redux/store/store';
 import { Tooltip } from '@nextui-org/react';
 import { FaBan } from 'react-icons/fa';
 import { toast } from 'react-toastify';
+import { IBUsers } from '../../@types/businessUser';
 
 
 const SOCKET_URL = 'http://localhost:5000';
@@ -17,7 +18,8 @@ const ChatBoxForBuser: React.FC = () => {
   const [isChatOpen, setIsChatOpen] = useState(false); // Chatbox toggle state
   const [isChatStarted, setIsChatStarted] = useState(false); // Start chat state
   const messageListRef = useRef<HTMLDivElement>(null); // Scroll to bottom for messages
-  const { user , isAuthenticated} = useSelector((state: RootState) => state.businessUser);
+  const { isAuthenticated}  = useSelector((state: RootState) => state.businessUser);
+  const user = useSelector((state: RootState) => state.businessUser.user) as IBUsers | null;
   const audioRef = useRef<HTMLAudioElement | null>(null); // Ref for audio element
   const currentUserId = user?._id;
 
@@ -84,13 +86,18 @@ const ChatBoxForBuser: React.FC = () => {
   // Handle sending a message
   const sendMessage = (e: React.FormEvent) => {
     e.preventDefault();
-    if (socket && message.trim()) {
+    if (socket && message.trim() && currentUserId) {
       // Send the message to the server
       socket.emit('userMessage', { userId: currentUserId, message });
+      // Update messages state only if currentUserId is defined
       setMessages((prevMessages) => [...prevMessages, { userId: currentUserId, message }]);
       setMessage(''); // Clear input after sending
+    } else {
+      // Optionally handle the case where currentUserId is undefined
+      toast.error("Unable to send message. User ID is undefined."); // Error notification
     }
   };
+  
 
   // Handle end chat and disconnect
   const handleEndChat = () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { FaUsers, FaBook, FaLaptop, FaAddressCard, FaHeadset } from 'react-icons/fa';
 
 const Sidebar = () => {

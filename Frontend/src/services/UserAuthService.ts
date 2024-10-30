@@ -1,8 +1,8 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { IUsers } from "../@types/user";
 import { Alert } from "../utils/alert";
 import { auth, provider } from "../utils/firebase";
-import { signInWithPopup, signOut } from "firebase/auth";
+import { signInWithPopup } from "firebase/auth";
 import { IOTP } from "../@types/otp";
 import { userAxiosInstance } from "./instance/userInstance";
 
@@ -75,7 +75,7 @@ export const login = async (credential: Partial <IUsers>)=>{
     
       const loginResponse = await api.post('/api/user/auth/login',credential)
 
-      console.log(loginResponse);
+      ;
       
       if(loginResponse.data.success){
         return loginResponse.data
@@ -101,7 +101,7 @@ export const signInWithGoogle = async () => {
   
   } catch (error) {
 
-    return null
+    return error.response
    
   }
 };
@@ -126,7 +126,7 @@ export const logout = async ()=>{
 
   } catch (error) {
 
-    return null
+    return error.response
 
   }
 

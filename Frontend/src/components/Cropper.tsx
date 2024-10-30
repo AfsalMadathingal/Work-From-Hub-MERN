@@ -6,7 +6,7 @@ const CropperJs: React.FC = () => {
   const cropperRef = useRef<ReactCropperElement>(null);
   const onCrop = () => {
     const cropper = cropperRef.current?.cropper;
-    console.log(cropper.getCroppedCanvas().toDataURL());
+    console.log(cropper?.getCroppedCanvas().toDataURL());
   };
 
   return (

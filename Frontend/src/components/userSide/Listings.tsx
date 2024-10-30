@@ -63,26 +63,25 @@ const Listings: React.FC<{ filters: any }> = ({ filters }) => {
   }, [filters]);
 
   return (
-    <>
-      {loading && <ListingCardSkeleton />}
-      <div className="space-y-6">
-        {listings.length === 0 && !loading && (
-          <NotFound />
-        )}
-        {listings?.map((listing, index) => (
-          <ListingCard key={listing.id} listing={listing} />
-        ))}
-        {loading && <ListingCardSkeleton />}
-        {currentPage < totalPages && !loading && (
-          <button 
-            onClick={handleLoadMore}
-            className="bg-orange-500 text-white px-4 py-3 rounded-lg w-full hover:bg-orange-600"
-          >
-            View More
-          </button>
-        )}
-      </div>
-    </>
+<>
+  {loading && <ListingCardSkeleton />}
+  <div className="space-y-6">
+    {listings.length === 0 && !loading && <NotFound />}
+    {listings?.map((listing) => (
+      <ListingCard key={listing.id} listing={listing} />
+    ))}
+    {loading && <ListingCardSkeleton />}
+    {currentPage < totalPages && !loading && (
+      <button 
+        onClick={handleLoadMore}
+        className="bg-orange-500 text-white px-4 py-3 rounded-lg w-full hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700"
+      >
+        View More
+      </button>
+    )}
+  </div>
+</>
+
   );
 };
 

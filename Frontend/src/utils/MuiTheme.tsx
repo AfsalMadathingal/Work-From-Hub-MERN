@@ -24,7 +24,7 @@ export const theme = createTheme({
   },
 });
 
-export const MuiThemeProvider = ({ children  }) => (
+export const MuiThemeProvider  = ({ children    }) => (
   <ThemeProvider theme={theme}>
     {children}
   </ThemeProvider>

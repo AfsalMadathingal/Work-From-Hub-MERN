@@ -12,13 +12,13 @@ const businessRoute = Router()
 
 
 
-businessRoute.use('/auth',businessAuthRoute)
-businessRoute.post('/work-space',authenticateBUser,BUserController.validateUser,cpUpload,validateWorkspaceSubmission,BUserController.submitListingData)
-businessRoute.get('/workspaces',authenticateBUser,BUserController.getAllWorkspaces)
-businessRoute.get('/approved-workspaces',authenticateBUser,BUserController.getApprovedWorkspaces)
-businessRoute.get('/bookings',authenticateBUser,BUserController.getBookingsByOwnerId)
-businessRoute.get('/dashboard',authenticateBUser,BUserController.getDashboardData)
-businessRoute.get('/booking-report',authenticateBUser,BuserController.getReport)
+businessRoute.use('/auth', businessAuthRoute)
+businessRoute.post('/work-space', authenticateBUser, BUserController.validateUser, cpUpload, validateWorkspaceSubmission, BUserController.submitListingData)
+businessRoute.get('/workspaces', authenticateBUser, BUserController.getAllWorkspaces)
+businessRoute.get('/approved-workspaces', authenticateBUser, BUserController.getApprovedWorkspaces)
+businessRoute.get('/bookings', authenticateBUser, BUserController.getBookingsByOwnerId)
+businessRoute.get('/dashboard', authenticateBUser, BUserController.getDashboardData)
+businessRoute.get('/booking-report', authenticateBUser, BuserController.getReport)
 
 
 export default businessRoute;

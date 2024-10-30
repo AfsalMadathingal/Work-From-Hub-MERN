@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { getAllBookings } from "../../services/adminService";
 import { IUsers } from "../../@types/user";
 import { ISeat } from "../../@types/seat";
@@ -37,9 +37,9 @@ const BBookingHistory: React.FC = () => {
       setLoading(true);
       const response = await getBookingsByOwnerId(user?._id,page, bookingsPerPage);
 
-      console.log('====================================');
-      console.log(response);
-      console.log('====================================');
+      ;
+      ;
+      ;
 
 
       if (response.status === 200) {
@@ -60,7 +60,7 @@ const BBookingHistory: React.FC = () => {
   }, [currentPage]);
 
   const handleViewDetails = (booking: Booking) => {
-    console.log("View details for booking:", booking);
+    ;
   };
 
   const handleDownloadInvoice = (booking: Booking) => {

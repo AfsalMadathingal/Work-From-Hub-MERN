@@ -1,11 +1,15 @@
-import React, { lazy, Suspense, useEffect } from "react";
+import  { lazy, Suspense,  } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
-import WorkplaceManage from "../pages/BusinessUserAuth/WorkplaceManage";
+const WorkplaceManage = lazy(
+  () => import("../pages/BusinessUserAuth/WorkplaceManage")
+);
 import PublicRoute from "../components/auth/BUsesrPublicRoute";
 import PrivateRoute from "../components/auth/BUserPrivateRoute";
-import BBookingReportPage from "../pages/Buser/BBookingReportPage";
+const BBookingReportPage = lazy(
+  () => import("../pages/Buser/BBookingReportPage")
+);
 const BUserBookingHistory = lazy(
   () => import("../pages/Buser/BBookingHistory")
 );

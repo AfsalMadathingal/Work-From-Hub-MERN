@@ -1,8 +1,7 @@
-import React, { useEffect } from 'react';
+import  { useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/adminSlice';
-import WorkspaceSubmissionTable from '../../components/admin/WorkSpace';
 import ApprovedWorkspaces from '../../components/admin/ApprovedWorkspaces';
 
 

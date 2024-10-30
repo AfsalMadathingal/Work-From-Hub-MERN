@@ -30,7 +30,7 @@ const PaymentForm: React.FC = ({ userId, planId }) => {
       console.error(result.error.message);
     } else {
       if (result.paymentIntent.status === 'succeeded') {
-        console.log('Payment succeeded!');
+        ;
       }
     }
   };

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import {
-  getAvailableSeats,
+  cancelBooking,
   getBooking,
   getSeatById,
   getSingleWorkspace,
@@ -20,7 +20,6 @@ import { MenuIcon } from "lucide-react";
 import { IWorkspace } from "../../@types/workspace";
 import { ISeat } from "../../@types/seat";
 import ModalForBookingDetails from "./ModalForBookingDetails";
-import { FaEye } from "react-icons/fa";
 import CancelBookingModal from "./CancelBookingModal";
 
 export default function BookingHistory() {
@@ -33,10 +32,11 @@ export default function BookingHistory() {
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
-  const { user } = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.user.user as IUsers);
   const rowsPerPage = 4;
   const pages = Math.ceil(bookings.length / rowsPerPage);
-  const [cancelBooking, setCancelBooking] = useState(false);
+  const [isCancelBookingModalOpen, setCancelBookingModalOpen] = useState(false);
+
 
   // Fetch the workspace names for all bookings
   const fetchWorkspaceNames = async (bookings) => {
@@ -72,11 +72,6 @@ export default function BookingHistory() {
 
       const bookingData = response.data.data;
 
-
-       console.log('====================================');
-       console.log(bookingData);
-       console.log('====================================');
-
       setBookings(bookingData);
       await fetchWorkspaceNames(bookingData); // Fetch and store workspace names
     } catch (error) {
@@ -104,23 +99,26 @@ export default function BookingHistory() {
     } catch (error) {
       toast.error("Something went wrong");
     }
-
-
   };
 
-   const handleCancelBooking = async () => {
+  const handleCancelBooking = async (booking) => {
     try {
-      const response = await reserveSeatAPI(selectedSeat?._id, selectedWorkspace?._id);
+
+
+      
+      const response = await cancelBooking(booking._id);
+
+      
 
       if (response.status === 200) {
-        setCancelBooking(false);
+        toast.success("Booking canceled successfully , your refund will be processed within 7 days");
+        setCancelBookingModalOpen(false);
         fetchBookings();
       }
     } catch (error) {
       toast.error("Something went wrong");
     }
   };
-
 
   useEffect(() => {
     fetchBookings();
@@ -134,95 +132,104 @@ export default function BookingHistory() {
 
   return (
     <>
-    <ModalForBookingDetails isOpen={isDetailsOpen} onClose={() => setIsDetailsOpen(false)} workspace={selectedWorkspace} seat={selectedSeat} booking={selectedBooking} />
-    <CancelBookingModal isOpen={cancelBooking} onClose={() => setCancelBooking(false)} onConfirm={handleCancelBooking} />
-    <div className="container mx-auto px-4">
-  <h1 className="text-2xl font-bold mb-4">Booking History</h1>
-  <div className="overflow-x-auto">
-    <table className="min-w-full bg-white border border-gray-300">
-      <thead>
-        <tr className="bg-orange-500 text-white uppercase text-sm leading-normal">
-          <th className="py-3 px-6 text-left">Workspace</th>
-          {/* Date column hidden on all screen sizes */}
-          <th className="py-3 px-6 text-left hidden md:table-cell">Date</th>
-          {/* Status column stays visible */}
-          <th className="py-3 px-6 hidden md:table-cell  text-left">Status</th>
-          {/* Action column now always visible */}
-          <th className="py-3 px-6 text-left">Action</th>
-        </tr>
-      </thead>
-      <tbody className="text-gray-600 text-sm font-light">
-        {items.map((item, index) => (
-          <tr
-            key={index}
-            className="border-b border-gray-200 hover:bg-orange-100"
+      <ModalForBookingDetails
+        isOpen={isDetailsOpen}
+        onClose={() => setIsDetailsOpen(false)}
+        workspace={selectedWorkspace}
+        seat={selectedSeat}
+        booking={selectedBooking}
+      />
+      <CancelBookingModal
+        isOpen={isCancelBookingModalOpen}
+        onClose={() => setCancelBookingModalOpen(false)}
+        onConfirm={() => handleCancelBooking(selectedBooking)}
+      />
+      <div className="container mx-auto px-4 dark:bg-gray-800">
+        <h1 className="text-2xl font-bold mb-4">Booking History</h1>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white dark:bg-gray-900 border border-gray-300">
+            <thead>
+              <tr className="bg-orange-500 text-white uppercase text-sm leading-normal">
+                <th className="py-3 px-6 text-left">Workspace</th>
+                {/* Date column hidden on all screen sizes */}
+                <th className="py-3 px-6 text-left hidden md:table-cell">
+                  Date
+                </th>
+                {/* Status column stays visible */}
+                <th className="py-3 px-6 hidden md:table-cell  text-left">
+                  Status
+                </th>
+                {/* Action column now always visible */}
+                <th className="py-3 px-6 text-left">Action</th>
+              </tr>
+            </thead>
+            <tbody className="text-gray-600 dark:text-gray-300 text-sm font-light">
+              {items.map((item, index) => (
+                <tr
+                  key={index}
+                  className="border-b border-gray-200 hover:bg-orange-100 dark:hover:bg-gray-700"
+                >
+                  <td className="py-3 px-6 text-left whitespace-nowrap">
+                    {workspaces[item.workspaceId]}
+                  </td>
+                  {/* Hide Date column on smaller screens */}
+                  <td className="py-3 px-6 text-left whitespace-nowrap hidden md:table-cell">
+                    {new Date(item.date).toDateString()}
+                  </td>
+                  <td className="py-3 px-6 hidden md:table-cell text-left whitespace-nowrap">
+                    {item.status}
+                  </td>
+                  {/* Action column always visible */}
+                  <td className="py-3 px-6 text-left whitespace-nowrap">
+                    <Dropdown>
+                      <DropdownTrigger>
+                        <Button variant="solid">
+                          <MenuIcon />
+                        </Button>
+                      </DropdownTrigger>
+                      <DropdownMenu aria-label="Action event example">
+                        <DropdownItem
+                          onClick={() => {
+                            handleShowDetails(item);
+                          }}
+                        >
+                          Details
+                        </DropdownItem>
+                        <DropdownItem
+                          onClick={() => {
+                            setSelectedBooking(item);
+                            setCancelBookingModalOpen(true);
+                          }}
+                        >
+                          Cancel Booking
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Pagination */}
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+            className="px-4 py-2 mx-1 bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
-            <td className="py-3 px-6 text-left whitespace-nowrap">
-              {workspaces[item.workspaceId]}
-            </td>
-            {/* Hide Date column on smaller screens */}
-            <td className="py-3 px-6 text-left whitespace-nowrap hidden md:table-cell">
-              {new Date(item.date).toDateString()}
-            </td>
-            <td className="py-3 px-6 hidden md:table-cell text-left whitespace-nowrap">
-              {item.status}
-            </td>
-            {/* Action column always visible */}
-            <td className="py-3 px-6 text-left whitespace-nowrap">
-              <Dropdown>
-                <DropdownTrigger>
-                  <Button variant="solid">
-                    <MenuIcon />
-                  </Button>
-                </DropdownTrigger>
-                <DropdownMenu aria-label="Action event example">
-                  <DropdownItem
-    
-                    onClick={() => {
-                      handleShowDetails(item);
-                    }}
-                  >
-                    Details
-                  </DropdownItem>
-                  <DropdownItem
-    
-                    onClick={() => {
-                      setCancelBooking(true);
-                    }}
-                  >
-                    Cancel Booking
-                  </DropdownItem>
-
-                </DropdownMenu>
-              </Dropdown>
-            </td>
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-  
-  {/* Pagination */}
-  <div className="flex justify-center mt-4">
-    <button
-      onClick={() => setPage(page - 1)}
-      disabled={page === 1}
-      className="px-4 py-2 mx-1 bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50 "
-    >
-      Previous
-    </button>
-    <button
-      onClick={() => setPage(page + 1)}
-      disabled={page === pages}
-      className="px-4 py-2 mx-1 bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50"
-    >
-      Next
-    </button>
-  </div>
-</div>
-
-
-    
+            Previous
+          </button>
+          <button
+            onClick={() => setPage(page + 1)}
+            disabled={page === pages}
+            className="px-4 py-2 mx-1 bg-orange-500 text-white rounded hover:bg-orange-600 disabled:opacity-50 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
+          >
+            Next
+          </button>
+        </div>
+      </div>
     </>
   );
 }

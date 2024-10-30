@@ -3,7 +3,7 @@ import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import ReactLoading from "react-loading";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { setError } from "../../redux/slices/userSlice";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { validatePassword } from "../../utils/userValidator";

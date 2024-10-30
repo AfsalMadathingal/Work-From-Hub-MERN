@@ -14,7 +14,7 @@ const PublicRoute: React.FC<PublicRouteProps> = ({ element: Element }) => {
 
   const { isAuthenticated } = useSelector((state: RootState) => state.businessUser);
 
-  console.log(isAuthenticated);
+  ;
   
 
 

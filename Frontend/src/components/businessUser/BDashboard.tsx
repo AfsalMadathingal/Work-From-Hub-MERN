@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import SummaryStatics from "../common/SummaryStatics";
 import RevenueChart from "../common/RevenueChart";
 import RecentBookings from "../common/RecentBookings";
@@ -21,7 +21,7 @@ const BUserDashboard = () => {
 
       const data = response.data.data;
 
-      console.log(data);
+      ;
 
       const summary: {
         bookingCount: number;
@@ -72,9 +72,9 @@ const BUserDashboard = () => {
       setChartData(finalResult);
       setSummaryData(summary);
 
-      console.log("====================================");
-      console.log(recentBookings);
-      console.log("====================================");
+      ;
+      ;
+      ;
     } catch (error) {
       toast.error("Something went wrong");
     }

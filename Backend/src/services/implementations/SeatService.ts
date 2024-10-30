@@ -14,6 +14,27 @@ export class SeatService implements ISeatService {
     this.seatRepository = new SeatRepository();
   }
 
+
+  async makeAvailableByDate(seatId: string, date: string): Promise<ISeat | null> {
+    
+    const seat = await this.seatRepository.getSeatById(seatId);
+
+    if (!seat) {
+      return null;
+    }
+
+    seat.availability.set(date, true);
+
+    try {
+      await seat.save();
+    } catch (error) {
+      console.error("Error making seat available:", error);
+      return null;
+    }
+
+    return seat;
+  }
+
   async getSeatsByWorkspaceId(workspaceId: string): Promise<ISeat[] | null> {
     const response = await this.seatRepository.getSeatsByWorkspaceId(
       workspaceId

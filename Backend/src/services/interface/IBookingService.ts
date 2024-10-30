@@ -21,4 +21,6 @@ export interface IBookingService {
           page?: number;
         }
       ): Promise<{ bookings: IBooking[]; totalPages: number }>
+
+    cancelBooking(bookingId: string): Promise<IBooking>
 }

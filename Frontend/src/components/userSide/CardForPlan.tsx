@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import styled from "styled-components";
 import { fetchActivePlan } from "../../services/userServices";
 
@@ -9,7 +9,7 @@ const CardForPlan = ({ setIsSubscribeClicked }) => {
   const getActivePlan = async () => {
     try {
       const response = await fetchActivePlan();
-      console.log(response);
+      ;
 
       // Fix the typo: use `statusCode` instead of `statusCose`
       if (response.status === 200) {
@@ -18,7 +18,7 @@ const CardForPlan = ({ setIsSubscribeClicked }) => {
         toast.error("Failed to fetch active plan.");
       }
     } catch (error) {
-      console.log("Error fetching active plan:", error);
+      ;
       toast.error("An error occurred while fetching the plan.");
     }
   };

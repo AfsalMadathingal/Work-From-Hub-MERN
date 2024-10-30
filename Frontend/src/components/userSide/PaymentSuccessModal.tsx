@@ -42,7 +42,7 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
 
       if (response.status === 200) {
         setSeat(seatData);
-        console.log(seatData);
+        ;
       }
     } catch (error) {
       console.error(error);

@@ -1,5 +1,7 @@
 import { IFilters } from "services/interface/IWorkSpaceService";
 import { IWorkspace } from "../../entities/workspace";
+
+
 export interface GetPendingWorkspace {
   pendingSubmissions?: IWorkspace[];
   approvedWorkspaces?: IWorkspace[];

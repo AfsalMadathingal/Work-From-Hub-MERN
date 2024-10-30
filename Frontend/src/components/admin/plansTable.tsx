@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   Dropdown,
@@ -6,7 +6,7 @@ import {
   DropdownMenu,
   DropdownItem,
 } from "@nextui-org/react";
-import { setError, setModal } from "../../redux/slices/adminSlice";
+import { setModal } from "../../redux/slices/adminSlice";
 import {
   changePlanStatus,
   createPlan,
@@ -14,33 +14,40 @@ import {
   searchPlans,
 } from "../../services/adminService";
 import { RootState } from "../../redux/store/store";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { resetAdmin } from "../../redux/slices/adminSlice";
 import { logout } from "../../services/adminAuth";
 import { FaPause, FaPlay, FaSearch } from "react-icons/fa";
 import SearchComponent from "./Search";
 import { planValidate } from "../../utils/userValidator";
+import { IPlan } from "../../@types/plan";
 
+
+interface Error {
+  price?: string;
+  discount?: string;
+}
 
 const PlansTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [price, setPrice] = useState("");
   const [discount, setDiscount] = useState("");
   const [itemsPerPage] = useState(5);
-  const [plans, setPlans] = useState([]);
+  const [plans, setPlans] = useState<IPlan[]>([]);
   const [totalPages, setTotalPages] = useState(0);
   const [searchQuery, setSearchQuery] = useState("");
-  const { accessToken, modal ,error } = useSelector((state: RootState) => state.admin);
+  const { accessToken, modal  } = useSelector((state: RootState) => state.admin);
+  const [error, setError] = useState<Error>({});
   const dispatch = useDispatch();
 
   const handlePlanStatus = async (id: string, action: string) => {
-    const response = await changePlanStatus(id, action);
+     await changePlanStatus(id, action);
 
-    console.log(response);
+    ;
   };
 
   const handleDeletePlan = async (id: string) => {
-    const response = await changePlanStatus(id, "delete");
+    await changePlanStatus(id, "delete");
   };
 
   const handleCreatePlan = async () => {
@@ -50,7 +57,7 @@ const PlansTable = () => {
       const error = planValidate(price,discount);
 
       if(error){
-        dispatch(setError(error));
+        
         return
       }
       
@@ -66,6 +73,9 @@ const PlansTable = () => {
         dispatch(setModal(false));
       }
     } catch (error) {
+      ;
+      ;
+      ;
       toast.error("something went wrong");
     }
   };
@@ -89,7 +99,7 @@ const PlansTable = () => {
   };
 
   useEffect(() => {
-    dispatch(setError({}));
+    setError({});
     fetchPlanData(accessToken, currentPage, itemsPerPage);
   }, [currentPage]);
 
@@ -106,7 +116,7 @@ const PlansTable = () => {
     pageNumbers.push(i);
   }
 
-  const handleSearch = (query) => {
+  const handleSearch = (query:string) => {
     setSearchQuery(query);
   };
 
@@ -217,7 +227,7 @@ const PlansTable = () => {
                     className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
                     placeholder="Discount"
                   />
-                  {error?.discount && <p className="text-red-500">{error.discount}</p>}
+                  {error?.discount && <p className="text-red-500">{error?.discount}</p>}
                 </div>
                 <button
                   type="button"

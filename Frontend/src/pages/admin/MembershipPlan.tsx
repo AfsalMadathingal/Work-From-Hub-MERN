@@ -5,7 +5,7 @@ import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/adminSlice';
 
 
-const MembershipPlan = () => {
+const MembershipPlan : React.FC =  () => {
 
   const dispatch = useDispatch();
 

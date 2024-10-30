@@ -15,6 +15,8 @@ export default class BookingService implements IBookingService {
     this.userRepository = new UserRepository();
   }
 
+  
+
   async getBookingForDashboard(): Promise<IBooking[] | null> {
     const bookings = await this.bookingRepository.getLastSevenBookings();
     return bookings;
@@ -176,5 +178,29 @@ export default class BookingService implements IBookingService {
 
     return bookingsReport
  
+  }
+
+
+  async cancelBooking(bookingId: string): Promise<IBooking | null> { 
+
+
+    const booking = await this.bookingRepository.findById(bookingId);
+
+    if(booking.status=='canceled') return null;
+    
+    const today  = new Date();
+    const bookingDate = new Date(booking.date);
+
+
+    if(bookingDate.getTime() <= today.getTime()) return null;
+
+
+    if (!booking) return null;
+
+    booking.status = 'canceled';
+
+    await booking.save();
+
+    return booking;
   }
 }

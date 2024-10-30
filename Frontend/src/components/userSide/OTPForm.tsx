@@ -56,9 +56,9 @@ const OTPForm: React.FC = () => {
       if (apiResponse?.data) {
         const { user, accessToken, refreshToken } = apiResponse.data;
         setVerified(true);
-        console.log('====================================');
-        console.log(user);
-        console.log('====================================');
+        ;
+        ;
+        ;
         await new Promise((resolve) => setTimeout(() => resolve("wait for animation"), 3000));
         dispatch(setModal(false));
         dispatch(setLoading(false));
@@ -69,7 +69,7 @@ const OTPForm: React.FC = () => {
         toast.success("Registered successfully");
         navigate("/u/home/");
       } else {
-        console.log(apiResponse);
+        ;
         dispatch(setLoading(false));
         dispatch(setError(apiResponse));
       }

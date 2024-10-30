@@ -4,7 +4,7 @@ import { today, getLocalTimeZone, isWeekend } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { IWorkspace } from "../../@types/workspace";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import {
   getAvailableSeats,
   getSingleWorkspace,
@@ -113,7 +113,7 @@ const BookingTable = () => {
           return tables;
         }, []);
 
-        console.log(groupedTables);
+        ;
 
         setTables(groupedTables);
         setWorkspace(workspaceResponse.data.data);
@@ -129,7 +129,7 @@ const BookingTable = () => {
     navigate(
       `/workspace/${id}/booking?seat=${selectedSeat}&seatId=${seatIdSelected}&date=${selectedDate}`
     );
-    console.log("Booked seat:", selectedSeat);
+    ;
   };
 
   const nextTable = () => {
@@ -149,145 +149,110 @@ const BookingTable = () => {
 
 
   return (
-    <div className="flex justify-center items-center p-4">
-      <div className="bg-white shadow-lg rounded-lg p-6 w-full max-w-4xl">
-        <h2 className="text-xl font-bold mb-4">{workspaceData.buildingName}</h2>
-        <p>
-          {workspaceData.state}, {workspaceData.district}
-        </p>
+<div className="flex justify-center items-center p-4 min-h-screen bg-gradient-to-br dark:from-gray-800 dark:to-gray-900">
+  <div className="bg-white dark:bg-gray-900 shadow-lg rounded-lg p-6 w-full max-w-3xl border border-gray-200 dark:border-gray-700 transition-transform duration-300 transform hover:scale-105">
+    <h2 className="text-2xl font-bold text-gray-800 dark:text-white mb-4">{workspaceData.buildingName}</h2>
+    <p className="text-gray-600 dark:text-gray-400">{workspaceData.state}, {workspaceData.district}</p>
 
-        <div className="flex flex-col items-center mb-4">
-          <h3 className="font-semibold text-lg mb-2">Select Date</h3>
-          <p className="p-2">Please select a date to check available seats</p>
-          <Calendar
-            aria-label="Select a date"
-            isDateUnavailable={isDateUnavailable}
-            onChange={handleDateChange}
-            value={selectedDate}
-          />
-        </div>
+    <div className="flex flex-col items-center mb-6">
+      <h3 className="font-semibold text-lg text-gray-800 dark:text-white mb-2">Select Date</h3>
+      <p className="text-gray-500 dark:text-gray-300 mb-2">Please select a date to check available seats</p>
+      <Calendar
+        aria-label="Select a date"
+        isDateUnavailable={isDateUnavailable}
+        onChange={handleDateChange}
+        value={selectedDate}
+      />
+    </div>
 
-        <div className="flex justify-center mb-4">
-          <button
-            disabled={!dateSelected}
-            onClick={() => fetchAvailableSeats(selectedDate.toString())}
-            className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-400 transition duration-300"
-          >
-            {loading ? <ReactLoading type="spin" height={20} width={20} color="white" /> : "Check Available Seats"}
-            
+    <div className="flex justify-center mb-6">
+      <button
+        disabled={!dateSelected}
+        onClick={() => fetchAvailableSeats(selectedDate.toString())}
+        className="bg-orange-500 text-white py-2 px-6 rounded-md shadow-md hover:bg-orange-400 transition duration-300 flex items-center"
+      >
+        {loading ? <ReactLoading type="spin" height={20} width={20} color="white" /> : "Check Available Seats"}
+      </button>
+    </div>
+
+    {dateSelected && tables.length > 0 && (
+      <div className="mt-8">
+        <div className="flex items-center justify-between mb-4">
+          <button onClick={prevTable} className="p-2 bg-orange-100 dark:bg-gray-700 rounded-full hover:bg-orange-200 dark:hover:bg-gray-600 transition duration-300">
+            <ChevronLeft className="w-6 h-6 text-orange-500 dark:text-orange-400" />
+          </button>
+          <h3 className="font-semibold text-lg text-gray-800 dark:text-white">Table {tables[currentTableIndex].tableNumber}</h3>
+          <button onClick={nextTable} className="p-2 bg-orange-100 dark:bg-gray-700 rounded-full hover:bg-orange-200 dark:hover:bg-gray-600 transition duration-300">
+            <ChevronRight className="w-6 h-6 text-orange-500 dark:text-orange-400" />
           </button>
         </div>
 
-        {dateSelected && tables.length > 0 && (
-          <div className="mt-8">
-            <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={prevTable}
-                className="p-2 bg-orange-100 rounded-full"
-              >
-                <ChevronLeft className="w-6 h-6 text-orange-500" />
-              </button>
-              <h3 className="font-semibold text-lg">
-                Table {tables[currentTableIndex].tableNumber}
-              </h3>
-              <button
-                onClick={nextTable}
-                className="p-2 bg-orange-100 rounded-full"
-              >
-                <ChevronRight className="w-6 h-6 text-orange-500" />
-              </button>
-            </div>
+        <div className="flex justify-center w-full space-x-8">
+          {/* Left side (first half of the seats) */}
+          <div className="flex flex-col space-y-2">
+            {tables[currentTableIndex].seats.slice(0, Math.ceil(tables[currentTableIndex].seats.length / 2)).map((seat: any) => {
+              const seatKey = `${tables[currentTableIndex].tableNumber}-${seat.seatNumber}`;
+              const isSelected = selectedSeat === seatKey;
+              const isAvailable = availableSeats.includes(seatKey);
+              const seatId = `${seat._id}`;
 
-            <div className="flex justify-center w-full space-x-8">
-              {/* Left side (first half of the seats) */}
-              <div className="flex flex-col space-y-2">
-                {tables[currentTableIndex].seats
-                  .slice(
-                    0,
-                    Math.ceil(tables[currentTableIndex].seats.length / 2)
-                  )
-                  .map((seat: any) => {
-                    const seatKey = `${tables[currentTableIndex].tableNumber}-${seat.seatNumber}`;
-                    const seatId = `${seat._id}`;
-                    const isSelected = selectedSeat === seatKey;
-                    const isAvailable = availableSeats.includes(seatKey);
-
-                    return (
-                      <button
-                        key={seatKey}
-                        onClick={() =>
-                          isAvailable && toggleSeat(seatKey, seatId)
-                        }
-                        className={`w-10 h-10 rounded-full border-2 
-                        ${
-                          isSelected
-                            ? "bg-orange-500 text-white"
-                            : isAvailable
-                            ? "bg-white text-black border-orange-500"
-                            : "bg-gray-200 text-gray-400"
-                        } 
-                        hover:bg-orange-400 hover:text-white transition duration-300`}
-                        disabled={!isAvailable}
-                      >
-                        {seat.seatNumber}
-                      </button>
-                    );
-                  })}
-              </div>
-
-              {/* Table visualization */}
-              <div className="bg-brown-500 w-24 h-34 rounded-lg shadow-lg flex justify-center items-center">
-                <p className="text-orange-500 text-center">Table</p>
-              </div>
-
-              {/* Right side (second half of the seats) */}
-              <div className="flex flex-col space-y-2">
-                {tables[currentTableIndex].seats
-                  .slice(Math.ceil(tables[currentTableIndex].seats.length / 2))
-                  .map((seat: any) => {
-                    const seatKey = `${tables[currentTableIndex].tableNumber}-${seat.seatNumber}`;
-                    const isSelected = selectedSeat === seatKey;
-                    const isAvailable = availableSeats.includes(seatKey);
-
-                    const seatId = `${seat._id}`;
-                    return (
-                      <button
-                        key={seatKey}
-                        onClick={() =>
-                          isAvailable && toggleSeat(seatKey, seatId)
-                        }
-                        className={`w-10 h-10 rounded-full border-2 
-                        ${
-                          isSelected
-                            ? "bg-orange-500 text-white"
-                            : isAvailable
-                            ? "bg-white text-black border-orange-500"
-                            : "bg-gray-200 text-gray-400"
-                        } 
-                        hover:bg-orange-400 hover:text-white transition duration-300`}
-                        disabled={!isAvailable}
-                      >
-                        {seat.seatNumber}
-                      </button>
-                    );
-                  })}
-              </div>
-            </div>
+              return (
+                <button
+                  key={seatKey}
+                  onClick={() => isAvailable && toggleSeat(seatKey, seatId)}
+                  className={`w-12 h-12 rounded-full border-2 transition duration-300 transform hover:scale-105 
+                    ${isSelected ? "bg-orange-500 text-white" : isAvailable ? "bg-white dark:bg-gray-700 text-black border-orange-500" : "bg-gray-200 dark:bg-gray-600 text-gray-400"}`}
+                  disabled={!isAvailable}
+                >
+                  {seat.seatNumber}
+                </button>
+              );
+            })}
           </div>
-        )}
 
-        {tables.length > 0 && (
-          <div className="mt-6 flex justify-center">
-            <button
-              onClick={handleBooking}
-              className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-400 transition duration-300"
-            >
-              Confirm Booking
-            </button>
+          {/* Table visualization */}
+          <div className="bg-gray-300 dark:bg-gray-600 w-24 h-32 rounded-lg shadow-lg flex flex-col justify-center items-center">
+            <p className="text-orange-500 dark:text-orange-300 font-semibold">Table</p>
           </div>
-        )}
+
+          {/* Right side (second half of the seats) */}
+          <div className="flex flex-col space-y-2">
+            {tables[currentTableIndex].seats.slice(Math.ceil(tables[currentTableIndex].seats.length / 2)).map((seat: any) => {
+              const seatKey = `${tables[currentTableIndex].tableNumber}-${seat.seatNumber}`;
+              const isSelected = selectedSeat === seatKey;
+              const isAvailable = availableSeats.includes(seatKey);
+              const seatId = `${seat._id}`;
+
+              return (
+                <button
+                  key={seatKey}
+                  onClick={() => isAvailable && toggleSeat(seatKey, seatId)}
+                  className={`w-12 h-12 rounded-full border-2 transition duration-300 transform hover:scale-105 
+                    ${isSelected ? "bg-orange-500 text-white" : isAvailable ? "bg-white dark:bg-gray-700 text-black border-orange-500" : "bg-gray-200 dark:bg-gray-600 text-gray-400"}`}
+                  disabled={!isAvailable}
+                >
+                  {seat.seatNumber}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
-    </div>
+    )}
+
+    {tables.length > 0 && (
+      <div className="mt-6 flex justify-center">
+        <button
+          onClick={handleBooking}
+          className="bg-orange-500 text-white py-2 px-6 rounded-md hover:bg-orange-400 transition duration-300"
+        >
+          Confirm Booking
+        </button>
+      </div>
+    )}
+  </div>
+</div>
+
   );
 };
 

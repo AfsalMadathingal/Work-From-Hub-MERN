@@ -1,5 +1,10 @@
 import React from "react";
-export const EditIcon = (props) => (
+
+interface Props {
+  className?: string;
+}
+
+export const EditIcon : React.FC<Props> = (props) => (
   <svg
     aria-hidden="true"
     fill="none"

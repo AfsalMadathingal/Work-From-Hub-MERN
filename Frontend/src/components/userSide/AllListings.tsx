@@ -39,20 +39,21 @@ const AllListings: React.FC = () => {
   }, []); // Runs only on component mount
 
   return (
-    <div className="min-h-screen bg-orange-50 backdrop:blur-3xl p-4 rounded-lg shadow-xl">
-      <SearchBar
-        onSearch={(searchQuery) => handleFilterChange({ search: searchQuery })}
-        defaultValue={filters.search || ''} // To keep search input filled with the query
-      />
-      <div className="container mx-auto mt-10 flex flex-col sm:flex-row">
-        <div className="w-full sm:w-1/4 m-2 ">
-          <QuickFilters onFilterChange={handleFilterChange} />
-        </div>
-        <div className="w-full sm:w-3/4 pl-6 sm:pl-10">
-          <Listings filters={filters} />
-        </div>
-      </div>
+<div className="min-h-screen bg-orange-50 dark:bg-gray-700 backdrop-blur-3xl p-4 rounded-lg shadow-xl">
+  <SearchBar
+    onSearch={(searchQuery) => handleFilterChange({ search: searchQuery })}
+    defaultValue={filters.search || ''} // To keep search input filled with the query
+  />
+  <div className="container mx-auto mt-10 flex flex-col sm:flex-row">
+    <div className="w-full sm:w-1/4 m-2">
+      <QuickFilters onFilterChange={handleFilterChange} />
     </div>
+    <div className="w-full sm:w-3/4 pl-6 sm:pl-10">
+      <Listings filters={filters} />
+    </div>
+  </div>
+</div>
+
   );
 };
 

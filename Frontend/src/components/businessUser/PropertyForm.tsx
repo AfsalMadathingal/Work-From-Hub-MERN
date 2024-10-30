@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import { IWorkspace } from "../../@types/workspace";
 import { submitWorkspaceData } from "../../services/BuserService";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { validateWorkspaceSubmission } from "../../utils/BUserValidator";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
@@ -150,7 +150,7 @@ const BuildingForm: React.FC = () => {
     try {
       const response = await submitWorkspaceData(formDataToSend);
 
-      console.log(response);
+      ;
       if (response?.data?.success) {
         toast.success("Data submitted successfully wait for admin approval");
         dispatch(setLoading(false));

@@ -3,11 +3,12 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { userAxiosInstance } from "../../services/instance/userInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { setModal } from "../../redux/slices/userSlice";
 import ReactLoading from "react-loading";
 import { updatePaymentStatus } from "../../services/userServices";
 import { PRIMARY_COLOR } from "../../constant/colors";
+import { IUsers } from "../../@types/user";
 
 const PaymentForm: React.FC = ({ activePlan }) => {
   const stripe = useStripe();
@@ -16,7 +17,7 @@ const PaymentForm: React.FC = ({ activePlan }) => {
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
   const [email, setEmail] = useState("");
-  const { user } = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.user.user as IUsers);
   const [isPaymentStarted, setIsPaymentStarted] = useState(false);
   const dispatch = useDispatch();
 
@@ -44,7 +45,7 @@ const PaymentForm: React.FC = ({ activePlan }) => {
   
       const stripeResponse = response.data.data;
 
-      console.log(stripeResponse);
+      ;
   
       const { clientSecret } = response.data.data;
   
@@ -56,7 +57,7 @@ const PaymentForm: React.FC = ({ activePlan }) => {
         setError(result.error.message as string);
       } else {
         if (result.paymentIntent.status === "succeeded") {
-          console.log(result);
+          ;
           setIsPaymentStarted(true);
           await updatePaymentStatus(result,user,stripeResponse)
           setSucceeded(true);

@@ -95,9 +95,9 @@ const ModalForBookingDetails: React.FC<ModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg p-6 w-full max-w-lg md:max-w-md mx-4 sm:mx-auto">
-        <h2 className="text-lg font-bold mb-4 text-orange-500 text-center">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-900 bg-opacity-75 dark:bg-gray-800 dark:bg-opacity-75">
+      <div className="bg-white rounded-lg p-6 w-full max-w-lg md:max-w-md mx-4 sm:mx-auto dark:bg-gray-800">
+        <h2 className="text-lg font-bold mb-4 text-orange-500 text-center dark:text-orange-400">
           Transaction Details
         </h2>
 
@@ -125,13 +125,13 @@ const ModalForBookingDetails: React.FC<ModalProps> = ({
         <div className="mt-6 flex justify-end space-x-4">
           <button
             onClick={onClose}
-            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600"
+            className="px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 dark:bg-gray-700 dark:text-gray-300 dark:hover:bg-gray-600"
           >
             Close
           </button>
           <button
             onClick={handleDownload}
-            className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600"
+            className="px-4 py-2 bg-orange-500 text-white rounded-md hover:bg-orange-600 dark:bg-orange-400 dark:text-gray-300 dark:hover:bg-orange-500"
           >
             Download Invoice
           </button>

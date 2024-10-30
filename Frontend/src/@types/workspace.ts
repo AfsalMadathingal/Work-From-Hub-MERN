@@ -20,4 +20,5 @@ export interface IWorkspace {
     pricePerSeat: number;
     timing:string;
     workingDays:string;
+    ownerId: string;
   }

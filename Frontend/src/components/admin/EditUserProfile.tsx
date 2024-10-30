@@ -1,26 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { userEditValidate } from '../../utils/adminValidator';
+import { IUsers } from '../../@types/user';
 
-const EditUserProfile = ({ user, onSave, onCancel }) => {
+
+interface IProps {
+  user: IUsers | null;
+  onSave: (data: any) => void;
+  onCancel: () => void;
+}
+
+interface Errors {
+  fullName?: string;
+  email?: string;
+
+}
+const EditUserProfile: React.FC<IProps> = ({ user, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    id: user._id,
-    fullName: user.fullName,
-    email: user.email,
-    status: user.status,
-    dateJoined: user.dateJoined,
+    id: user?._id,
+    fullName: user?.fullName,
+    email: user?.email,
+    status: user?.status,
+    dateJoined: user?.dateJoined,
   });
 
   const [isVisible, setIsVisible] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState <Errors>({});
 
   useEffect(() => {
     setShowProfile(true);
     setTimeout(() => setIsVisible(true), 10); 
   }, []);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
@@ -36,7 +49,7 @@ const EditUserProfile = ({ user, onSave, onCancel }) => {
       setErrors(formattedErrors);
       return;
     }
-    if (formData.fullName  == user.fullName && formData.email == user.email) {
+    if (formData.fullName  == user?.fullName && formData.email == user?.email) {
       toast.error('If you dont want to change any details, please click cancel.');
       return;
     }
@@ -74,7 +87,7 @@ const EditUserProfile = ({ user, onSave, onCancel }) => {
           <input
             type="text"
             name="fullName"
-            value={formData.fullName}
+            value={formData.fullName || ''}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
@@ -86,7 +99,7 @@ const EditUserProfile = ({ user, onSave, onCancel }) => {
           <input
             type="email"
             name="email"
-            value={formData.email}
+            value={formData.email   || ''}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />

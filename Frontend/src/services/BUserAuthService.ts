@@ -106,6 +106,10 @@ export const logout = async ()=>{
 
   } catch (error) {
 
+    console.log('====================================');
+    console.log(error.response);
+    console.log('====================================');
+
     return null
 
   }

@@ -9,6 +9,7 @@ export default class UserRepository implements IUserRepository {
 
 
 
+  
 
   async  getTotalUser(): Promise<any> {
 

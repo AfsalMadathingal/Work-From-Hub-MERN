@@ -3,7 +3,7 @@ import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
 import { userAxiosInstance } from "../../services/instance/userInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { setModal } from "../../redux/slices/userSlice";
 import ReactLoading from "react-loading";
 import { createPaymentIntentForBooking, updateBookingStatus, updatePaymentStatus } from "../../services/userServices";
@@ -28,7 +28,7 @@ const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails 
   const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
-  const { user } = useSelector((state: RootState) => state.user);
+  const user = useSelector((state: RootState) => state.user.user as IUsers);
   const dispatch = useDispatch();
   const [isPaymentStarted, setIsPaymentStarted] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
@@ -66,9 +66,9 @@ const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails 
         if (result.paymentIntent.status === "succeeded") {
           setIsPaymentStarted(true);
          const response = await updateBookingStatus(result, user, bookingDetails, stripeResponse);
-         console.log('====================================');
-         console.log(response);
-         console.log('====================================');
+         ;
+         ;
+         ;
           setSucceeded(true);
           toast.success("Booking Payment Successful");
           setIsPaymentStarted(false);
@@ -83,7 +83,7 @@ const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails 
 
       setProcessing(false);
     } catch (error) {
-      console.log(error);
+      ;
       setProcessing(false);
       toast.error("Payment Failed, Please Try Again");
    

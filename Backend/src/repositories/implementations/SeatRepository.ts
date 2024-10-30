@@ -8,10 +8,9 @@ export class SeatRepository implements ISeatRepository {
     workspace: IWorkspace
   ): Promise<ISeat[] | null> {
     try {
-
-      console.log('====================================');
+      console.log("====================================");
       console.log(workspace);
-      console.log('====================================');
+      console.log("====================================");
 
       const { tablesAvailable, seatsPerTable } = workspace;
       const seatPromises: Promise<ISeat>[] = [];

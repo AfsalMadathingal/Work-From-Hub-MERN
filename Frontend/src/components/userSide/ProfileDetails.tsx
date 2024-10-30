@@ -6,7 +6,7 @@ import ProfileEdit from "./ProfileEdit";
 import { IUsers } from "../../@types/user";
 import { setError, setLoading, setUser } from "../../redux/slices/userSlice";
 import { editUserData } from "../../services/userServices";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { validateEditing } from "../../utils/userValidator";
 
 const ProfileDetails = () => {
@@ -59,11 +59,11 @@ const ProfileDetails = () => {
           onCancel={() => setIsEdit(false)}
         />
       )}
-      <div className="max-w-2xl  p-6 bg-white rounded-lg shadow-md mt-8">
+      <div className="max-w-2xl dark:bg-gray-800 p-6 bg-white rounded-lg shadow-md mt-8 dark:text-white">
         <div className="flex justify-between items-center mb-4">
           <div>
             <h2 className="text-2xl font-bold">Profile</h2>
-            <p className="text-gray-500">
+            <p className="text-gray-500 dark:text-gray-400">
               Basic info, click +add to add you'r details
             </p>
           </div>
@@ -71,75 +71,75 @@ const ProfileDetails = () => {
             onClick={() => {
               setIsEdit(!isEdit);
             }}
-            className="flex items-center text-orange-500 hover:text-orange-700 focus:outline-none"
+            className="flex items-center text-orange-500 hover:text-orange-700 focus:outline-none dark:text-orange-400 dark:hover:text-orange-600"
           >
             <PencilIcon className="w-5 h-5 mr-1" />
             EDIT
           </button>
         </div>
 
-        <div className="border-t border-gray-200">
+        <div className="border-t border-gray-200 dark:border-gray-700">
           <div className="py-4 flex justify-between">
-            <span className="font-semibold text-gray-600">NAME</span>
-            <span className="text-gray-800">{user?.fullName}</span>
+            <span className="font-semibold text-gray-600 dark:text-gray-300">NAME</span>
+            <span className="text-gray-800 dark:text-gray-100">{user?.fullName}</span>
           </div>
-          <div className="py-4 flex justify-between border-t border-gray-200">
-            <span className="font-semibold text-gray-600">BIRTHDAY</span>
+          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
+            <span className="font-semibold text-gray-600 dark:text-gray-300">BIRTHDAY</span>
             {user?.date_of_birth ? (
-                <span className="text-gray-800">{user?.date_of_birth.slice(0,10)}</span>
+                <span className="text-gray-800 dark:text-gray-100">{user?.date_of_birth.slice(0,10)}</span>
             ):(
                 <button onClick={() => {
                   setIsEdit(!isEdit);
-                }} className="text-orange-500 hover:underline">+ Add</button>
+                }} className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
             )}
             
           </div>
-          <div className="py-4 flex justify-between border-t border-gray-200">
-            <span className="font-semibold text-gray-600">GENDER</span>
+          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
+            <span className="font-semibold text-gray-600 dark:text-gray-300">GENDER</span>
             {user?.gender ? (
-                <span className="text-gray-800">{user?.gender}</span>
+                <span className="text-gray-800 dark:text-gray-100">{user?.gender}</span>
             ):(
                 <button onClick={() => {
                   setIsEdit(!isEdit);
-                }} className="text-orange-500 hover:underline">+ Add</button>
+                }} className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
             )}
           </div>
-          <div className="py-4 flex justify-between border-t border-gray-200">
-            <span className="font-semibold text-gray-600">PHONE</span>
+          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
+            <span className="font-semibold text-gray-600 dark:text-gray-300">PHONE</span>
             {user?.phone ? (
-                <span className="text-gray-800">{user?.phone}</span>
+                <span className="text-gray-800 dark:text-gray-100">{user?.phone}</span>
             ):(
                 <button onClick={() => {
                   setIsEdit(!isEdit);
-                }} className="text-orange-500 hover:underline">+ Add</button>
+                }} className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
             )}
           </div>
-          <div className="py-4 flex justify-between border-t border-gray-200">
-            <span className="font-semibold text-gray-600">YOUR ADDRESS</span>
-            <span className="text-gray-800">brototype kinfra</span>
+          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
+            <span className="font-semibold text-gray-600 dark:text-gray-300">YOUR ADDRESS</span>
+            <span className="text-gray-800 dark:text-gray-100">brototype kinfra</span>
           </div>
-          <div className="py-4 flex justify-between border-t border-gray-200">
-            <span className="font-semibold text-gray-600">PINCODE</span>
+          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
+            <span className="font-semibold text-gray-600 dark:text-gray-300">PINCODE</span>
             {user?.pin_code ? (
-                <span className="text-gray-800">{user?.pin_code}</span>
+                <span className="text-gray-800 dark:text-gray-100">{user?.pin_code}</span>
             ):(
                 <button 
                 onClick={() => {
                   setIsEdit(!isEdit);
                 }}
-                className="text-orange-500 hover:underline">+ Add</button>
+                className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
             )}
           </div>
-          <div className="py-4 flex justify-between border-t border-gray-200">
-            <span className="font-semibold text-gray-600">STATE</span>
+          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
+            <span className="font-semibold text-gray-600 dark:text-gray-300">STATE</span>
             {user?.address ? (
-                <span className="text-gray-800">{user?.address}</span>
+                <span className="text-gray-800 dark:text-gray-100">{user?.address}</span>
             ):(
                 <button 
                 onClick={() => {
                   setIsEdit(!isEdit);
                 }}
-                className="text-orange-500 hover:underline">+ Add</button>
+                className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
             )}
           </div>
         </div>

@@ -31,7 +31,7 @@ export const getAllPendingSubmission = async (
         `/api/business/workspace-submission?page=${page}&limit=${itemsPerPage}`
       );
   
-      console.log(response);
+      ;
       
   
       return response;
@@ -50,7 +50,7 @@ export const getAllPendingSubmission = async (
         `/api/business/workspaces?page=${page}&limit=${itemsPerPage}`
       );
   
-      console.log(response);
+      ;
       
   
       return response;

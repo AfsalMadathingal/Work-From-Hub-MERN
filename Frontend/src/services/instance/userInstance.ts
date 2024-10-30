@@ -1,5 +1,5 @@
 import axios from "axios";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import store from "../../redux/store/store";
 import { resetUser } from "../../redux/slices/userSlice";
 
@@ -57,7 +57,7 @@ userAxiosInstance.interceptors.response.use(
       }
 
       if (error.response.status >= 500) {
-        toast.error("Server error, please try again later.");
+        toast.error(error.response.data.message ||  'something went wrong');
       }
 
       if (error.response.status >= 400 && error.response.status < 500 && error.response.status !== 401) {

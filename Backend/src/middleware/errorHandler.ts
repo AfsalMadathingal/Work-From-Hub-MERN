@@ -2,9 +2,7 @@ import { Request, Response, NextFunction } from "express";
 
 class ApiError extends Error {
   statusCode: number;
-  message: string;
   error: string;
-  stack?: string;
   data: null;
   success: boolean;
 
@@ -17,10 +15,9 @@ class ApiError extends Error {
     super(message);
     this.statusCode = statusCode;
     this.data = null;
-    this.message = message;
     this.success = false;
     this.error = error;
-
+    
     if (stack) {
       this.stack = stack;
     } else {
@@ -29,25 +26,32 @@ class ApiError extends Error {
   }
 }
 
-
 export function errorHandler(
   err: Error,
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const errorString = JSON.parse( JSON.stringify(err))
+  const errorDetails = {
+    name: err.name,
+    message: err.message,
+    stack: err.stack,
+  };
+
+  console.log(errorDetails);
 
 
-  console.log(err);
-  
-  return res.status(500).json(
-    new ApiError(
-      500,
-      errorString.statusCode < 500 ? errorString.error : "Internal Server Error"
-    )
-  );
+  const errorMessage =  errorDetails.message;
+
+  const apiError = new ApiError(500, errorMessage, err.message, err.stack || "");
+
+  return res.status(apiError.statusCode).json({
+    statusCode: apiError.statusCode,
+    error: apiError.error,
+    message: apiError.message,
+    data: apiError.data,
+    success: apiError.success,
+  });
 }
-
 
 export { ApiError };

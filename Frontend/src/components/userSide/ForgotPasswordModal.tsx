@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import ReactLoading from "react-loading";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { emailValidate } from "../../utils/userValidator";
 import { setError } from "../../redux/slices/userSlice";
 import AnimatedPage from "../Animation";

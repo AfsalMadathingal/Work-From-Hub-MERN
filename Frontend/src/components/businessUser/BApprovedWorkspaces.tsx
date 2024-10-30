@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaEdit, FaEye, FaLocationArrow, FaTrash } from "react-icons/fa";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
 import { useDispatch, useSelector } from "react-redux";

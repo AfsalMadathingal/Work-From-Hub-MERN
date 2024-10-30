@@ -10,6 +10,7 @@ export interface IPaymentService{
     updateSubscriptionStatus(paymentIntent:Stripe.PaymentIntent,user:IUsers,stripeResponse:Stripe.Invoice):Promise<any>
     checkPaymentStatus(paymentIntentId:string):Promise<Stripe.PaymentIntent | null>
     getInvoice(invoice:string): Promise <Stripe.Invoice| null> ;
+    initiateRefund(paymentIntentId:string,amount:number) :Promise<Stripe.Refund | null>
     
     
 }

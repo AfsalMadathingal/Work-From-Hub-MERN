@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import  { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { getAllApprovedWorkspaces } from "../../services/adminService";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
 import { FaEye } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const ApprovedWorkspaces = () => {
-  const navigate = useNavigate();
+
 
   const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -17,6 +17,7 @@ const ApprovedWorkspaces = () => {
   useEffect(() => {
     const fetchWorkspaces = async (page: number, limit: number) => {
       try {
+        
         const response = await getAllApprovedWorkspaces(page, limit);
         if (response.status === 200) {
           setWorkspaces(response.data.data.approvedWorkspaces);
@@ -55,7 +56,7 @@ const ApprovedWorkspaces = () => {
           >
             <img
               className="h-36 w-full object-cover"
-              src={workspace.photos[0]}
+              src={workspace?.photos?.[0]?.toString() || "https://picsum.photos/200/300"}
               alt={workspace.buildingName}
             />
             <div className="p-4">

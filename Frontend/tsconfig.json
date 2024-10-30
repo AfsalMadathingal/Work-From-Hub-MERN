@@ -5,9 +5,17 @@
     { "path": "./tsconfig.node.json" }
   ],
   "compilerOptions": {
+    "jsx": "react-jsx",
     "skipLibCheck": true,
-    "types": ["vite/client"], 
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "types": ["vite/client"],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    "strict": false,
+    "noImplicitAny": false,
+    "declaration": true,
+    
+    
   },
   "include": ["./src/**/*"]
 }

@@ -18,7 +18,7 @@ import {
   setUser,
 } from "../../redux/slices/userSlice";
 import { Link, useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import Loading from "react-loading";
 import { editUserProfilePic } from "../../services/userServices";
 import Cropper, { ReactCropperElement } from "react-cropper";
@@ -107,7 +107,7 @@ const ProfileSidebar = () => {
 
   return (
     <>
-        <div className="flex ">
+        <div className="flex dark:bg-gray-800">
       <PasswordResetModal
         isOpen={changePasswordModal}
         onClose={handlePasswordResetClose}
@@ -115,15 +115,15 @@ const ProfileSidebar = () => {
 
       {/* Modal to edit image */}
       <div
-        className={`fixed z-50 inset-0 w-full h-full bg-black bg-opacity-50 flex justify-center items-center ${
+        className={`fixed z-50 inset-0 w-full h-full bg-black bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-50 flex justify-center items-center ${
           editProfilePic ? "block" : "hidden"
         }`}
       >
-        <div className="bg-white rounded-lg p-4 w-2/6 text-center flex flex-col justify-center items-center relative">
+        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 w-2/6 text-center flex flex-col justify-center items-center relative">
           <div className="absolute top-3 right-3">
             <button
               onClick={handleCancel}
-              className="bg-gray-200 rounded-full p-2 text-gray-700 hover:bg-gray-300"
+              className="bg-gray-200 dark:bg-gray-700 rounded-full p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
             >
               <FaWindowClose className="w-6 h-6" />
             </button>
@@ -131,7 +131,7 @@ const ProfileSidebar = () => {
           <div className="flex justify-center items-center">
             <h2 className="text-lg font-semibold">Edit Profile Picture</h2>
           </div>
-          <div className="h-1 w-2/4 bg-orange-500 mt-2 rounded-full"></div>
+          <div className="h-1 w-2/4 bg-orange-500 dark:bg-orange-400 mt-2 rounded-full"></div>
           <div className="mt-4">
             {selectedFile ? (
               <Cropper
@@ -151,14 +151,14 @@ const ProfileSidebar = () => {
             <div className="mt-4 flex flex-col justify-center items-center">
               <label
                 htmlFor="profilePic"
-                className="bg-gray-500 py-2 px-4 rounded-md text-white font-bold cursor-pointer"
+                className="bg-gray-500 dark:bg-gray-700 py-2 px-4 rounded-md text-white font-bold cursor-pointer"
               >
                 <span className="">+ Choose Image</span>
               </label>
               <button
                 disabled={loading}
                 onClick={handlePhotoSave}
-                className="bg-orange-500 py-2 px-4 rounded-md text-white font-bold mt-4"
+                className="bg-orange-500 dark:bg-orange-400 py-2 px-4 rounded-md text-white font-bold mt-4"
               >
                 {loading ? (
                   <Loading type="spin" color="white" height={20} width={20} />
@@ -179,7 +179,7 @@ const ProfileSidebar = () => {
 
       {/* Sidebar */}
       <aside
-          className={`fixed lg:relative bg-white shadow-md lg:transform-none z-40 
+          className={`fixed lg:relative bg-white dark:bg-gray-800  shadow-md lg:transform-none z-40 
               ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
               transition-transform duration-300 ease-in-out 
               w-60 lg:w-60 overflow-y-auto rounded-lg `}
@@ -197,7 +197,7 @@ const ProfileSidebar = () => {
           <div className="flex flex-col mt-4">
             <button
               onClick={() => setEditProfilePic(true)}
-              className="text-gray-600 text-sm hover:text-orange-500 flex items-center"
+              className="text-gray-600 dark:text-gray-300 text-sm hover:text-orange-500 flex items-center"
             >
               <EditIcon className="mr-2 w-4" />
               Edit Profile Pic
@@ -207,12 +207,12 @@ const ProfileSidebar = () => {
 
         <div className="mt-6 flex flex-col items-center p-4">
           <p className="text-lg font-semibold">{user?.fullName}</p>
-          <p className="text-gray-600 text-small">{user?.email}</p>
+          <p className="text-gray-600 dark:text-gray-300 text-small">{user?.email}</p>
           <p
             onClick={() => {
               setChangePasswordModal(true);
             }}
-            className="text-orange-500 text-small cursor-pointer"
+            className="text-orange-500 dark:text-orange-400 text-small cursor-pointer"
           >
             Change Password
           </p>
@@ -221,29 +221,29 @@ const ProfileSidebar = () => {
         <div className="mt-6 space-y-2 p-4">
           <Link
             to="/user/profile"
-            className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
+            className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
           >
             <FaUser className="mr-2" />
             Profile
           </Link>
           <Link
             to="/user/bookings"
-            className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
+            className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
           >
             <FaBook className="mr-2" />
             Bookings
           </Link>
-          <Link to="/user/membership"  className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
+          <Link to="/user/membership"  className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
             <FaAddressCard className="mr-2" />
             Membership
           </Link>
-          <button className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
+          <Link to={"/user/wallet"}  className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
             <FaWallet className="mr-2" />
             Wallet
-          </button>
+          </Link>
           <button
             onClick={handleLogout}
-            className="w-full border border-gray-300 text-gray-600 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
+            className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
           >
             <FaSignOutAlt className="mr-2" />
             Logout
@@ -254,16 +254,16 @@ const ProfileSidebar = () => {
       {/* Toggle button for smaller screens */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden p-2 text-orange-500 focus:outline-none fixed top-4 left-4 z-50"
+        className="lg:hidden p-2 text-orange-500 dark:text-orange-400 focus:outline-none fixed top-4 left-4 z-50"
       >
         ☰
       </button>
 
       {/* Overlay for smaller screens */}
       <div
-        className={`fixed inset-0 bg-black bg-opacity-50 z-30 ${
+        className={`fixed inset-0 bg-black bg-opacity-10  dark:bg-opacity-50 dark:bg-gray-900 z-30 ${
           isSidebarOpen ? "block" : "hidden"
-        } lg:hidden`}
+        } lg:hidden dark:bg-gray-900`}
         onClick={toggleSidebar}
       ></div>
 

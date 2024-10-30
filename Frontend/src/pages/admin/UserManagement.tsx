@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react';
-import Sidebar from '../../components/admin/Sidebar';
+import { useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import UserManagementTable from '../../components/admin/UserManagement';
-import Checkout from '../Checkout';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/adminSlice';
 

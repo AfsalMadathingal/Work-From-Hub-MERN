@@ -2,6 +2,7 @@ import { IBooking } from "../../entities/BookingEntity";
 
 export interface IBookingRepository {
 
+    findById(id: string): Promise<IBooking | null>;
     createBooking(booking: Partial<IBooking>): Promise<IBooking | null>;
     findBySeatId(id:string):Promise <IBooking| null>;
     getBookingsByUserId(id:string):Promise <IBooking[] | null>;

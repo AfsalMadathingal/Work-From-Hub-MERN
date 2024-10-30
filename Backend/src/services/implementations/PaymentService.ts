@@ -161,6 +161,29 @@ export default class PaymentService implements IPaymentService {
         }
     }
 
+
+    async initiateRefund(paymentIntentId: string, amount: number): Promise<Stripe.Refund | null> {
+
+        try {
+
+            const amountAfterCut = amount - (amount*(30/100))
+
+            const refund = await stripe.refunds.create({
+                payment_intent: paymentIntentId,
+                amount:amountAfterCut
+            });
+
+            return refund;
+            
+        } catch (error) {
+            if (error instanceof Stripe.errors.StripeError && error.code === "resource_missing") {
+                return null;
+            }
+            throw error;
+        }
+        
+    }
+
     
 
 

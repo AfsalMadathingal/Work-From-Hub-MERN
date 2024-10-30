@@ -15,7 +15,7 @@ import {
 import { RootState } from "../../redux/store/store";
 import validate from "../../utils/userRegisterValidator";
 import ReactLoading from "react-loading";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { register, sendOTP } from "../../services/BUserAuthService";
 import BusinessUserOTPForms from "../../components/businessUser/BusinessUserOTPForm";
 
@@ -91,7 +91,7 @@ const BusinessLogin: React.FC = () => {
     } catch (error) {
       dispatch(setLoading(false))
       toast.error("Something went Wrong!")
-      console.log(error);
+      ;
       
     }
    

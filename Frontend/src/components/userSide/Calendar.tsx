@@ -1,7 +1,7 @@
-import { Calendar } from "@nextui-org/react";
+import { Calendar, DateValue } from "@nextui-org/react";
 import { today, getLocalTimeZone, isWeekend } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
-import React, { useState } from "react";
+import { useState } from "react";
 
 export default function CalendarForBooking() {
   const now = today(getLocalTimeZone());
@@ -20,7 +20,7 @@ export default function CalendarForBooking() {
 
   const { locale } = useLocale();
 
-  const isDateUnavailable = (date) => {
+  const isDateUnavailable = (date:DateValue) => {
     // Disable weekends
     if (isWeekend(date, locale)) return true;
 

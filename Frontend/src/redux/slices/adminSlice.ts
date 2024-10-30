@@ -46,7 +46,7 @@ const adminSlice = createSlice({
     setTempData(state,action){
       state.tempData = action.payload;
     },
-    resetAdmin:(state) =>initialState,
+    resetAdmin:() =>initialState,
     
 
   },

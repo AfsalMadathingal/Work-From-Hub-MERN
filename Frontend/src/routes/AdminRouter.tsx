@@ -1,5 +1,5 @@
-import React, { lazy, Suspense, useEffect } from "react";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
+import { lazy, Suspense,  } from "react";
+import { Route, Routes, useLocation, } from "react-router-dom";
 import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PublicRoute from "../components/auth/AdminPublicRoute";
@@ -16,7 +16,7 @@ const MembershipPlan = lazy(() => import("../pages/admin/MembershipPlan"));
 const BusinessUserManage = lazy(() => import("../pages/admin/BusinessUserManage"));
 const AdminLogin = lazy(() => import("../pages/adminAuth/AdminLogin"));
 
-const AdminRouter = () => {
+const AdminRouter: React.FC = () => {
   const location = useLocation();
 
   return (

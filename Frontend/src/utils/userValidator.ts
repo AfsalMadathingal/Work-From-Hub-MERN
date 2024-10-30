@@ -178,11 +178,11 @@ const passwordChangeSchema = Joi.object({
 });
 
 
-export const reviewValidator = (data: any) => {
+export const reviewValidator = (data: {
+  rating: number,
+  comment: string,
+}) => {
 
-  console.log('====================================');
-  console.log(data);
-  console.log('====================================');
 
   const { error } = reviewSchema.validate(data, { abortEarly: false });
 
@@ -199,7 +199,11 @@ export const reviewValidator = (data: any) => {
 };
 
 
-export const passwordChangeValidator = (data:any) => {
+export const passwordChangeValidator = (data:{
+  currentPassword: string,
+  newPassword: string,
+  confirmPassword: string,
+}) => {
 
   const { error } = passwordChangeSchema.validate(data, { abortEarly: false });
 
@@ -238,7 +242,7 @@ export const validatePassword = (password: string) => {
     const formattedErrors: { [key: string]: string } = {};
     error.details.forEach((detail) => {
       formattedErrors[detail.path[0]] = detail.message;
-      console.log(detail.path[0]);
+      ;
     });
 
     return formattedErrors;
@@ -254,7 +258,7 @@ const validate = (data: Partial<IUsers>) => {
     const formattedErrors: { [key: string]: string } = {};
     error.details.forEach((detail) => {
       formattedErrors[detail.path[0]] = detail.message;
-      console.log(detail.path[0]);
+      ;
     });
 
     return formattedErrors;
@@ -266,14 +270,14 @@ const validate = (data: Partial<IUsers>) => {
 export const emailValidate = (email: string) => {
   const { error } = emailSchema.validate({ email });
 
-  console.log("====================================");
-  console.log(error);
-  console.log("====================================");
+  ;
+  ;
+  ;
   if (error) {
     const formattedErrors: { [key: string]: string } = {};
     error.details.forEach((detail) => {
       formattedErrors[detail.path[0]] = detail.message;
-      console.log(detail.path[0]);
+      ;
     });
 
     return formattedErrors;

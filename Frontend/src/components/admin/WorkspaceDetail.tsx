@@ -14,15 +14,15 @@ import {
   FaTable,
   FaDollarSign,
 } from "react-icons/fa";
-import { toast } from "react-toastify";
-import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import {  useNavigate } from "react-router-dom";
 import {
   approveWorkspace,
   getOwnerById,
   rejectWorkspace,
 } from "../../services/adminService";
 import Dialog from "./Dialog";
-import { AxiosError } from "axios";
+
 
 interface WorkspaceDetailProps {
   workspace: {
@@ -154,6 +154,10 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     }
   };
 
+   useEffect(() => {
+    getOwner(ownerId);
+  }, []);
+
 
   const sliderSettings = {
     dots: true,
@@ -185,7 +189,7 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
                 {new Date(createdAt).toLocaleString()}
               </span>
               <span>by:</span>
-              <span className="font-semibold">{"ownerName"}</span>
+              <span className="font-semibold">{ownerName}</span>
             </div>
           </div>
 

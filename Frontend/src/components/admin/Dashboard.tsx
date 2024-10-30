@@ -3,7 +3,7 @@ import SummaryStatics from "./SummaryStatics";
 import RevenueChart from "./RevenueChart";
 import NewUsers from "./NewUsers";
 import RecentBookings from "./RecentBookings";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { getDashboardData } from "../../services/adminService";
 
 const Dashboard = () => {

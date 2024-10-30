@@ -603,7 +603,46 @@ class UserController {
     }
   };
 
+
+  public cancelBooking = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { bookingId } = req.params;
+
+
+
+
+      
+      const booking = await this.bookingService.cancelBooking(bookingId);
+
+
+      if(!booking){
+        throw new Error("You can't cancel this booking, because booking date is in the past or already canceled")
+      }
+      
+
+
+      const dateString = booking.date.toISOString().split('T')[0];
+      await this.seatService.makeAvailableByDate(booking.seatId,dateString)
+
+      await this.paymentService.initiateRefund(booking.paymentIntentId,booking.amount)
+
+
+      return res
+        .status(200)
+        .json(new ApiResponse(200, booking, "Booking canceled successfully"));
+
+    } catch (error) {
+
+      next(error);
+    }
+  };
+
+
+
+
   
 }
+
+
 
 export default new UserController();

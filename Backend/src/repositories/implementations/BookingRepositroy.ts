@@ -296,4 +296,20 @@ export default class BookingRepository implements IBookingRepository{
       throw error;
     }
   }
+
+  async findById(id: string): Promise<IBooking | null> {
+
+    try {
+      const booking = await BookingModel.findById(id).populate("userId", "-password");
+
+      if (booking) {
+        return booking;
+      }
+
+      return null;
+    } catch (error) {
+      console.error("Error fetching booking by id:", error);
+      throw new Error("Unable to fetch booking by id.");
+    }
+  }
 }

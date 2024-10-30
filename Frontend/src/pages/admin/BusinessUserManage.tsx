@@ -6,7 +6,7 @@ import { setPageTitle } from '../../redux/slices/adminSlice';
 
 
 
-const BusinessUserManage = () => {
+const BusinessUserManage : React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {

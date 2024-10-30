@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
+import { IUsers } from '../../@types/user';
 
-const UserProfileDialog = ({ user, setUserDetailsModal }) => {
-  const { fullName, isBlocked, email, createdAt, profilePic } = user;
+
+
+const UserProfileDialog : React.FC<{ user: IUsers; setUserDetailsModal: React.Dispatch<React.SetStateAction<boolean>> }> = ({ user: { fullName, isBlocked, email, createdAt, profilePic }, setUserDetailsModal }) => {
 
   const [isVisible, setIsVisible] = useState(false);
   const [showDialog, setShowDialog] = useState(false);
@@ -45,7 +47,7 @@ const UserProfileDialog = ({ user, setUserDetailsModal }) => {
               <strong>Account Status:</strong> {isBlocked ? 'Blocked' : 'Active'}
             </p>
             <p className="text-sm text-gray-500">
-              <strong>Date Joined:</strong> {createdAt.slice(0, 10)}
+              <strong>Date Joined:</strong> {createdAt?.slice(0, 10)}
             </p>
           </div>
         </div>

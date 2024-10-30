@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { toast } from "react-toastify";
+import toast from "react-hot-toast";
 import { fetchActivePlan } from "../../services/userServices";
 
 const Modal = ({ isOpen, onClose }) => {
@@ -57,7 +57,7 @@ const MembershipDetails = () => {
   const getActivePlan = async () => {
     try {
       const response = await fetchActivePlan();
-      console.log(response);
+      ;
 
       if (response.status === 200) {
         const plan = response.data.data;
@@ -73,7 +73,7 @@ const MembershipDetails = () => {
         toast.error("something went wrong");
       }
     } catch (error) {
-      console.log("Error fetching active plan:", error);
+      ;
       toast.error("something went wrong");
     }
   };

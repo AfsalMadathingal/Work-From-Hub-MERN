@@ -23,18 +23,19 @@ const SearchBar: React.FC<SearchBarProps> = ({ onSearch, defaultValue = '' }) =>
   }, [defaultValue]);
 
   return (
-    <form onSubmit={handleSubmit} className="flex justify-center items-center mt-6">
-      <input
-        type="text"
-        value={query}
-        onChange={handleChange}
-        placeholder="Search by city, state or town"
-        className="w-2/3 p-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-orange-500"
-      />
-      <button className="bg-orange-500 text-white px-4 py-3 rounded-r-md hover:bg-orange-600">
-        Search
-      </button>
-    </form>
+<form onSubmit={handleSubmit} className="flex justify-center items-center mt-6">
+  <input
+    type="text"
+    value={query}
+    onChange={handleChange}
+    placeholder="Search by city, state or town"
+    className="w-2/3 p-3 border border-gray-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-orange-500 dark:bg-gray-800 dark:border-gray-800 dark:text-gray-200"
+  />
+  <button className="bg-orange-500 text-white px-4 py-3 rounded-r-md hover:bg-orange-600">
+    Search
+  </button>
+</form>
+
   );
 };
 

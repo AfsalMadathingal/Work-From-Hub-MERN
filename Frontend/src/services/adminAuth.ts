@@ -1,4 +1,4 @@
-import axios from "axios";
+
 import { IAdmin } from "../@types/admin";
 import { adminAxiosInstance } from "./instance/adminInstance";
 
@@ -55,7 +55,8 @@ export const logout = async ()=>{
 
   } catch (error) {
 
-    return null
+    return error.response
+
 
   }
 

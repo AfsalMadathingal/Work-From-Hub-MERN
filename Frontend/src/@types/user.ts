@@ -1,17 +1,19 @@
 export interface IUsers {
-  _id?: string | null;
-  email?: string | null;
-  fullName?: string | null;
-  password?: string | null;
-  date_of_birth?: Date | null;
-  pin_code?: string | null;
-  address?: string | null;
-  gender?: string | null;
-  membership?: string | null;
-  phone?: string | null;
-  profilePic?: string | null;
-  role?: string | null;
-  refreshToken?: string | null;
-  confirmPassword?: string | null;
-  isBlocked?: boolean | null ;
+  _id?: string;
+  email?: string;
+  fullName?: string;
+  password?: string;
+  date_of_birth?: Date;
+  pin_code?: string;
+  address?: string;
+  gender?: string;
+  membership?: string;
+  phone?: string;
+  profilePic?: string;
+  role?: string;
+  refreshToken?: string;
+  createdAt?: string;
+  confirmPassword?: string;
+  isBlocked?: boolean ;
+  [key: string]: any;
 }

@@ -42,7 +42,7 @@ const businessUserSlice = createSlice({
     setPageTitle(state,action){
       state.pageTitle = action.payload
     },
-    resetBUser:(state)=>initialState,
+    resetBUser:( )=>initialState,
 
   },
 

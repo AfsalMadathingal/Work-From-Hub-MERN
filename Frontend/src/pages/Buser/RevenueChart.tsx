@@ -1,3 +1,36 @@
+// @ts-nocheck
+
+import { Line } from "react-chartjs-2"; // Assuming you're using chart.js
+import "chart.js/auto"; // Make sure chart.js is installed
+import { Link } from "react-router-dom";
+
+export default function RevenueChart({ chartData }) {
+  const bookingSorted = chartData.sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+  // Prepare data for the chart
+  const xAxisData = bookingSorted.map((item) => item.date); // Extract dates for x-axis
+  const seriesData = bookingSorted.map((item) => item.bookings); // Extract bookings for series data
+
+  // Data structure for Chart.js
+  const data = {
+    labels: xAxisData,
+    datasets: [
+      {
+        label: "Bookings",
+        data: seriesData,
+        fill: false,
+        backgroundColor: "#4ADE80", // Tailwind green-400
+        borderColor: "#22C55E", // Tailwind green-500
+        pointBackgroundColor: "#16A34A", // Tailwind green-600 for points
+        tension: 0.4, // Curve the line
+        // ... rest of your code
+      },
+    ],
+  };
+
+  return <Line data={data} />;
+}
 import { Line } from "react-chartjs-2"; // Assuming you're using chart.js
 import "chart.js/auto"; // Make sure chart.js is installed
 import { Link } from "react-router-dom";
@@ -85,3 +118,4 @@ export default function RevenueChart({ chartData }) {
     </div>
   );
 }
+
