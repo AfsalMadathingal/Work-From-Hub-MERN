@@ -10,6 +10,7 @@ import "jspdf-autotable"; // Optional: for table support
 import { getBookingsByOwnerId } from "../../services/BuserService";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
+import BookingDetailsModal from "../admin/BookingDetailsModal";
 
 interface Booking {
   workspaceName: string;
@@ -60,7 +61,7 @@ const BBookingHistory: React.FC = () => {
   }, [currentPage]);
 
   const handleViewDetails = (booking: Booking) => {
-    ;
+    setSelectedBooking(booking);
   };
 
   const handleDownloadInvoice = (booking: Booking) => {
@@ -148,17 +149,17 @@ const BBookingHistory: React.FC = () => {
 
   return (
     <>
-      {/* {isModalOpen && (
+      {isModalOpen && (
         <BookingDetailsModal
           booking={selectedBooking}
           onClose={() => setIsModalOpen(false)}
         />
-      )} */}
-      <div className="container mx-auto px-4">
+      )}
+      <div className="container mx-auto px-4 h-screen">
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-300">
+          <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
             <thead>
-              <tr className="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+              <tr className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 uppercase text-sm leading-normal">
                 <th className="py-3 px-6 text-left">Workspace</th>
                 <th className="py-3 px-6 text-left">User</th>
                 <th className="py-3 px-6 text-left">Seat</th>
@@ -184,11 +185,11 @@ const BBookingHistory: React.FC = () => {
                 </tr>
               </tbody>
             ) : (
-              <tbody className="text-gray-700 text-sm font-light">
+              <tbody className="text-gray-700 dark:text-gray-300 text-sm font-light">
                 {bookings?.map((booking, index) => (
                   <tr
                     key={index}
-                    className="border-b border-gray-200 hover:bg-gray-100"
+                    className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
                   >
                     <td className="py-3 px-6 text-left whitespace-nowrap">
                       {booking.workspaceInfo?.buildingName}
@@ -197,7 +198,7 @@ const BBookingHistory: React.FC = () => {
                       {booking.userInfo[0]?.fullName}
                     </td>
                     <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {"S" +booking.seatInfo[0]?.seatNumber + " -" + " T" + booking.seatInfo[0]?.tableNumber}
+                      {"S" + booking.seatInfo[0]?.seatNumber + " -" + " T" + booking.seatInfo[0]?.tableNumber}
                     </td>
                     <td className="py-3 px-6 text-left whitespace-nowrap">
                       {new Date(booking.date).toDateString()}
@@ -209,8 +210,8 @@ const BBookingHistory: React.FC = () => {
                       <span
                         className={`px-3 py-1 rounded-full text-xs ${
                           booking.status === "success"
-                            ? "bg-green-200 text-green-800"
-                            : "bg-red-200 text-red-800"
+                            ? "bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-300"
+                            : "bg-red-200 dark:bg-red-700 text-red-800 dark:text-red-300"
                         }`}
                       >
                         {booking.status}
@@ -219,13 +220,13 @@ const BBookingHistory: React.FC = () => {
                     <td className="py-3 px-6 text-left whitespace-nowrap flex space-x-2">
                       <button
                         onClick={() => handleViewDetailsModal(booking)}
-                        className="text-blue-500 hover:underline"
+                        className="text-blue-500 dark:text-blue-300 hover:underline"
                       >
                         View
                       </button>
                       <button
                         onClick={() => handleDownloadInvoice(booking)}
-                        className="text-orange-500 hover:underline"
+                        className="text-orange-500 dark:text-orange-300 hover:underline"
                       >
                         Invoice
                       </button>
@@ -241,17 +242,17 @@ const BBookingHistory: React.FC = () => {
         <div className="flex justify-between mt-4">
           <button
             onClick={handlePreviousPage}
-            className="bg-gray-300 text-gray-700 py-2 px-4 rounded disabled:opacity-50"
+            className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded disabled:opacity-50"
             disabled={currentPage === 1}
           >
             Previous
           </button>
-          <span className="text-sm text-gray-700">
+          <span className="text-sm text-gray-700 dark:text-gray-300">
             Page {currentPage} of {totalPages}
           </span>
           <button
             onClick={handleNextPage}
-            className="bg-gray-300 text-gray-700 py-2 px-4 rounded disabled:opacity-50"
+            className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded disabled:opacity-50"
             disabled={currentPage === totalPages}
           >
             Next

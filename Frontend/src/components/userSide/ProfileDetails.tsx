@@ -1,41 +1,39 @@
-import { PencilIcon } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
-import { useState } from "react";
-import ProfileEdit from "./ProfileEdit";
-import { IUsers } from "../../@types/user";
-import { setError, setLoading, setUser } from "../../redux/slices/userSlice";
-import { editUserData } from "../../services/userServices";
-import toast from "react-hot-toast";
-import { validateEditing } from "../../utils/userValidator";
+import React, { useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Pencil as PencilIcon, Plus } from 'lucide-react';
+import { toast } from 'react-hot-toast';
+import { RootState } from '../../redux/store/store';
+import { setError, setLoading, setUser } from '../../redux/slices/userSlice';
+import { editUserData } from '../../services/userServices';
+import { validateEditing } from '../../utils/userValidator';
+import { IUsers } from '../../@types/user';
+import ProfileEdit from './ProfileEdit';
 
 const ProfileDetails = () => {
-  const { user,error } = useSelector((state: RootState) => state.user);
+  const { user, error } = useSelector((state: RootState) => state.user);
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
 
-  const handleEdit = async (userForEdit:IUsers) => {
+  const handleEdit = async (userForEdit: IUsers) => {
     dispatch(setLoading(true));
 
-    const error =  validateEditing(userForEdit);
-
-    if(error) {
+    const validationError = validateEditing(userForEdit);
+    if (validationError) {
       dispatch(setLoading(false));
-      dispatch(setError(error));
+      dispatch(setError(validationError));
       return null;
     }
 
     const userWithId = { ...userForEdit, id: user?._id };
+    const response = await editUserData(userWithId);
 
-    const response  = await editUserData(userWithId);
-
-    if(response.status === 409){
+    if (response.status === 409) {
       dispatch(setLoading(false));
       toast.error(response.data.message);
       return null;
     }
 
-    if(response.status === 200) {
+    if (response.status === 200) {
       dispatch(setLoading(false));
       dispatch(setUser(response.data.data));
       setIsEdit(false);
@@ -44,10 +42,38 @@ const ProfileDetails = () => {
       dispatch(setLoading(false));
       toast.error("Something went wrong");
     }
-    
 
     return null;
   };
+
+  const ProfileField = ({ 
+    label, 
+    value, 
+    onClick 
+  }: { 
+    label: string; 
+    value?: string | null; 
+    onClick?: () => void; 
+  }) => (
+    <div className="group py-4 px-4 -mx-4 flex justify-between items-center hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors duration-200 rounded-lg">
+      <span className="text-sm font-medium text-gray-600 dark:text-gray-300 tracking-wide">
+        {label}
+      </span>
+      {value ? (
+        <span className="text-gray-800 dark:text-gray-100">
+          {label === "BIRTHDAY" && value ? value.slice(0, 10) : value}
+        </span>
+      ) : (
+        <button
+          onClick={onClick}
+          className="inline-flex items-center gap-1.5 text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 transition-colors duration-200"
+        >
+          <Plus className="w-4 h-4" />
+          <span className="text-sm font-medium">Add</span>
+        </button>
+      )}
+    </div>
+  );
 
   return (
     <>
@@ -59,88 +85,73 @@ const ProfileDetails = () => {
           onCancel={() => setIsEdit(false)}
         />
       )}
-      <div className="max-w-2xl dark:bg-gray-800 p-6 bg-white rounded-lg shadow-md mt-8 dark:text-white">
-        <div className="flex justify-between items-center mb-4">
-          <div>
-            <h2 className="text-2xl font-bold">Profile</h2>
-            <p className="text-gray-500 dark:text-gray-400">
-              Basic info, click +add to add you'r details
-            </p>
-          </div>
-          <button
-            onClick={() => {
-              setIsEdit(!isEdit);
-            }}
-            className="flex items-center text-orange-500 hover:text-orange-700 focus:outline-none dark:text-orange-400 dark:hover:text-orange-600"
-          >
-            <PencilIcon className="w-5 h-5 mr-1" />
-            EDIT
-          </button>
-        </div>
+      
+      <div className="w-full max-w-2xl mx-auto">
+        <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700/50 overflow-hidden">
+          {/* Header */}
+          <div className="p-6 sm:p-8">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <div className="space-y-1">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
+                  Profile
+                </h2>
+                <p className="text-sm text-gray-500 dark:text-gray-400">
+                  Basic info, click +add to add your details
+                </p>
+              </div>
+              
+              <button
+                onClick={() => setIsEdit(true)}
+                className="inline-flex items-center px-4 py-2 rounded-lg bg-orange-50 dark:bg-orange-500/10 text-orange-600 dark:text-orange-400 hover:bg-orange-100 dark:hover:bg-orange-500/20 transition-colors duration-200"
+              >
+                <PencilIcon className="w-4 h-4 mr-2" />
+                <span className="font-medium">Edit Profile</span>
+              </button>
+            </div>
 
-        <div className="border-t border-gray-200 dark:border-gray-700">
-          <div className="py-4 flex justify-between">
-            <span className="font-semibold text-gray-600 dark:text-gray-300">NAME</span>
-            <span className="text-gray-800 dark:text-gray-100">{user?.fullName}</span>
-          </div>
-          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
-            <span className="font-semibold text-gray-600 dark:text-gray-300">BIRTHDAY</span>
-            {user?.date_of_birth ? (
-                <span className="text-gray-800 dark:text-gray-100">{user?.date_of_birth.slice(0,10)}</span>
-            ):(
-                <button onClick={() => {
-                  setIsEdit(!isEdit);
-                }} className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
-            )}
-            
-          </div>
-          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
-            <span className="font-semibold text-gray-600 dark:text-gray-300">GENDER</span>
-            {user?.gender ? (
-                <span className="text-gray-800 dark:text-gray-100">{user?.gender}</span>
-            ):(
-                <button onClick={() => {
-                  setIsEdit(!isEdit);
-                }} className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
-            )}
-          </div>
-          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
-            <span className="font-semibold text-gray-600 dark:text-gray-300">PHONE</span>
-            {user?.phone ? (
-                <span className="text-gray-800 dark:text-gray-100">{user?.phone}</span>
-            ):(
-                <button onClick={() => {
-                  setIsEdit(!isEdit);
-                }} className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
-            )}
-          </div>
-          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
-            <span className="font-semibold text-gray-600 dark:text-gray-300">YOUR ADDRESS</span>
-            <span className="text-gray-800 dark:text-gray-100">brototype kinfra</span>
-          </div>
-          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
-            <span className="font-semibold text-gray-600 dark:text-gray-300">PINCODE</span>
-            {user?.pin_code ? (
-                <span className="text-gray-800 dark:text-gray-100">{user?.pin_code}</span>
-            ):(
-                <button 
-                onClick={() => {
-                  setIsEdit(!isEdit);
-                }}
-                className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
-            )}
-          </div>
-          <div className="py-4 flex justify-between border-t border-gray-200 dark:border-gray-700">
-            <span className="font-semibold text-gray-600 dark:text-gray-300">STATE</span>
-            {user?.address ? (
-                <span className="text-gray-800 dark:text-gray-100">{user?.address}</span>
-            ):(
-                <button 
-                onClick={() => {
-                  setIsEdit(!isEdit);
-                }}
-                className="text-orange-500 hover:underline dark:text-orange-400 dark:hover:text-orange-600">+ Add</button>
-            )}
+            {/* Profile Fields */}
+            <div className="divide-y divide-gray-200 dark:divide-gray-700/50">
+              <ProfileField 
+                label="NAME" 
+                value={user?.fullName} 
+                onClick={() => setIsEdit(true)} 
+              />
+              
+              <ProfileField 
+                label="BIRTHDAY" 
+                value={user?.date_of_birth} 
+                onClick={() => setIsEdit(true)} 
+              />
+              
+              <ProfileField 
+                label="GENDER" 
+                value={user?.gender} 
+                onClick={() => setIsEdit(true)} 
+              />
+              
+              <ProfileField 
+                label="PHONE" 
+                value={user?.phone} 
+                onClick={() => setIsEdit(true)} 
+              />
+              
+              <ProfileField 
+                label="YOUR ADDRESS" 
+                value="brototype kinfra" 
+              />
+              
+              <ProfileField 
+                label="PINCODE" 
+                value={user?.pin_code} 
+                onClick={() => setIsEdit(true)} 
+              />
+              
+              <ProfileField 
+                label="STATE" 
+                value={user?.address} 
+                onClick={() => setIsEdit(true)} 
+              />
+            </div>
           </div>
         </div>
       </div>

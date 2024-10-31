@@ -1,4 +1,5 @@
 import * as React from "react";
+import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -16,8 +17,7 @@ import Typography from "@mui/material/Typography";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BookIcon from "@mui/icons-material/Book";
 import WorkIcon from "@mui/icons-material/Work";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import SupportIcon from "@mui/icons-material/Support";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { Button } from "@mui/material";
@@ -26,8 +26,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { resetBUser } from "../../redux/slices/businessUserSlice";
 import { logout } from "../../services/BUserAuthService";
-import { FaCheck } from "react-icons/fa";
-
+import { toggleTheme } from "../../redux/slices/themeSlice";
 
 const drawerWidth = 240;
 
@@ -39,12 +38,32 @@ export default function ResponsiveDrawer(props: Props) {
   const { component } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
   const [isClosing, setIsClosing] = React.useState(false);
-  const { pageTitle,  } = useSelector((state: RootState) => state.businessUser);
+  const { pageTitle } = useSelector((state: RootState) => state.businessUser);
+  const isDarkMode = useSelector((state: RootState) => state.theme.isDarkMode);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // New state for modal
+  // Set up theme with dark mode support
+  const theme = React.useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode: isDarkMode ? "dark" : "light",
+          primary: {
+            main: PRIMARY_COLOR,
+          },
+          background: {
+            default: isDarkMode ? "#121212" : "#ffffff",
+            paper: isDarkMode ? "#1e1e1e" : "#ffffff",
+          },
+        },
+      }),
+    [isDarkMode]
+  );
 
+  const toggleDarkMode = () => {
+    dispatch(toggleTheme());
+  };
 
   const handleDrawerClose = () => {
     setIsClosing(true);
@@ -61,24 +80,20 @@ export default function ResponsiveDrawer(props: Props) {
     }
   };
 
-
-
   const handleLogout = async () => {
-   
-        await logout();
-        dispatch(resetBUser());
-        navigate("/business/login");
-
+    await logout();
+    dispatch(resetBUser());
+    navigate("/business/login");
   };
 
   const drawer = (
-    <div>
-      <div className="flex flex-col items-center justify-center">
-        <img src="/logo.png" className="h-20 " alt="" />
+    <div className={`h-screen ${isDarkMode ? "bg-gray-900 text-white" : "bg-white text-gray-900"}`}>
+      <div className="flex flex-col items-center justify-center p-4">
+        <img src="/logo.png" className="h-20" alt="Business Logo" />
         <p className="text-md font-bold">Business Panel</p>
       </div>
 
-      <Divider />
+      <Divider className={isDarkMode ? "border-gray-700" : "border-gray-200"} />
       <List>
         {[
           {
@@ -86,22 +101,37 @@ export default function ResponsiveDrawer(props: Props) {
             link: "/business/dashboard",
             icon: <DashboardIcon />,
           },
-          { text: "Bookings", link: "/business/bookings", icon: <BookIcon /> },
-          { text: "Workspace", link: "/business/workspace-manage", icon: <WorkIcon /> },
           {
-            text: "Approved Workspaces",
-            link: "/business/workspace/approved",
-            icon: <FaCheck />,
+            text: "Bookings",
+            link: "/business/bookings",
+            icon: <BookIcon />,
+          },
+          {
+            text: "Workspace",
+            link: "/business/workspace-manage",
+            icon: <WorkIcon />,
           },
         ].map((item) => (
-          <Link to={`${item.link.toLowerCase()}`} key={item.text}>
+          <Link to={item.link} key={item.text}>
             <ListItem disablePadding>
-              <ListItemButton>
-                <ListItemIcon>{item.icon}</ListItemIcon>
-                <ListItemText
-                  className="hover:text-orange-600"
-                  primary={item.text}
-                />
+              <ListItemButton
+                sx={{
+                  bgcolor: location.pathname === item.link ? theme.palette.primary.main : "transparent",
+                  color: location.pathname === item.link ? "#fff" : theme.palette.text.primary,
+                  "&:hover": {
+                    bgcolor: theme.palette.primary.main,
+                    color: "#fff",
+                  },
+                }}
+              >
+                <ListItemIcon
+                  sx={{
+                    color: location.pathname === item.link ? "#fff" : theme.palette.text.primary,
+                  }}
+                >
+                  {item.icon}
+                </ListItemIcon>
+                <ListItemText primary={item.text} />
               </ListItemButton>
             </ListItem>
           </Link>
@@ -111,90 +141,91 @@ export default function ResponsiveDrawer(props: Props) {
   );
 
   return (
-    <Box sx={{ display: "flex" }}>
-      <CssBaseline />
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          bgcolor: PRIMARY_COLOR,
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div">
-            {pageTitle}
-          </Typography>
-          <Button
-            color="inherit"
-            startIcon={<LogoutIcon />}
-            sx={{ ml: "auto" }}
-            onClick={handleLogout}
-          >
-            Logout
-          </Button>
-        </Toolbar>
-      </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
-        <Drawer
-          container={undefined}
-          variant="temporary"
-          open={mobileOpen}
-          onTransitionEnd={handleDrawerTransitionEnd}
-          onClose={handleDrawerClose}
-          ModalProps={{
-            keepMounted: true,
-          }}
+    <ThemeProvider theme={theme}>
+      <Box sx={{ display: "flex" }} className={isDarkMode ? "bg-gray-900" : "bg-gray-50"}>
+        <CssBaseline />
+        <AppBar
+          position="fixed"
           sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+            ml: { sm: `${drawerWidth}px` },
+            bgcolor: isDarkMode ? theme.palette.background.paper : PRIMARY_COLOR,
           }}
         >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: "none", sm: "block" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-          open
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: "none" } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <Typography variant="h6" noWrap component="div">
+              {pageTitle}
+            </Typography>
+            <IconButton color="inherit" onClick={toggleDarkMode} sx={{ ml: "auto", mr: 2 }}>
+              {isDarkMode ? <MdLightMode /> : <MdDarkMode />}
+            </IconButton>
+            <Button color="inherit" startIcon={<LogoutIcon />} onClick={handleLogout}>
+              Logout
+            </Button>
+          </Toolbar>
+        </AppBar>
+        <Box
+          component="nav"
+          sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+          aria-label="mailbox folders"
         >
-          {drawer}
-        </Drawer>
+          <Drawer
+            container={undefined}
+            variant="temporary"
+            open={mobileOpen}
+            onTransitionEnd={handleDrawerTransitionEnd}
+            onClose={handleDrawerClose}
+            ModalProps={{
+              keepMounted: true,
+            }}
+            sx={{
+              display: { xs: "block", sm: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                bgcolor: isDarkMode ? theme.palette.background.paper : theme.palette.background.default,
+              },
+            }}
+          >
+            {drawer}
+          </Drawer>
+          <Drawer
+            variant="permanent"
+            sx={{
+              display: { xs: "none", sm: "block" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+                bgcolor: isDarkMode ? theme.palette.background.paper : theme.palette.background.default,
+              },
+            }}
+            open
+          >
+            {drawer}
+          </Drawer>
+        </Box>
+        <Box
+          component="main"
+          sx={{
+            flexGrow: 1,
+            p: 1,
+            width: { sm: `calc(100% - ${drawerWidth}px)` },
+          }}
+          className={`${isDarkMode ? "bg-gray-900" : "bg-gray-50"} min-h-screen`}
+        >
+          <Toolbar />
+          {component}
+        </Box>
       </Box>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-        }}
-      >
-        <Toolbar />
-        {component}
-      </Box>
-
-
-    </Box>
+    </ThemeProvider>
   );
 }

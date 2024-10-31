@@ -36,24 +36,45 @@ const AllListings: React.FC = () => {
     if (Object.keys(initialFilters).length > 0) {
       setFilters(initialFilters);
     }
-  }, []); // Runs only on component mount
+  }, []);
 
   return (
-<div className="min-h-screen bg-orange-50 dark:bg-gray-700 backdrop-blur-3xl p-4 rounded-lg shadow-xl">
-  <SearchBar
-    onSearch={(searchQuery) => handleFilterChange({ search: searchQuery })}
-    defaultValue={filters.search || ''} // To keep search input filled with the query
-  />
-  <div className="container mx-auto mt-10 flex flex-col sm:flex-row">
-    <div className="w-full sm:w-1/4 m-2">
-      <QuickFilters onFilterChange={handleFilterChange} />
-    </div>
-    <div className="w-full sm:w-3/4 pl-6 sm:pl-10">
-      <Listings filters={filters} />
-    </div>
-  </div>
-</div>
+    <div className="min-h-screen bg-gradient-to-br from-orange-50 via-orange-100 to-orange-50 dark:from-gray-800 dark:via-gray-700 dark:to-gray-800">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Search Section with Glass Effect */}
+        <div className="backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-lg p-4 mb-8">
+          <SearchBar
+            onSearch={(searchQuery) => handleFilterChange({ search: searchQuery })}
+            defaultValue={filters.search || ''}
+          />
+        </div>
 
+        {/* Main Content Area */}
+        <div className="flex flex-col lg:flex-row gap-8">
+          {/* Filters Panel */}
+          <div className="w-full lg:w-1/4">
+            <div className="sticky top-8">
+              <div className="backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-lg p-4">
+                <QuickFilters onFilterChange={handleFilterChange} />
+              </div>
+            </div>
+          </div>
+
+          {/* Listings Area */}
+          <div className="w-full lg:w-3/4">
+            <div className="backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-lg p-4">
+              <Listings filters={filters} />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Decorative Background Elements */}
+      <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+        <div className="absolute -top-1/2 -right-1/2 w-96 h-96 bg-orange-200 dark:bg-gray-600 rounded-full blur-3xl opacity-20"></div>
+        <div className="absolute -bottom-1/2 -left-1/2 w-96 h-96 bg-orange-300 dark:bg-gray-500 rounded-full blur-3xl opacity-20"></div>
+      </div>
+    </div>
   );
 };
 

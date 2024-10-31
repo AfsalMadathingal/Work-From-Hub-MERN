@@ -57,18 +57,18 @@ const AdminLogin: React.FC = () => {
   };
 
   return (
-    <div className="flex h-screen bg-[#fcefe7] transition ">
-      <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
+    <div className="flex h-screen bg-[#fcefe7] dark:bg-gray-800 transition ">
+      <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl dark:bg-gray-700">
         <div className="w-full p-8">
           <h2 className="text-2xl text-center font-bold mb-4">ADMIN LOGIN</h2>
-          <p className="text-gray-600 text-center mb-6">Welcome back! Please enter your details.</p>
+          <p className="text-gray-600 text-center mb-6 dark:text-gray-300">Welcome back! Please enter your details.</p>
           <form onSubmit={handleSubmit}>
             <div className="mb-4">
-              <label htmlFor="email" className="block text-gray-700 mb-2">User Id</label>
+              <label htmlFor="email" className="block text-gray-700 mb-2 dark:text-gray-300">User Id</label>
               <input
                 type="text"
                 id="email"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md dark:border-gray-600"
                 placeholder="Enter your user Id"
                 value={userId}
                 onChange={(e) => setUserId(e.target.value)}
@@ -76,11 +76,11 @@ const AdminLogin: React.FC = () => {
               {error.userId && <p className="text-red-500 text-sm mt-1">{error.userId}</p>}
             </div>
             <div className="mb-6">
-              <label htmlFor="password" className="block text-gray-700 mb-2">Password</label>
+              <label htmlFor="password" className="block text-gray-700 mb-2 dark:text-gray-300">Password</label>
               <input
                 type="password"
                 id="password"
-                className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md dark:border-gray-600"
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -95,14 +95,14 @@ const AdminLogin: React.FC = () => {
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
                 />
-                <span className="text-sm text-gray-600">Remember me</span>
+                <span className="text-sm text-gray-600 dark:text-gray-300">Remember me</span>
               </label>
               <a href="#" className="text-sm text-blue-500 hover:underline">Forgot password?</a>
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 shadow-lg flex justify-center"
+              className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 shadow-lg flex justify-center dark:bg-orange-700 dark:text-white"
             >
               {loading ? (
                 <ReactLoading type="spin" height={24} width={24} color="#ffffff" />
@@ -111,7 +111,7 @@ const AdminLogin: React.FC = () => {
               )}
             </button>
           </form>
-          <p className="text-center mt-6 text-sm text-gray-600">
+          <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-300">
             Don't have an account?{" "}
             <Link to={"/sign-up"} className="text-blue-500 hover:underline">Sign up for free</Link>
           </p>

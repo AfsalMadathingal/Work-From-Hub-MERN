@@ -68,66 +68,66 @@ const BusinessLogin: React.FC = () => {
   return (
     <>
   
-      <div className="flex h-screen bg-[#fcefe7] transition ">
-        <div className="m-auto bg-white rounded-lg shadow-lg flex max-w-4xl">
+      <div className="flex h-screen bg-[#fcefe7] dark:bg-gray-900 transition dark:text-white">
+        <div className="m-auto bg-white dark:bg-gray-800 rounded-lg shadow-lg flex max-w-4xl">
           <div className="w-full p-8">
-            <h2 className="text-2xl text-center font-bold mb-4">
+            <h2 className="text-2xl text-center font-bold mb-4 dark:text-white">
               BUSINESS LOGIN
             </h2>
-            <p className="text-gray-600 text-center mb-6">
+            <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
               Welcome back! Please enter your details.
             </p>
             <form onSubmit={handleSubmit}>
               <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-700 mb-2">
+                <label htmlFor="email" className="block text-gray-700 dark:text-gray-300 mb-2">
                   Email
                 </label>
                 <input
                   type="email"
                   id="email"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md"
                   placeholder="Enter your email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
                 {error?.email && (
-                  <p className="text-red-500 text-sm mt-1  ">{error.email}</p>
+                  <p className="text-red-500 text-sm mt-1  dark:text-red-400">{error.email}</p>
                 )}
               </div>
               <div className="mb-6">
-                <label htmlFor="password" className="block text-gray-700 mb-2">
+                <label htmlFor="password" className="block text-gray-700 dark:text-gray-300 mb-2">
                   Password
                 </label>
                 <input
                   type="password"
                   id="password"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
                 {error?.password && (
-                  <p className="text-red-500 text-sm mt-1">{error.password}</p>
+                  <p className="text-red-500 text-sm mt-1 dark:text-red-400">{error.password}</p>
                 )}
               </div>
               <div className="flex items-center justify-between mb-6">
                 <label className="flex items-center">
                   <input
                     type="checkbox"
-                    className="mr-2"
+                    className="mr-2 dark:bg-gray-700"
                     checked={rememberMe}
                     onChange={(e) => setRememberMe(e.target.checked)}
                   />
-                  <span className="text-sm text-gray-600">Remember me</span>
+                  <span className="text-sm text-gray-600 dark:text-gray-300">Remember me</span>
                 </label>
-                <a href="#" className="text-sm text-blue-500 hover:underline">
+                <a href="#" className="text-sm text-blue-500 hover:underline dark:text-blue-400">
                   Forgot password?
                 </a>
               </div>
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 shadow-lg flex justify-center "
+                className="w-full bg-orange-500 dark:bg-orange-600 text-white py-2 px-4 rounded-md hover:bg-orange-600 shadow-lg flex justify-center "
               >
                 {loading ? (
                   <ReactLoading
@@ -141,9 +141,9 @@ const BusinessLogin: React.FC = () => {
                 )}
               </button>
             </form>
-            <p className="text-center mt-6 text-sm text-gray-600">
+            <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-300">
               Don't have an account?{" "}
-              <Link to={"/business/register"} className="text-blue-500 hover:underline">
+              <Link to={"/business/register"} className="text-blue-500 hover:underline dark:text-blue-400">
                 Sign up for free
               </Link>
             </p>
@@ -151,6 +151,7 @@ const BusinessLogin: React.FC = () => {
         </div>
       </div>
     </>
+
   );
 };
 

@@ -84,21 +84,21 @@ const BDetailedBookingsReport = () => {
   }, [page]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="bg-white p-6 rounded-md shadow-md max-w-5xl mx-auto">
-      <h2 className="text-2xl font-bold mb-4 text-center">Detailed Bookings Report</h2>
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-md shadow-md max-w-5xl mx-auto">
+      <h2 className="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-200">Detailed Bookings Report</h2>
 
       {/* Filters */}
       <form onSubmit={handleSubmit} className="mb-6 flex flex-wrap gap-4">
         <input
           type="text"
           placeholder="Search by space Name"
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
           value={filters.name}
           onChange={(e) => setFilters({ ...filters, name: e.target.value })}
         />
 
         <select
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
           value={filters.status}
           onChange={(e) => setFilters({ ...filters, status: e.target.value })}
         >
@@ -109,7 +109,7 @@ const BDetailedBookingsReport = () => {
         </select>
 
         <select
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
           value={filters.limit}
           onChange={(e) => setFilters({ ...filters, limit: Number(e.target.value) })}
         >
@@ -119,25 +119,25 @@ const BDetailedBookingsReport = () => {
         </select>
         <input
           type="date"
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
           value={filters.startDate}
           onChange={(e) => setFilters({ ...filters, startDate: e.target.value })}
         />
 
         <input
           type="date"
-          className="border p-2 rounded-md"
+          className="border p-2 rounded-md bg-white dark:bg-gray-700 text-gray-800 dark:text-gray-200"
           value={filters.endDate}
           onChange={(e) => setFilters({ ...filters, endDate: e.target.value })}
         />
 
-        <button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded-md">
+        <button type="submit" className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md transition ease-in-out duration-300">
           Submit
         </button>
 
         <button
           type="button"
-          className="bg-gray-500 text-white py-2 px-4 rounded-md"
+          className="bg-gray-500 hover:bg-gray-700 text-white py-2 px-4 rounded-md transition ease-in-out duration-300"
           onClick={() => setFilters({ name: '', status: '', startDate: '', endDate: '', limit: 30 })}
         >
           Clear Filters
@@ -146,18 +146,18 @@ const BDetailedBookingsReport = () => {
 
       {/* Bookings Table */}
       <div id="report-content" className="overflow-x-auto">
-        <table className="min-w-full bg-white border border-gray-200 rounded-md">
+        <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-md">
           <thead>
-            <tr className="bg-gray-100 text-gray-700 uppercase text-sm leading-normal">
+            <tr className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 uppercase text-sm leading-normal">
               <th className="py-3 px-6 text-left">Name</th>
               <th className="py-3 px-6 text-left">Date</th>
               <th className="py-3 px-6 text-left">Status</th>
               <th className="py-3 px-6 text-left">Amount</th>
             </tr>
           </thead>
-          <tbody className="text-gray-600 text-sm font-light">
+          <tbody className="text-gray-600 dark:text-gray-300 text-sm font-light">
             {bookings.map((booking, index) => (
-              <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
+              <tr key={index} className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600">
                 <td className="py-3 px-6">{booking.userId.fullName}</td>
                 <td className="py-3 px-6">{booking.date.slice(0, 10)}</td>
                 <td className={`py-3 px-6 ${booking.status === 'success' ? 'text-green-500' : 'text-red-500'}`}>
@@ -178,7 +178,7 @@ const BDetailedBookingsReport = () => {
         >
           Previous
         </button>
-        <span className="text-gray-600">{page} of {totalPages}</span>
+        <span className="text-gray-600 dark:text-gray-300">{page} of {totalPages}</span>
         <button
           onClick={() => handlePageChange(page + 1)}
           disabled={page === totalPages}
@@ -190,10 +190,10 @@ const BDetailedBookingsReport = () => {
 
       {/* Export Buttons */}
       <div className="mt-6 flex justify-center space-x-4">
-        <button onClick={generatePDF} className="bg-red-500 cursor-pointer flex items-center hover:bg-red-700 text-white py-2 px-6 rounded-md ease-in-out duration-300">
+        <button onClick={generatePDF} className="bg-red-500 cursor-pointer flex items-center hover:bg-red-700 text-white py-2 px-6 rounded-md transition ease-in-out duration-300">
           <FaFilePdf /> Export to PDF
         </button>
-        <button onClick={exportToExcel} className="bg-green-500 cursor-pointer flex items-center hover:bg-green-700 text-white py-2 px-6 rounded-md ease-in-out duration-300">
+        <button onClick={exportToExcel} className="bg-green-500 cursor-pointer flex items-center hover:bg-green-700 text-white py-2 px-6 rounded-md transition ease-in-out duration-300">
           <FaFileExcel /> Export to Excel
         </button>
       </div>

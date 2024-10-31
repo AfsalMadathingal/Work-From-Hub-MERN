@@ -65,20 +65,19 @@ export default function RevenueChart({ chartData }) {
   };
 
   return (
-    <div className="bg-white border flex flex-col justify-center items-center p-6 border-gray-300 rounded-md shadow-lg space-y-6">
+    <div className="bg-white dark:bg-gray-800 border flex flex-col justify-center items-center p-6 border-gray-300 dark:border-gray-700 rounded-md shadow-lg space-y-6">
       <div className="w-full">
-        <h2 className="text-xl font-bold text-gray-700 mb-4 text-center">
+        <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4 text-center">
           Bookings Overview
         </h2>
         <div className="relative h-72 w-full">
-          {" "}
           {/* Chart container with a fixed height */}
           <Line data={data} options={options} />
         </div>
       </div>
       <Link
         to={"/business/dashboard/report"}
-        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-6 rounded-md transition duration-300"
+        className="bg-green-500 hover:bg-green-700 dark:bg-green-600 dark:hover:bg-green-800 text-white font-bold py-2 px-6 rounded-md transition duration-300"
       >
         View Detailed Report
       </Link>

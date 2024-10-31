@@ -107,71 +107,76 @@ const ProfileSidebar = () => {
 
   return (
     <>
-        <div className="flex dark:bg-gray-800">
+ <div className="relative flex h-full">
+      {/* Password Reset Modal */}
       <PasswordResetModal
         isOpen={changePasswordModal}
         onClose={handlePasswordResetClose}
       />
 
-      {/* Modal to edit image */}
-      <div
-        className={`fixed z-50 inset-0 w-full h-full bg-black bg-opacity-75 dark:bg-gray-900 dark:bg-opacity-50 flex justify-center items-center ${
-          editProfilePic ? "block" : "hidden"
-        }`}
-      >
-        <div className="bg-white dark:bg-gray-800 rounded-lg p-4 w-2/6 text-center flex flex-col justify-center items-center relative">
-          <div className="absolute top-3 right-3">
-            <button
-              onClick={handleCancel}
-              className="bg-gray-200 dark:bg-gray-700 rounded-full p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-300 dark:hover:bg-gray-600"
-            >
-              <FaWindowClose className="w-6 h-6" />
-            </button>
-          </div>
-          <div className="flex justify-center items-center">
-            <h2 className="text-lg font-semibold">Edit Profile Picture</h2>
-          </div>
-          <div className="h-1 w-2/4 bg-orange-500 dark:bg-orange-400 mt-2 rounded-full"></div>
-          <div className="mt-4">
-            {selectedFile ? (
-              <Cropper
-                src={profilePic}
-                style={{ height: 400, width: "100%" }}
-                initialAspectRatio={1}
-                guides={false}
-                ref={cropperRef}
-              />
-            ) : (
-              <img
-                src={user?.profilePic}
-                className="w-40 h-40 rounded-full object-full mx-auto"
-                alt=""
-              />
-            )}
-            <div className="mt-4 flex flex-col justify-center items-center">
+      {/* Profile Picture Edit Modal */}
+      <div className={`fixed inset-0 z-50 flex items-center justify-center ${editProfilePic ? 'block' : 'hidden'}`}>
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={handleCancel} />
+        <div className="relative w-full max-w-xl mx-4 bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-6">
+          <button
+            onClick={handleCancel}
+            className="absolute right-4 top-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 transition-colors"
+          >
+            <FaWindowClose className="w-6 h-6" />
+          </button>
+          
+          <div className="space-y-4">
+            <div className="text-center space-y-2">
+              <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">Edit Profile Picture</h2>
+              <div className="mx-auto w-24 h-1 bg-orange-500 dark:bg-orange-400 rounded-full" />
+            </div>
+
+            <div className="mt-6">
+              {selectedFile ? (
+                <Cropper
+                  src={profilePic}
+                  style={{ height: 400, width: "100%" }}
+                  initialAspectRatio={1}
+                  guides={false}
+                  ref={cropperRef}
+                  className="rounded-lg"
+                />
+              ) : (
+                <img
+                  src={user?.profilePic}
+                  className="w-40 h-40 rounded-full object-cover mx-auto ring-4 ring-orange-500/20"
+                  alt="Profile"
+                />
+              )}
+            </div>
+
+            <div className="flex flex-col items-center gap-3 mt-6">
               <label
                 htmlFor="profilePic"
-                className="bg-gray-500 dark:bg-gray-700 py-2 px-4 rounded-md text-white font-bold cursor-pointer"
+                className="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-lg cursor-pointer transition-colors duration-200 text-gray-700 dark:text-gray-200 font-medium flex items-center gap-2"
               >
-                <span className="">+ Choose Image</span>
+                <EditIcon className="w-4 h-4" />
+                Choose Image
               </label>
               <button
                 disabled={loading}
                 onClick={handlePhotoSave}
-                className="bg-orange-500 dark:bg-orange-400 py-2 px-4 rounded-md text-white font-bold mt-4"
+                className="px-6 py-2.5 bg-orange-500 hover:bg-orange-600 dark:bg-orange-400 dark:hover:bg-orange-500 rounded-lg text-white font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
               >
                 {loading ? (
                   <Loading type="spin" color="white" height={20} width={20} />
                 ) : (
-                  "Save"
+                  'Save Changes'
                 )}
               </button>
             </div>
+
             <input
               type="file"
               className="hidden"
               id="profilePic"
               onChange={handleFileChange}
+              accept="image/*"
             />
           </div>
         </div>
@@ -179,96 +184,115 @@ const ProfileSidebar = () => {
 
       {/* Sidebar */}
       <aside
-          className={`fixed lg:relative bg-white dark:bg-gray-800  shadow-md lg:transform-none z-40 
-              ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} 
-              transition-transform duration-300 ease-in-out 
-              w-60 lg:w-60 overflow-y-auto rounded-lg `}
-        >
-        <div className="flex flex-col justify-center items-center p-4">
-          <img
-            src={
-              user?.profilePic
-                ? user?.profilePic
-                : "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-icon-hd.png"
-            }
-            className="w-20 h-20 rounded-full object-cover"
-            alt=""
-          />
-          <div className="flex flex-col mt-4">
-            <button
-              onClick={() => setEditProfilePic(true)}
-              className="text-gray-600 dark:text-gray-300 text-sm hover:text-orange-500 flex items-center"
-            >
-              <EditIcon className="mr-2 w-4" />
-              Edit Profile Pic
-            </button>
+        className={`fixed lg:relative bg-white dark:bg-gray-800 shadow-lg lg:shadow-none z-40 
+          ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} 
+          transition-all duration-300 ease-in-out 
+          w-72 lg:w-72 h-full overflow-y-auto
+          lg:transform-none`}
+      >
+        <div className="flex flex-col h-full p-6">
+          {/* Profile Section */}
+          <div className="flex flex-col items-center space-y-4">
+            <div className="relative group">
+              <img
+                src={user?.profilePic || "https://www.pngitem.com/pimgs/m/146-1468479_my-profile-icon-blank-profile-picture-icon-hd.png"}
+                className="w-24 h-24 rounded-full object-cover ring-4 ring-orange-500/20"
+                alt="Profile"
+              />
+              <button
+                onClick={() => setEditProfilePic(true)}
+                className="absolute bottom-0 right-0 p-2 bg-white dark:bg-gray-700 rounded-full shadow-lg hover:bg-gray-50 dark:hover:bg-gray-600 transition-colors duration-200"
+              >
+                <EditIcon className="w-4 h-4 text-gray-600 dark:text-gray-300" />
+              </button>
+            </div>
+
+            <div className="text-center space-y-1">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100">{user?.fullName}</h3>
+              <p className="text-sm text-gray-600 dark:text-gray-400">{user?.email}</p>
+              <button
+                onClick={() => setChangePasswordModal(true)}
+                className="text-sm text-orange-500 dark:text-orange-400 hover:text-orange-600 dark:hover:text-orange-500 font-medium transition-colors duration-200"
+              >
+                Change Password
+              </button>
+            </div>
           </div>
-        </div>
 
-        <div className="mt-6 flex flex-col items-center p-4">
-          <p className="text-lg font-semibold">{user?.fullName}</p>
-          <p className="text-gray-600 dark:text-gray-300 text-small">{user?.email}</p>
-          <p
-            onClick={() => {
-              setChangePasswordModal(true);
-            }}
-            className="text-orange-500 dark:text-orange-400 text-small cursor-pointer"
-          >
-            Change Password
-          </p>
-        </div>
+          {/* Navigation */}
+          <nav className="mt-8 space-y-2">
+            <Link
+              to="/user/profile"
+              className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-gray-700/50 transition-colors duration-200 group"
+            >
+              <FaUser className="w-5 h-5 text-orange-500 dark:text-orange-400 mr-3" />
+              <span className="font-medium group-hover:text-orange-500 dark:group-hover:text-orange-400">Profile</span>
+            </Link>
 
-        <div className="mt-6 space-y-2 p-4">
-          <Link
-            to="/user/profile"
-            className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
-          >
-            <FaUser className="mr-2" />
-            Profile
-          </Link>
-          <Link
-            to="/user/bookings"
-            className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
-          >
-            <FaBook className="mr-2" />
-            Bookings
-          </Link>
-          <Link to="/user/membership"  className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
-            <FaAddressCard className="mr-2" />
-            Membership
-          </Link>
-          <Link to={"/user/wallet"}  className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center">
-            <FaWallet className="mr-2" />
-            Wallet
-          </Link>
+            <Link
+              to="/user/bookings"
+              className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-gray-700/50 transition-colors duration-200 group"
+            >
+              <FaBook className="w-5 h-5 text-orange-500 dark:text-orange-400 mr-3" />
+              <span className="font-medium group-hover:text-orange-500 dark:group-hover:text-orange-400">Bookings</span>
+            </Link>
+
+            <Link
+              to="/user/membership"
+              className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-gray-700/50 transition-colors duration-200 group"
+            >
+              <FaAddressCard className="w-5 h-5 text-orange-500 dark:text-orange-400 mr-3" />
+              <span className="font-medium group-hover:text-orange-500 dark:group-hover:text-orange-400">Membership</span>
+            </Link>
+
+            <Link
+              to="/user/wallet"
+              className="flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-orange-50 dark:hover:bg-gray-700/50 transition-colors duration-200 group"
+            >
+              <FaWallet className="w-5 h-5 text-orange-500 dark:text-orange-400 mr-3" />
+              <span className="font-medium group-hover:text-orange-500 dark:group-hover:text-orange-400">Wallet</span>
+            </Link>
+          </nav>
+
+          {/* Logout Button */}
           <button
             onClick={handleLogout}
-            className="w-full border border-gray-300 dark:border-gray-600 text-gray-600 dark:text-gray-300 hover:text-orange-500 py-2 px-4 rounded-lg flex items-center"
+            className="mt-auto flex items-center px-4 py-3 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors duration-200 group"
           >
-            <FaSignOutAlt className="mr-2" />
-            Logout
+            <FaSignOutAlt className="w-5 h-5 text-red-500 dark:text-red-400 mr-3" />
+            <span className="font-medium group-hover:text-red-500 dark:group-hover:text-red-400">Logout</span>
           </button>
         </div>
       </aside>
 
-      {/* Toggle button for smaller screens */}
+      {/* Mobile Toggle */}
       <button
         onClick={toggleSidebar}
-        className="lg:hidden p-2 text-orange-500 dark:text-orange-400 focus:outline-none fixed top-4 left-4 z-50"
+        className="lg:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-white dark:bg-gray-800 shadow-lg"
       >
-        ☰
+        <svg
+          className="w-6 h-6 text-orange-500 dark:text-orange-400"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d={isSidebarOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+          />
+        </svg>
       </button>
 
-      {/* Overlay for smaller screens */}
-      <div
-        className={`fixed inset-0 bg-black bg-opacity-10  dark:bg-opacity-50 dark:bg-gray-900 z-30 ${
-          isSidebarOpen ? "block" : "hidden"
-        } lg:hidden dark:bg-gray-900`}
-        onClick={toggleSidebar}
-      ></div>
-
-
-       </div>
+      {/* Mobile Overlay */}
+      {isSidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black/20 backdrop-blur-sm z-30 lg:hidden"
+          onClick={toggleSidebar}
+        />
+      )}
+    </div>
     </>
   );
 };

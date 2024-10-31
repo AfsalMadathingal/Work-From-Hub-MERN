@@ -31,7 +31,7 @@ export default function Header() {
     dispatch(setUser({})); 
     dispatch(setIsAuthenticated(false));
     navigate("/login");
-    toast.info("Logged out successfully");
+    toast.success("Logged out successfully");
   };
 
   return (
@@ -96,12 +96,23 @@ export default function Header() {
               >
                 My Profile
               </DropdownItem>
-              <DropdownItem key="team_settings">Team Settings</DropdownItem>
-              <DropdownItem key="analytics">Analytics</DropdownItem>
-              <DropdownItem key="system">System</DropdownItem>
-              <DropdownItem key="configurations">Configurations</DropdownItem>
-              <DropdownItem key="help_and_feedback">
-                Help & Feedback
+              <DropdownItem
+                onClick={() => navigate("/user/bookings")}
+                key="bookings"
+              >
+                Bookings
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate("/user/membership")}
+                key="membership"
+              >
+                Membership
+              </DropdownItem>
+              <DropdownItem
+                onClick={() => navigate("/user/wallet")}
+                key="wallet"
+              >
+                Wallet
               </DropdownItem>
               <DropdownItem onClick={handleLogout} key="logout" color="danger">
                 Log Out

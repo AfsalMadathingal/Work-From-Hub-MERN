@@ -16,8 +16,8 @@ const BUserBookingHistory = () => {
 
 
   return (
-    <div className="flex h-screen">
-      <div className="flex-1 flex flex-col">
+    <div className="flex h-screen dark:bg-gray-900">
+      <div className="flex-1 flex flex-col dark:bg-gray-900 h-screen">
         <BusinessUserLayout component={<BBookingHistory />} />
       </div>
     </div>

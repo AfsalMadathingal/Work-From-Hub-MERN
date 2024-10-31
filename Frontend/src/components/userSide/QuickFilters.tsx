@@ -1,25 +1,41 @@
-// components/QuickFilters.tsx
 import React, { useState } from 'react';
+import { Star } from 'lucide-react';
 
 interface QuickFiltersProps {
-  onFilterChange: (filters: any) => void; // Callback to send filter changes to parent
+  onFilterChange: (filters: FilterState) => void;
 }
 
+interface FilterState {
+  ac: boolean;
+  restRoom: boolean;
+  powerBackup: boolean;
+  wifiAvailable: boolean;
+  rating: string;
+  price: string;
+}
+
+const amenities = [
+  { id: 'ac', label: 'AC', icon: '❄️' },
+  { id: 'restRoom', label: 'Rest Room', icon: '🚽' },
+  { id: 'powerBackup', label: 'Power Backup', icon: '⚡' },
+  { id: 'wifiAvailable', label: 'Wifi Available', icon: '📶' },
+];
+
 const QuickFilters: React.FC<QuickFiltersProps> = ({ onFilterChange }) => {
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<FilterState>({
     ac: false,
     restRoom: false,
     powerBackup: false,
     wifiAvailable: false,
-    rating: '', // e.g., '4' for 4 stars
-    price: '',  // e.g., 'lowToHigh' or 'highToLow'
+    rating: '',
+    price: '',
   });
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setFilters(prev => {
       const newFilters = { ...prev, [name]: checked };
-      onFilterChange(newFilters); // Notify parent of filter change
+      onFilterChange(newFilters);
       return newFilters;
     });
   };
@@ -28,101 +44,104 @@ const QuickFilters: React.FC<QuickFiltersProps> = ({ onFilterChange }) => {
     const { name, value } = e.target;
     setFilters(prev => {
       const newFilters = { ...prev, [name]: value };
-      onFilterChange(newFilters); // Notify parent of filter change
+      onFilterChange(newFilters);
       return newFilters;
     });
   };
 
   return (
-<div className="bg-gray-50 p-4 rounded-md shadow-md dark:bg-gray-800">
-  <h3 className="font-bold mb-3">Quick Filters</h3>
-  <div className="space-y-3">
-    <label className="block">
-      <input
-        type="checkbox"
-        name="ac"
-        className="mr-2"
-        checked={filters.ac}
-        onChange={handleCheckboxChange}
-      />
-      AC
-    </label>
-    <label className="block">
-      <input
-        type="checkbox"
-        name="restRoom"
-        className="mr-2"
-        checked={filters.restRoom}
-        onChange={handleCheckboxChange}
-      />
-      Rest Room 
-    </label>
-    <label className="block">
-      <input
-        type="checkbox"
-        name="powerBackup"
-        className="mr-2"
-        checked={filters.powerBackup}
-        onChange={handleCheckboxChange}
-      />
-      Power Backup
-    </label>
-    <label className="block">
-      <input
-        type="checkbox"
-        name="wifiAvailable"
-        className="mr-2"
-        checked={filters.wifiAvailable}
-        onChange={handleCheckboxChange}
-      />
-      Wifi Available
-    </label>
-  </div>
-  
-  <h3 className="font-bold mt-6 mb-3">Rating</h3>
-  <div className="space-y-3">
-    {['4', '3', '2', '1'].map((star) => (
-      <label className="block" key={star}>
-        <input
-          type="radio"
-          name="rating"
-          value={star}
-          className="mr-2"
-          checked={filters.rating === star}
-          onChange={handleRadioChange}
-        />
-        {'★'.repeat(star)} & Up
-      </label>
-    ))}
-  </div>
-  
-  <h3 className="font-bold mt-6 mb-3">Price</h3>
-  <div className="space-y-3">
-    <label className="block">
-      <input
-        type="radio"
-        name="price"
-        value="highToLow"
-        className="mr-2"
-        checked={filters.price === 'highToLow'}
-        onChange={handleRadioChange}
-      />
-      High to Low
-    </label>
-    <label className="block">
-      <input
-        type="radio"
-        name="price"
-        value="lowToHigh"
-        className="mr-2"
-        checked={filters.price === 'lowToHigh'}
-        onChange={handleRadioChange}
-      />
-      Low to High
-    </label>
-  </div>
-</div>
+    <div className="bg-white rounded-lg shadow-md border border-gray-100 divide-y divide-gray-100 dark:bg-gray-800 dark:border-gray-700 dark:divide-gray-700">
+      {/* Amenities Section */}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100">
+          Amenities
+        </h3>
+        <div className="space-y-3">
+          {amenities.map(({ id, label, icon }) => (
+            <label
+              key={id}
+              className="flex items-center group cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors dark:hover:bg-gray-700"
+            >
+              <div className="relative flex items-center">
+                <input
+                  type="checkbox"
+                  name={id}
+                  checked={filters[id as keyof FilterState] as boolean}
+                  onChange={handleCheckboxChange}
+                  className="peer h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
+                />
+              </div>
+              <span className="ml-3 flex items-center text-gray-700 dark:text-gray-300">
+                <span className="mr-2">{icon}</span>
+                {label}
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
 
+      {/* Rating Section */}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100">
+          Rating
+        </h3>
+        <div className="space-y-3">
+          {['4', '3', '2', '1'].map((rating) => (
+            <label
+              key={rating}
+              className="flex items-center group cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors dark:hover:bg-gray-700"
+            >
+              <input
+                type="radio"
+                name="rating"
+                value={rating}
+                checked={filters.rating === rating}
+                onChange={handleRadioChange}
+                className="h-5 w-5 border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
+              />
+              <span className="ml-3 flex items-center text-gray-700 dark:text-gray-300">
+                {[...Array(Number(rating))].map((_, i) => (
+                  <Star
+                    key={i}
+                    size={16}
+                    className="fill-yellow-400 text-yellow-400 mr-0.5"
+                  />
+                ))}
+                <span className="ml-1">& Up</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* Price Section */}
+      <div className="p-4">
+        <h3 className="text-lg font-semibold text-gray-900 mb-4 dark:text-gray-100">
+          Price
+        </h3>
+        <div className="space-y-3">
+          {[
+            { value: 'highToLow', label: 'High to Low' },
+            { value: 'lowToHigh', label: 'Low to High' },
+          ].map(({ value, label }) => (
+            <label
+              key={value}
+              className="flex items-center group cursor-pointer hover:bg-gray-50 p-2 rounded-md transition-colors dark:hover:bg-gray-700"
+            >
+              <input
+                type="radio"
+                name="price"
+                value={value}
+                checked={filters.price === value}
+                onChange={handleRadioChange}
+                className="h-5 w-5 border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
+              />
+              <span className="ml-3 text-gray-700 dark:text-gray-300">{label}</span>
+            </label>
+          ))}
+        </div>
+      </div>
+    </div>
   );
 };
 
