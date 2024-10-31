@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export interface IWorkspace {
     _id?:string;
     approved?:boolean;
+    rejected?:boolean;
     buildingName: string;
     state: string;
     district: string;
@@ -21,4 +23,5 @@ export interface IWorkspace {
     timing:string;
     workingDays:string;
     ownerId: string;
+    [key: string]: any;
   }

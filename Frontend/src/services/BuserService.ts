@@ -5,7 +5,7 @@ import { businessUserApi } from "./instance/BusinessInstance";
 const api = businessUserApi;
 
 
-export const  submitWorkspaceData = async(data:IWorkspace)=>{
+export const  submitWorkspaceData = async(data : FormData)=>{
 
     try {
 

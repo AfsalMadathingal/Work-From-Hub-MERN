@@ -165,6 +165,8 @@ export const getAllPendingSubmission = async (
 export const getOwnerById = async (id:string)=>{
 
   try {
+
+    
       
       const response = await api.get(`/api/admin/business-user/${id}`)
 
@@ -208,9 +210,6 @@ export const getAllApprovedWorkspaces = async (page: number, itemsPerPage: numbe
   try {
       const response = await api.get(`/api/admin/approved-workspaces?page=${page}&limit=${itemsPerPage}`)
 
-      ;
-      ;
-      ;
 
       return response
 
@@ -276,6 +275,20 @@ export const getWorkspaceById = async  (id:string) =>{
   try {
 
     const response  =  await api.get(`/api/admin/approved-workspace/${id}`)
+
+    return response;
+
+    
+  } catch (error) {
+    return error.response
+  }
+}
+
+
+export const getWorkspace  = async  (id:string) =>{
+  try {
+
+    const response  =  await api.get(`/api/admin/workspace/${id}`)
 
     return response;
 

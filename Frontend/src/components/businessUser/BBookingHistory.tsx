@@ -1,16 +1,12 @@
-import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
-import { getAllBookings } from "../../services/adminService";
-import { IUsers } from "../../@types/user";
-import { ISeat } from "../../@types/seat";
-import { IWorkspace } from "../../@types/workspace";
-import ReactLoading from "react-loading";
-import jsPDF from "jspdf"; // Import jsPDF
-import "jspdf-autotable"; // Optional: for table support
-import { getBookingsByOwnerId } from "../../services/BuserService";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
-import BookingDetailsModal from "../admin/BookingDetailsModal";
+import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
+import toast from 'react-hot-toast';
+import ReactLoading from 'react-loading';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { getBookingsByOwnerId } from '../../services/BuserService';
+import BookingDetailsModal from '../admin/BookingDetailsModal';
+import { RootState } from '../../redux/store/store';
 
 interface Booking {
   workspaceName: string;
@@ -30,29 +26,21 @@ const BBookingHistory: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
-  const {user } = useSelector((state: RootState) => state.businessUser);
+  const { user } = useSelector((state: RootState) => state.businessUser);
   const bookingsPerPage = 8;
 
   const fetchBookings = async (page: number) => {
     try {
       setLoading(true);
-      const response = await getBookingsByOwnerId(user?._id,page, bookingsPerPage);
-
-      ;
-      ;
-      ;
-
-
+      const response = await getBookingsByOwnerId(user?._id, page, bookingsPerPage);
       if (response.status === 200) {
         setBookings(response.data.data);
-        setTotalPages(
-          Math.ceil(response.data.data.totalBookings / bookingsPerPage)
-        );
+        setTotalPages(Math.ceil(response.data.data.totalBookings / bookingsPerPage));
       }
       setLoading(false);
     } catch (error) {
       setLoading(false);
-      toast.error("An error occurred while fetching bookings");
+      toast.error('An error occurred while fetching bookings');
     }
   };
 
@@ -60,206 +48,144 @@ const BBookingHistory: React.FC = () => {
     fetchBookings(currentPage);
   }, [currentPage]);
 
-  const handleViewDetails = (booking: Booking) => {
-    setSelectedBooking(booking);
-  };
-
   const handleDownloadInvoice = (booking: Booking) => {
     const doc = new jsPDF();
-  
-    // Add a logo
-    const logoUrl = "/logo.png"; // Replace with your logo URL
-    doc.addImage(logoUrl, "PNG", 20, 10, 30, 30); // Adds logo to the top left corner
-  
-    // Add Invoice Title
+    
     doc.setFontSize(18);
-    doc.setTextColor("#ff6f00");
-    doc.text("INVOICE", 105, 20, { align: "center" });
-  
-    // Add a horizontal line
-    doc.setDrawColor(255, 165, 0); // Set orange color for lines
-    doc.line(20, 45, 190, 45); // Horizontal line after title
-  
-    // Add Company Name and Info
+    doc.setTextColor('#ff6f00');
+    doc.text('INVOICE', 105, 20, { align: 'center' });
+    
     doc.setFontSize(12);
-    doc.setTextColor("#000000");
+    doc.setTextColor('#000000');
     doc.text(`Workspace: ${booking.workspaceInfo?.buildingName}`, 20, 55);
     doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 65);
     doc.text(`Transaction ID: ${booking.paymentIntentId}`, 20, 75);
-  
-    // Add Recipient Info (User Details)
-    doc.text(`Billed To:` , 140, 55);
-    doc.text(`${booking.userInfo[0]?.fullName}`, 140, 65); // Replace with actual user details
-    doc.text(`${booking.userInfo[0]?.email}`, 140, 75);
-  
-    // Section for Booking Information
-    doc.setFontSize(14);
-    doc.text("Booking Details", 20, 90);
-    doc.setFontSize(12);
-    doc.text(`Amount Paid: ${booking.amount}`, 20, 100);
-    doc.text(`Seat: ${booking.seatInfo[0]?.tableNumber}-${booking.seatInfo[0]?.seatNumber}`, 20, 110);
-    doc.text(`Status: ${booking.status}`, 20, 120);
-  
-    // Add another line for separation
-    doc.line(20, 130, 190, 130);
-  
-    // Optional: Add auto-table for better presentation of detailed information
+    
     doc.autoTable({
       head: [['Booking Details', 'Description']],
       body: [
         ['Workspace', booking.workspaceInfo?.buildingName],
         ['Seat', `${booking.seatInfo[0]?.tableNumber}-${booking.seatInfo[0]?.seatNumber}`],
-        ['Date', booking.date.split("T")[0]],
+        ['Date', booking.date.split('T')[0]],
         ['Amount', booking.amount],
         ['Status', booking.status],
       ],
-      startY: 140,
-      theme: "striped",
+      startY: 90,
+      theme: 'striped',
     });
-  
-    // Footer Section with Note and Signature Area
-    doc.setFontSize(10);
-    doc.text("Thank you for booking with us!", 20, doc.lastAutoTable.finalY + 20);
-    doc.text("For queries, contact support@example.com", 20, doc.lastAutoTable.finalY + 30);
-  
-    // Final horizontal line
-    doc.line(20, doc.lastAutoTable.finalY + 40, 190, doc.lastAutoTable.finalY + 40);
-  
-    // Save the PDF
-    doc.save("invoice.pdf");
-  };
-  
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePreviousPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handleViewDetailsModal = (booking: Booking) => {
-    setSelectedBooking(booking);
-    setIsModalOpen(true);
+    
+    doc.save('invoice.pdf');
   };
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       {isModalOpen && (
         <BookingDetailsModal
           booking={selectedBooking}
           onClose={() => setIsModalOpen(false)}
         />
       )}
-      <div className="container mx-auto px-4 h-screen">
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700">
-            <thead>
-              <tr className="bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 uppercase text-sm leading-normal">
-                <th className="py-3 px-6 text-left">Workspace</th>
-                <th className="py-3 px-6 text-left">User</th>
-                <th className="py-3 px-6 text-left">Seat</th>
-                <th className="py-3 px-6 text-left">Date</th>
-                <th className="py-3 px-6 text-left">Amount</th>
-                <th className="py-3 px-6 text-left">Status</th>
-                <th className="py-3 px-6 text-left">Actions</th>
-              </tr>
-            </thead>
-            {loading ? (
-              <tbody>
+      
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+              <thead className="bg-gray-50 dark:bg-gray-700">
                 <tr>
-                  <td colSpan={7} className="py-3 px-6 text-center">
-                    <div className="flex items-center justify-center w-full h-20">
-                      <ReactLoading
-                        type="spin"
-                        color="orange"
-                        height={20}
-                        width={20}
-                      />
-                    </div>
-                  </td>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Workspace</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">User</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Seat</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Date</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Amount</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">Actions</th>
                 </tr>
-              </tbody>
-            ) : (
-              <tbody className="text-gray-700 dark:text-gray-300 text-sm font-light">
-                {bookings?.map((booking, index) => (
-                  <tr
-                    key={index}
-                    className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600"
-                  >
-                    <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {booking.workspaceInfo?.buildingName}
-                    </td>
-                    <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {booking.userInfo[0]?.fullName}
-                    </td>
-                    <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {"S" + booking.seatInfo[0]?.seatNumber + " -" + " T" + booking.seatInfo[0]?.tableNumber}
-                    </td>
-                    <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {new Date(booking.date).toDateString()}
-                    </td>
-                    <td className="py-3 px-6 text-left whitespace-nowrap">
-                      {booking.amount}
-                    </td>
-                    <td className="py-3 px-6 text-left whitespace-nowrap">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs ${
-                          booking.status === "success"
-                            ? "bg-green-200 dark:bg-green-700 text-green-800 dark:text-green-300"
-                            : "bg-red-200 dark:bg-red-700 text-red-800 dark:text-red-300"
-                        }`}
-                      >
-                        {booking.status}
-                      </span>
-                    </td>
-                    <td className="py-3 px-6 text-left whitespace-nowrap flex space-x-2">
-                      <button
-                        onClick={() => handleViewDetailsModal(booking)}
-                        className="text-blue-500 dark:text-blue-300 hover:underline"
-                      >
-                        View
-                      </button>
-                      <button
-                        onClick={() => handleDownloadInvoice(booking)}
-                        className="text-orange-500 dark:text-orange-300 hover:underline"
-                      >
-                        Invoice
-                      </button>
+              </thead>
+              <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                {loading ? (
+                  <tr>
+                    <td colSpan={7}>
+                      <div className="flex justify-center items-center py-8">
+                        <ReactLoading type="spin" color="#f97316" height={32} width={32} />
+                      </div>
                     </td>
                   </tr>
-                ))}
+                ) : (
+                  bookings?.map((booking, index) => (
+                    <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                        {booking.workspaceInfo?.buildingName}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                        {booking.userInfo[0]?.fullName}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                        {`S${booking.seatInfo[0]?.seatNumber} - T${booking.seatInfo[0]?.tableNumber}`}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                        {new Date(booking.date).toDateString()}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
+                        {booking.amount}
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full
+                          ${booking.status === 'success' 
+                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-100' 
+                            : 'bg-red-100 text-red-800 dark:bg-red-800 dark:text-red-100'
+                          }`}>
+                          {booking.status}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap text-sm">
+                        <div className="flex space-x-4">
+                          <button
+                            onClick={() =>{
+                              setSelectedBooking(booking)
+                              setIsModalOpen(true)}}
+                            className="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors"
+                          >
+                            View
+                          </button>
+                          <button
+                            onClick={() => handleDownloadInvoice(booking)}
+                            className="text-orange-600 dark:text-orange-400 hover:text-orange-800 dark:hover:text-orange-300 transition-colors"
+                          >
+                            Invoice
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )}
               </tbody>
-            )}
-          </table>
-        </div>
-
-        {/* Pagination Controls */}
-        <div className="flex justify-between mt-4">
-          <button
-            onClick={handlePreviousPage}
-            className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded disabled:opacity-50"
-            disabled={currentPage === 1}
-          >
-            Previous
-          </button>
-          <span className="text-sm text-gray-700 dark:text-gray-300">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={handleNextPage}
-            className="bg-gray-300 dark:bg-gray-600 text-gray-700 dark:text-gray-300 py-2 px-4 rounded disabled:opacity-50"
-            disabled={currentPage === totalPages}
-          >
-            Next
-          </button>
+            </table>
+          </div>
+          
+          <div className="bg-white dark:bg-gray-800 px-4 py-3 border-t border-gray-200 dark:border-gray-700 sm:px-6">
+            <div className="flex items-center justify-between">
+              <button
+                onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Previous
+              </button>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                Page {currentPage} of {totalPages}
+              </p>
+              <button
+                onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="relative inline-flex items-center px-4 py-2 border border-gray-300 dark:border-gray-600 text-sm font-medium rounded-md text-gray-700 dark:text-gray-300 bg-white dark:bg-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              >
+                Next
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

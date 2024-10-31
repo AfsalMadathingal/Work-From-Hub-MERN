@@ -29,6 +29,7 @@ adminRouter.patch('/business-users',authenticate,adminController.editBUser)
 adminRouter.patch('/business-user/block-and-unblock/:id',authenticate,adminController.blockBUseres)
 
 
+adminRouter.get('/workspace/:workspaceId',authenticate,adminController.getWorkspace)
 adminRouter.get('/workspace-submission',authenticate,adminController.getWorkspaceSubmission)
 adminRouter.patch('/approve-workspace/:id',authenticate,adminController.approveWorkspace)
 adminRouter.patch('/reject-workspace/:id',authenticate,adminController.rejectWorkspace)

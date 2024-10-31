@@ -235,6 +235,14 @@ export default class WorkspaceService implements IWorkspaceService {
     }
 
     return null;
-    
+
+  }
+
+  async findBothById (workspaceId: string): Promise<IWorkspace | null> {
+
+
+    const response = await this.workspaceRepository.findBothById(workspaceId);
+
+    return response;
   }
 }

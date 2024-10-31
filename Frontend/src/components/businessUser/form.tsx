@@ -37,13 +37,13 @@ const BuildingForm: React.FC = () => {
   });
 
   const [isMapModalOpen, setIsMapModalOpen] = useState(false);
-  const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 }); 
+  const [mapCenter, setMapCenter] = useState({ lat: 20.5937, lng: 78.9629 });
   const autocompleteRef = useRef<google.maps.places.Autocomplete | null>(null);
-  const error = useSelector(
-    (state: RootState) => state.businessUser.error
-  ) as { [key: string]: string };
+  const error = useSelector((state: RootState) => state.businessUser.error) as {
+    [key: string]: string;
+  };
 
-  const {loading} = useSelector((state:RootState)=>state.businessUser)
+  const { loading } = useSelector((state: RootState) => state.businessUser);
   const [secondStep, setSecondStep] = useState(false);
   const dispatch = useDispatch();
 
@@ -66,10 +66,12 @@ const BuildingForm: React.FC = () => {
 
         // Create photo previews
         if (photoFiles) {
-          const newPreviews = photoFiles.map(file => URL.createObjectURL(file));
-          setPreviews(prev => ({
+          const newPreviews = photoFiles.map((file) =>
+            URL.createObjectURL(file)
+          );
+          setPreviews((prev) => ({
             ...prev,
-            photos: newPreviews
+            photos: newPreviews,
           }));
         }
       } else if (name === "video") {
@@ -82,9 +84,9 @@ const BuildingForm: React.FC = () => {
 
         // Create video preview
         if (videoFile) {
-          setPreviews(prev => ({
+          setPreviews((prev) => ({
             ...prev,
-            video: URL.createObjectURL(videoFile)
+            video: URL.createObjectURL(videoFile),
           }));
         }
       }
@@ -96,37 +98,37 @@ const BuildingForm: React.FC = () => {
     }
   };
 
-  const removePreview = (type: 'photos' | 'video', index?: number) => {
-    if (type === 'photos') {
+  const removePreview = (type: "photos" | "video", index?: number) => {
+    if (type === "photos") {
       // Remove specific photo preview
       if (index !== undefined) {
-        setPreviews(prev => ({
+        setPreviews((prev) => ({
           ...prev,
-          photos: prev.photos.filter((_, i) => i !== index)
+          photos: prev.photos.filter((_, i) => i !== index),
         }));
         // Update form data
-        setFormData(prev => {
-          const updatedPhotos = prev.photos ? 
-            prev.photos.filter((_, i) => i !== index) : 
-            [];
+        setFormData((prev) => {
+          const updatedPhotos = prev.photos
+            ? prev.photos.filter((_, i) => i !== index)
+            : [];
           return {
             ...prev,
             photos: updatedPhotos,
-            imageAdded: updatedPhotos.length > 0
+            imageAdded: updatedPhotos.length > 0,
           };
         });
       }
     } else {
       // Remove video preview
-      setPreviews(prev => ({
-        ...prev,
-        video: null
-      }));
-      // Update form data
-      setFormData(prev => ({
+      setPreviews((prev) => ({
         ...prev,
         video: null,
-        videoAdded: false
+      }));
+      // Update form data
+      setFormData((prev) => ({
+        ...prev,
+        video: null,
+        videoAdded: false,
       }));
     }
   };
@@ -193,7 +195,6 @@ const BuildingForm: React.FC = () => {
     try {
       const response = await submitWorkspaceData(formDataToSend);
 
-      ;
       if (response?.data?.success) {
         toast.success("Data submitted successfully wait for admin approval");
         dispatch(setLoading(false));
@@ -237,8 +238,6 @@ const BuildingForm: React.FC = () => {
     dispatch(setError({}));
   }, [dispatch, isLoaded]);
 
-
-
   return (
     <div className="dark:bg-gray-900 dark:text-gray-100 min-h-screen">
       <AnimatedPage>
@@ -251,10 +250,9 @@ const BuildingForm: React.FC = () => {
               className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
               onSubmit={handleSubmit}
             >
-              {/* Existing form fields, add dark mode classes to inputs */}
               <div>
                 <label className="block text-sm font-medium dark:text-gray-300">
-                  Building Name
+                  Building Named
                 </label>
                 <input
                   type="text"
@@ -264,10 +262,11 @@ const BuildingForm: React.FC = () => {
                   placeholder="Enter Building name"
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded"
                 />
-                {/* Other existing elements remain the same */}
               </div>
               <div>
-                <label className="block text-sm font-medium">State</label>
+                <label className="block text-sm font-medium dark:text-gray-300">
+                  State
+                </label>
                 <input
                   type="text"
                   name="state"
@@ -281,7 +280,9 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">District</label>
+                <label className="block text-sm font-medium dark:text-gray-300">
+                  District
+                </label>
                 <input
                   type="text"
                   name="district"
@@ -295,7 +296,7 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium dark:text-gray-300">
                   Location on MAP
                 </label>
                 <div className="flex items-center space-x-2">
@@ -306,7 +307,7 @@ const BuildingForm: React.FC = () => {
                     onChange={handleChange}
                     placeholder="Google map location"
                     className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded"
-                    />
+                  />
                   <button
                     type="button"
                     onClick={() => setIsMapModalOpen(true)}
@@ -320,7 +321,9 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">Pin Code</label>
+                <label className="block text-sm font-medium dark:text-gray-300">
+                  Pin Code
+                </label>
                 <input
                   type="text"
                   name="pinCode"
@@ -334,7 +337,9 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">Street</label>
+                <label className="block text-sm font-medium dark:text-gray-300">
+                  Street
+                </label>
                 <input
                   type="text"
                   name="street"
@@ -348,7 +353,9 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">Contact No</label>
+                <label className="block text-sm font-medium dark:text-gray-300">
+                  Contact No
+                </label>
                 <input
                   type="text"
                   name="contactNo"
@@ -370,7 +377,7 @@ const BuildingForm: React.FC = () => {
                   onChange={handleChange}
                   className="h-4 w-4"
                 />
-                <label>AC</label>
+                <label className="dark:text-gray-300">AC</label>
                 <div className="flex items-center space-x-2">
                   <input
                     type="checkbox"
@@ -379,7 +386,7 @@ const BuildingForm: React.FC = () => {
                     onChange={handleChange}
                     className="h-4 w-4"
                   />
-                  <label>Power Backup</label>
+                  <label className="dark:text-gray-300">Power Backup</label>
                 </div>
                 <div className="flex items-center space-x-2">
                   <input
@@ -389,11 +396,11 @@ const BuildingForm: React.FC = () => {
                     onChange={handleChange}
                     className="h-4 w-4"
                   />
-                  <label>Bathroom</label>
+                  <label className="dark:text-gray-300">Bathroom</label>
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium dark:text-gray-300">
                   How many tables available?
                 </label>
                 <input
@@ -409,7 +416,7 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium dark:text-gray-300">
                   How many seats each table has?
                 </label>
                 <input
@@ -425,7 +432,7 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium dark:text-gray-300">
                   How much will you price per seat?
                 </label>
                 <input
@@ -441,7 +448,9 @@ const BuildingForm: React.FC = () => {
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">Timing</label>
+                <label className="block text-sm font-medium dark:text-gray-300">
+                  Timing
+                </label>
                 <select
                   name="timing"
                   value={formData.timing}
@@ -459,13 +468,12 @@ const BuildingForm: React.FC = () => {
                   Note: Please choose one of the available time slots from the
                   dropdown that works best for your operating hours.
                 </p>
-
                 {error?.timing && (
                   <p className="text-red-500 mt-1">{error?.timing}</p>
                 )}
               </div>
               <div>
-                <label className="block text-sm font-medium">
+                <label className="block text-sm font-medium dark:text-gray-300">
                   Working days
                 </label>
                 <select
@@ -475,75 +483,37 @@ const BuildingForm: React.FC = () => {
                   className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded"
                 >
                   <option value="">Select working days</option>
-                  <option value="MON-FRI">Monday to Friday</option>
-                  <option value="MON-SAT">Monday to Saturday</option>
-                  <option value="ALL DAYS">All 7 days</option>
+                  <option value="Mon-Sun">Mon-Sun</option>
+                  <option value="Mon-Sat">Mon-Sat</option>
+                  <option value="Tue-Sun">Tue-Sun</option>
+                  <option value="Mon-Fri">Mon-Fri</option>
                 </select>
                 {error?.workingDays && (
                   <p className="text-red-500 mt-1">{error?.workingDays}</p>
                 )}
               </div>
-
-              <div className="col-span-full flex justify-center mt-4">
+              <div>
+                <label className="block text-sm font-medium dark:text-gray-300">
+                  Image Upload
+                </label>
+                <input
+                  type="file"
+                  name="image"
+                  onChange={handleImageUpload}
+                  className="mt-1 block w-full p-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-200 rounded"
+                />
+                {error?.image && (
+                  <p className="text-red-500 mt-1">{error?.image}</p>
+                )}
+              </div>
+              <div className="col-span-1 md:col-span-2 lg:col-span-3">
                 <button
                   type="submit"
-                  onClick={() => setSecondStep(true)}
-                  className="px-6 py-2 bg-orange-500 text-white font-semibold rounded hover:bg-orange-600"
+                  className="w-full px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600"
                 >
-                  {loading ? (
-                    <ReactLoading
-                      type="bars"
-                      color="white"
-                      height={20}
-                      width={20}
-                    />
-                  ) : (
-                    "Next >"
-                  )}
+                  Submit
                 </button>
-              </div>     
-               {isMapModalOpen && (
-              <div
-                onClick={() => setIsMapModalOpen(false)}
-                className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50"
-              >
-                <div className="bg-white p-6 rounded-md shadow-md w-full max-w-2xl">
-                  <button
-                    type="button"
-                    onClick={() => setIsMapModalOpen(false)}
-                    className="absolute top-2 right-2 text-gray-600 hover:text-gray-800"
-                  >
-                    <FaWindowClose /> Close
-                  </button>
-                  {isLoaded ? (
-                    <>
-                      <Autocomplete
-                        onLoad={(autocomplete) => {
-                          autocompleteRef.current = autocomplete;
-                        }}
-                        onPlaceChanged={handlePlaceChanged}
-                      >
-                        <input
-                          type="text"
-                          placeholder="Search for a location"
-                          className="mt-1 block w-full p-2 border border-gray-300 rounded"
-                        />
-                      </Autocomplete>
-                      <GoogleMap
-                        mapContainerStyle={{ width: "100%", height: "400px" }}
-                        center={mapCenter}
-                        zoom={10}
-                        onClick={handleMapClick}
-                      >
-                        <Marker position={mapCenter} />
-                      </GoogleMap>
-                    </>
-                  ) : (
-                    <p>Loading map...</p>
-                  )}
-                </div>
               </div>
-            )}
             </form>
           </div>
         ) : (
@@ -575,14 +545,14 @@ const BuildingForm: React.FC = () => {
                   <div className="flex flex-wrap gap-2 mt-2">
                     {previews.photos.map((preview, index) => (
                       <div key={index} className="relative">
-                        <img 
-                          src={preview} 
-                          alt={`Preview ${index + 1}`} 
+                        <img
+                          src={preview}
+                          alt={`Preview ${index + 1}`}
                           className="w-24 h-24 object-cover rounded"
                         />
                         <button
                           type="button"
-                          onClick={() => removePreview('photos', index)}
+                          onClick={() => removePreview("photos", index)}
                           className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
                         >
                           <FaTrash className="w-3 h-3" />
@@ -619,14 +589,14 @@ const BuildingForm: React.FC = () => {
                 {/* Video preview */}
                 {previews.video && (
                   <div className="relative mt-2">
-                    <video 
-                      src={previews.video} 
-                      controls 
+                    <video
+                      src={previews.video}
+                      controls
                       className="w-full max-h-64 rounded"
                     />
                     <button
                       type="button"
-                      onClick={() => removePreview('video')}
+                      onClick={() => removePreview("video")}
                       className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full"
                     >
                       <FaTrash className="w-4 h-4" />

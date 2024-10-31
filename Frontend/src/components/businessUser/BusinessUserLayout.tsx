@@ -17,7 +17,7 @@ import Typography from "@mui/material/Typography";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import BookIcon from "@mui/icons-material/Book";
 import WorkIcon from "@mui/icons-material/Work";
-import { MdDarkMode, MdLightMode } from "react-icons/md";
+import { MdDarkMode, MdDashboard, MdLightMode } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { Button } from "@mui/material";
@@ -27,6 +27,7 @@ import { RootState } from "../../redux/store/store";
 import { resetBUser } from "../../redux/slices/businessUserSlice";
 import { logout } from "../../services/BUserAuthService";
 import { toggleTheme } from "../../redux/slices/themeSlice";
+import { Building, LayoutDashboard, TicketIcon, WorkflowIcon } from "lucide-react";
 
 const drawerWidth = 240;
 
@@ -99,17 +100,22 @@ export default function ResponsiveDrawer(props: Props) {
           {
             text: "Dashboard",
             link: "/business/dashboard",
-            icon: <DashboardIcon />,
+            icon: <LayoutDashboard />,
           },
           {
             text: "Bookings",
             link: "/business/bookings",
-            icon: <BookIcon />,
+            icon: <TicketIcon />,
           },
           {
             text: "Workspace",
             link: "/business/workspace-manage",
-            icon: <WorkIcon />,
+            icon: <WorkflowIcon />,
+          },
+          {
+            text: "Approved Workspace",
+            link: "/business/workspace/approved",
+            icon: <Building />,
           },
         ].map((item) => (
           <Link to={item.link} key={item.text}>

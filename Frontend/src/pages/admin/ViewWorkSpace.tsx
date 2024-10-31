@@ -3,7 +3,7 @@ import AdminLayout from "../../components/admin/AdminLayout";
 import WorkspaceDetail from "../../components/admin/WorkspaceDetail";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getWorkspaceById } from "../../services/adminService";
+import { getWorkspace, getWorkspaceById } from "../../services/adminService";
 import Loading from "react-loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { IWorkspace } from "../../@types/workspace";
@@ -39,10 +39,15 @@ const View = () => {
   const fetchWorkspace = async () => {
     try {
 
+      toast("Fetching workspace details");
+
       setLoading(true);
-      const response = await getWorkspaceById(workspaceId as string);
+      const response = await getWorkspace(workspaceId as string);
 
 
+      console.log('====================================');
+      console.log(response);
+      console.log('====================================');
 
       if (!response.data.data) {
         setLoading(false);

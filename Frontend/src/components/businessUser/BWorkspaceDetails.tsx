@@ -1,9 +1,5 @@
-import React, { useEffect } from "react";
-import "video-react/dist/video-react.css";
-import Slider from "react-slick"; // Import React Slick
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import { Player } from "video-react";
+import React from "react";
+import { useLocation } from "react-router-dom";
 import {
   FaMapMarkerAlt,
   FaPhone,
@@ -15,43 +11,9 @@ import {
   FaDollarSign,
 } from "react-icons/fa";
 
-import { useLocation } from "react-router-dom";
-
-
-interface WorkspaceDetailProps {
-  workspace: {
-    _id: string;
-    buildingName: string;
-    state: string;
-    district: string;
-    location: string; // "latitude,longitude"
-    pinCode: string;
-    street: string;
-    contactNo: string;
-    powerBackup: boolean;
-    ac: boolean;
-    bathroom: boolean;
-    photos: string[]; // Array of photo URLs
-    video: string; // Video URL
-    tablesAvailable: number;
-    seatsPerTable: number;
-    ownerId: string;
-    approved: boolean;
-    createdAt: string;
-    updatedAt: string;
-    rejected: boolean;
-    pricePerSeat: number;
-    __v: number;
-  };
-}
-
-const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
-  const domLocation = useLocation();
-  const [ownerName, setOwnerName] = React.useState<string>("");
-
+const WorkspaceDetail = () => {
+  const { state: { workspace } } = useLocation();
   const {
-    pricePerSeat,
-    rejected,
     buildingName,
     state,
     district,
@@ -63,152 +25,108 @@ const BWorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     ac,
     bathroom,
     photos,
-    video,
     tablesAvailable,
     seatsPerTable,
     approved,
     createdAt,
-    ownerId,
-  } = domLocation.state.workspace as WorkspaceDetailProps["workspace"];
-
-  const openInGoogleMaps = () => {
-    window.open(`https://www.google.com/maps/search/${location}`, "_blank");
-  };
-
-
-
-
-  const sliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    arrows: true, // Show arrows for navigation
-  };
+    pricePerSeat,
+  } = workspace;
 
   return (
-<div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-  <div className="flex items-center justify-between mb-4">
-    <h2 className="text-3xl font-semibold text-gray-800">{buildingName}</h2>
-    <div className="flex items-center space-x-2 text-sm text-gray-600">
-      <span>Submitted:</span>
-      <span className="font-semibold">
-        {new Date(createdAt).toLocaleString()}
-      </span>
-    </div>
-  </div>
+    <div className="max-w-4xl mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          {buildingName}
+        </h1>
+        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+          approved 
+            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100"
+            : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100"
+        }`}>
+          {approved ? "Approved" : "Pending"}
+        </span>
+      </div>
 
-  {/* Image Slider */}
-  {photos.length > 0 && (
-    <div className="mb-6">
-      <Slider {...sliderSettings}>
-        {photos.map((photoUrl, index) => (
-          <div key={index}>
-            <img
-              src={photoUrl}
-              alt={`Workspace Photo ${index + 1}`}
-              className="w-full h-64 object-cover rounded-lg transition-transform duration-300 hover:scale-105"
-            />
+      {/* Main Image */}
+      {photos?.[0] && (
+        <img
+          src={photos[0]}
+          alt="Workspace"
+          className="w-full h-64 object-cover rounded-lg mb-6"
+        />
+      )}
+
+      {/* Info Grid */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {/* Location */}
+        <div className="space-y-1 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200">
+            <FaMapMarkerAlt className="text-blue-500" />
+            <span className="font-medium">Location</span>
           </div>
-        ))}
-      </Slider>
-    </div>
-  )}
+          <p className="text-sm text-gray-600 dark:text-gray-300">
+            {street}, {district}, {state}, {pinCode}
+          </p>
+          <button 
+            onClick={() => window.open(`https://www.google.com/maps/search/${location}`, "_blank")}
+            className="text-sm text-blue-500 hover:text-blue-600 dark:text-blue-400"
+          >
+            View on Maps
+          </button>
+        </div>
 
-  {/* Video Player */}
-  {video && (
-    <div className="mb-6 w-full mx-auto">
-      <Player>
-        <source src={video} />
-      </Player>
-    </div>
-  )}
+        {/* Contact */}
+        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div className="flex items-center gap-2 text-gray-700 dark:text-gray-200">
+            <FaPhone className="text-green-500" />
+            <span className="font-medium">{contactNo}</span>
+          </div>
+        </div>
 
-  {/* Workspace Details */}
-  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-    {/* Location */}
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaMapMarkerAlt className="text-blue-500 mr-2" />
-      <div>
-        <p>
-          <strong>Address:</strong> {street}, {district}, {state}, {pinCode}
-        </p>
-        <p
-          className="text-blue-600 cursor-pointer hover:underline"
-          onClick={openInGoogleMaps}
-        >
-          View on Google Maps
-        </p>
+        {/* Amenities & Pricing */}
+        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-3">
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-2">
+              <FaPowerOff className={`${powerBackup ? "text-green-500" : "text-gray-400"}`} />
+              <span className="text-sm">Power</span>
+            </span>
+            <span className="flex items-center gap-2">
+              <FaSnowflake className={`${ac ? "text-green-500" : "text-gray-400"}`} />
+              <span className="text-sm">AC</span>
+            </span>
+            <span className="flex items-center gap-2">
+              <FaToilet className={`${bathroom ? "text-green-500" : "text-gray-400"}`} />
+              <span className="text-sm">Bath</span>
+            </span>
+          </div>
+          <div className="flex items-center gap-2">
+            <FaDollarSign className="text-green-500" />
+            <span className="text-sm font-medium">₹{pricePerSeat}/seat</span>
+          </div>
+        </div>
+
+        {/* Seating */}
+        <div className="p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+          <div className="flex items-center justify-between">
+            <span className="flex items-center gap-2">
+              <FaTable className="text-blue-500" />
+              <span className="text-sm">{tablesAvailable} Tables</span>
+            </span>
+            <span className="flex items-center gap-2">
+              <FaChair className="text-blue-500" />
+              <span className="text-sm">{seatsPerTable} Seats/Table</span>
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-6 text-xs text-gray-500 dark:text-gray-400">
+        Listed on {new Date(createdAt).toLocaleDateString()}
       </div>
     </div>
-
-    {/* Contact */}
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaPhone className="text-green-500 mr-2" />
-      <p>
-        <strong>Contact:</strong> {contactNo}
-      </p>
-    </div>
-
-    {/* Amenities */}
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaPowerOff className="text-yellow-500 mr-2" />
-      <p>
-        <strong>Power Backup:</strong> {powerBackup ? "Yes" : "No"}
-      </p>
-    </div>
-
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaSnowflake className="text-blue-500 mr-2" />
-      <p>
-        <strong>AC:</strong> {ac ? "Available" : "Not Available"}
-      </p>
-    </div>
-
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaToilet className="text-purple-500 mr-2" />
-      <p>
-        <strong>Bathroom:</strong> {bathroom ? "Available" : "Not Available"}
-      </p>
-    </div>
-
-    {/* Seating Details */}
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaTable className="text-indigo-500 mr-2" />
-      <p>
-        <strong>Tables Available:</strong> {tablesAvailable}
-      </p>
-    </div>
-
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaChair className="text-red-500 mr-2" />
-      <p>
-        <strong>Seats Per Table:</strong> {seatsPerTable}
-      </p>
-    </div>
-    
-    <div className="flex items-center bg-gray-100 p-4 rounded-lg shadow-sm">
-      <FaDollarSign className="text-red-500 mr-2" />
-      <p>
-        <strong>Price Per Seat:</strong> ₹ {pricePerSeat}/seat
-      </p>
-    </div>
-
-    {/* Status */}
-    <div className="flex items-center">
-      <span
-        className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white ${
-          approved ? "bg-green-500" : "bg-red-500"
-        }`}
-      >
-        {approved ? "Approved" : "Pending"}
-      </span>
-    </div>
-  </div>
-</div>
-
   );
 };
 
-export default BWorkspaceDetail;
+export default WorkspaceDetail;

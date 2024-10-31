@@ -331,6 +331,28 @@ class AdminController {
     }
   };
 
+  public getWorkspace = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { workspaceId } = req.params;
+
+      console.log(workspaceId);
+      
+
+      const workspace = await this.workspaceService.findBothById(workspaceId);
+
+      if (!workspace) {
+        throw new Error("Workspace not found");
+      }
+
+      return res
+        .status(200)
+        .json(new ApiResponse(HttpStatus.OK, workspace, "fetched successfully"));
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
 
 
 

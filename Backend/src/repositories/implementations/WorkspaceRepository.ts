@@ -123,6 +123,8 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     }
   }
 
+  
+
   async getWithFilters( query:string,filter: Partial<IFilters> , page:number,limit:number) : Promise<Workspace[] | null> {
     try {
       console.log("====================================");
@@ -227,4 +229,24 @@ async findByOwnerId(id: string): Promise<Workspace[] | null> {
         
        }
    }
+
+   async findBothById(id: string): Promise<Workspace | null> {
+       try {
+
+        
+
+        const workspace = await this.collection.findOne({ _id: id }).populate('ownerId','-password');
+
+
+
+        return workspace;
+
+
+       } catch (error) {
+        return null;
+       }
+   }
+
+
+
 }

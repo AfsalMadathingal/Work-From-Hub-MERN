@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "video-react/dist/video-react.css";
-import Slider from "react-slick"; // Import React Slick
+import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { Player } from "video-react";
@@ -15,14 +15,10 @@ import {
   FaDollarSign,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
-import {  useNavigate } from "react-router-dom";
-import {
-  approveWorkspace,
-  getOwnerById,
-  rejectWorkspace,
-} from "../../services/adminService";
+import { useNavigate } from "react-router-dom";
+import { approveWorkspace, rejectWorkspace } from "../../services/adminService";
 import Dialog from "./Dialog";
-
+import { IBUsers } from "../../@types/businessUser";
 
 interface WorkspaceDetailProps {
   workspace: {
@@ -30,18 +26,18 @@ interface WorkspaceDetailProps {
     buildingName: string;
     state: string;
     district: string;
-    location: string; // "latitude,longitude"
+    location: string;
     pinCode: string;
     street: string;
     contactNo: string;
     powerBackup: boolean;
     ac: boolean;
     bathroom: boolean;
-    photos: string[]; // Array of photo URLs
-    video: string; // Video URL
+    photos: string[];
+    video: string;
     tablesAvailable: number;
     seatsPerTable: number;
-    ownerId: string;
+    ownerId: IBUsers;
     approved: boolean;
     createdAt: string;
     updatedAt: string;
@@ -52,7 +48,6 @@ interface WorkspaceDetailProps {
 }
 
 const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
-  const [ownerName, setOwnerName] = useState<string>("");
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
   const [onDialogConfirm, setOnDialogConfirm] = useState<() => void>(() => {});
   const [onDialogCancel, setOnDialogCancel] = useState<() => void>(() => {});
@@ -80,53 +75,38 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     approved,
     createdAt,
     ownerId,
-  } = workspace as WorkspaceDetailProps["workspace"];
+  } = workspace;
 
   const openInGoogleMaps = () => {
     window.open(`https://www.google.com/maps/search/${location}`, "_blank");
   };
 
-  const getOwner = async (ownerId: string) => {
-    try {
-      const response = await getOwnerById(ownerId);
-      setOwnerName(response.data.data.email);
-
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    } catch (error) {
-      
-      toast.error("Something went wrong");
-    }
-  };
-
   const handleDialog = (action: "approve" | "reject") => {
-    let title = "";
-    let message = "";
-    let onConfirm: () => Promise<void> = async () => {};
-    const onCancel: () => void = () => setConfirmDialog(false); // Change from `let` to `const`
-  
-    if (action === "approve") {
-      title = "Approve Workspace";
-      message = "Are you sure you want to approve this workspace?";
-      onConfirm = handleApprove;
-    } else if (action === "reject") {
-      title = "Reject Workspace";
-      message = "Are you sure you want to reject this workspace?";
-      onConfirm = handleReject;
-    }
-  
+    const config = {
+      approve: {
+        title: "Approve Workspace",
+        message: "Are you sure you want to approve this workspace?",
+        onConfirm: handleApprove,
+      },
+      reject: {
+        title: "Reject Workspace",
+        message: "Are you sure you want to reject this workspace?",
+        onConfirm: handleReject,
+      },
+    };
+
+    const { title, message, onConfirm } = config[action];
     setDialogTitle(title);
     setDialogMessage(message);
     setOnDialogConfirm(() => onConfirm);
-    setOnDialogCancel(() => onCancel); // Function doesn't need reassignment, so it's declared with `const`
+    setOnDialogCancel(() => () => setConfirmDialog(false));
     setConfirmDialog(true);
   };
-  
 
   const handleApprove = async () => {
     try {
       const response = await approveWorkspace(workspace._id);
       setConfirmDialog(false);
-
       if (response.status === 200) {
         navigate(-1);
         toast.success("Workspace approved successfully");
@@ -142,7 +122,6 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     try {
       const response = await rejectWorkspace(workspace._id);
       setConfirmDialog(false);
-
       if (response.status === 200) {
         navigate(-1);
         toast.success("Workspace rejected successfully");
@@ -154,18 +133,13 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     }
   };
 
-   useEffect(() => {
-    getOwner(ownerId);
-  }, []);
-
-
   const sliderSettings = {
     dots: true,
     infinite: true,
     speed: 500,
     slidesToShow: 1,
     slidesToScroll: 1,
-    arrows: true, // Show arrows for navigation
+    arrows: true,
   };
 
   return (
@@ -177,129 +151,160 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
         onConfirm={onDialogConfirm}
         onCancel={onDialogCancel}
       />
-      <div className="max-w-7xl mx-auto p-6 bg-white shadow-lg rounded-lg">
-        {/* Top Section: Title and Submission Info */}
-        <div className="flex flex-col md:flex-row items-start justify-between mb-6">
-          {/* Workspace Basic Details */}
-          <div className="md:w-1/2 mb-6 md:mb-0">
-            <h2 className="text-2xl font-semibold">{buildingName}</h2>
-            <div className="flex items-center space-x-2 text-sm mt-2">
-              <span>Submitted:</span>
-              <span className="font-semibold">
-                {new Date(createdAt).toLocaleString()}
-              </span>
-              <span>by:</span>
-              <span className="font-semibold">{ownerName}</span>
+      <div className="max-w-7xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-xl shadow-xl">
+        <div className="space-y-8">
+          {/* Header Section */}
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="space-y-4">
+              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">{buildingName}</h1>
+              <div className="flex flex-col sm:flex-row gap-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex items-center gap-2">
+                  <span>Submitted on</span>
+                  <span className="font-medium">
+                    {new Date(createdAt).toLocaleDateString()}
+                  </span>
+                </div>
+                <div className="hidden sm:block text-gray-300">|</div>
+                <div className="flex items-center gap-2">
+                  <span>by</span>
+                  <span className="font-medium">{ownerId?.fullName}</span>
+                  <span className="text-gray-400">({ownerId?.email})</span>
+                </div>
+              </div>
             </div>
-          </div>
 
-          {/* Approval Section */}
-          <div className="flex justify-start md:justify-end md:w-1/2 space-x-4">
-            <>
+            {approved ? (
+
+              <div className="flex gap-4">
+                <button
+                onClick={() => alert("hold")}
+                className="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition duration-200"
+              >
+                Hold
+              </button>
+              </div>
+            ) : (
+              <div className="flex gap-4">
               <button
-                className="px-4 py-2 bg-red-500 text-white rounded-sm hover:bg-red-600 duration-300 transition-all ease-in-out"
                 onClick={() => handleDialog("reject")}
+                className="px-6 py-2.5 bg-red-500 hover:bg-red-600 text-white font-medium rounded-lg transition duration-200"
               >
                 Reject
               </button>
-            </>
-
-            <button
-              className="px-4 py-2 bg-green-400 text-black rounded-sm hover:bg-green-500 duration-300 transition-all ease-in-out"
-              disabled={approved || rejected}
-              onClick={() => handleDialog("approve")}
-            >
-              Approve
-            </button>
-          </div>
-        </div>
-
-        {/* Main Content: Images/Video on Right, Details on Left */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Details on the Left */}
-          <div className="space-y-4">
-            {/* Location */}
-            <div className="flex items-center">
-              <FaMapMarkerAlt className="text-blue-500 mr-2" />
-              <div>
-                <p>
-                  <strong>Address:</strong> {street}, {district}, {state},{" "}
-                  {pinCode}
-                </p>
-                <p
-                  className="text-blue-600 cursor-pointer"
-                  onClick={openInGoogleMaps}
-                >
-                  View on Google Maps
-                </p>
-              </div>
+              <button
+                onClick={() => handleDialog("approve")}
+                disabled={approved || rejected}
+                className="px-6 py-2.5 bg-emerald-500 hover:bg-emerald-600 text-white font-medium rounded-lg transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Approve
+              </button>
             </div>
+            )} 
 
-            {/* Contact Info */}
-            <div className="flex items-center">
-              <FaPhone className="text-green-500 mr-2" />
-              <p>
-                <strong>Contact:</strong> {contactNo}
-              </p>
-            </div>
-
-            {/* Amenities */}
-            <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center">
-                <FaPowerOff className="text-yellow-500 mr-2" />
-                <p>
-                  <strong>Power Backup:</strong> {powerBackup ? "Yes" : "No"}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <FaSnowflake className="text-blue-500 mr-2" />
-                <p>
-                  <strong>AC:</strong> {ac ? "Available" : "Not Available"}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <FaToilet className="text-purple-500 mr-2" />
-                <p>
-                  <strong>Bathroom:</strong> {bathroom ? "Available" : "Not Available"}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <FaTable className="text-indigo-500 mr-2" />
-                <p>
-                  <strong>Tables Available:</strong> {tablesAvailable}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <FaChair className="text-red-500 mr-2" />
-                <p>
-                  <strong>Seats Per Table:</strong> {seatsPerTable}
-                </p>
-              </div>
-              <div className="flex items-center">
-                <FaDollarSign className="text-red-500 mr-2" />
-                <p>
-                  <strong>Price Per Seat:</strong> ₹ {pricePerSeat}
-                </p>
-              </div>
-            </div>
+           
           </div>
 
-          {/* Carousel for Images and Video on Right */}
-          <div>
-            <Slider {...sliderSettings}>
-              {photos?.map((photo, index) => (
-                <div key={index}>
-                  <img
-                    src={photo}
-                    alt={`Workspace ${index + 1}`}
-                    className="w-full h-auto object-cover"
-                  />
+          {/* Main Content */}
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Details Section */}
+            <div className="space-y-6">
+              {/* Location Card */}
+              <div className="p-6 bg-gray-50 dark:bg-gray-700 rounded-lg space-y-4">
+                <div className="flex items-start gap-3">
+                  <FaMapMarkerAlt className="text-blue-500 mt-1" />
+                  <div>
+                    <p className="font-medium text-gray-900 dark:text-white">{street}</p>
+                    <p className="text-gray-600 dark:text-gray-400">
+                      {district}, {state}, {pinCode}
+                    </p>
+                    <button
+                      onClick={openInGoogleMaps}
+                      className="mt-2 text-blue-600 hover:text-blue-700 text-sm font-medium"
+                    >
+                      View on Google Maps
+                    </button>
+                  </div>
                 </div>
-              ))}
+
+                <div className="flex items-center gap-3">
+                  <FaPhone className="text-green-500" />
+                  <p className="text-gray-600 dark:text-gray-400">
+                    <span className="font-medium">Contact:</span> {contactNo}
+                  </p>
+                </div>
+              </div>
+
+              {/* Amenities Grid */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <FaPowerOff className="text-yellow-500" />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Power Backup</p>
+                    <p className="font-medium">{powerBackup ? "Available" : "Not Available"}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <FaSnowflake className="text-blue-500" />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Air Conditioning</p>
+                    <p className="font-medium">{ac ? "Available" : "Not Available"}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <FaToilet className="text-red-500" />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Bathroom</p>
+                    <p className="font-medium">{bathroom ? "Available" : "Not Available"}</p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-3 p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <FaChair className="text-purple-500" />
+                  <div>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Tables Available</p>
+                    <p className="font-medium">{tablesAvailable}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Images and Video Section */}
+            <div className="space-y-4">
+              <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <Slider {...sliderSettings}>
+                  {photos.map((photo, index) => (
+                    <div key={index} className="flex justify-center">
+                      <img src={photo} alt={`Workspace Image ${index + 1}`} className="w-full h-64 object-cover rounded-lg" />
+                    </div>
+                  ))}
+                </Slider>
+              </div>
+
               {video && (
-                <Player playsInline poster="/assets/poster.png" src={video} />
+                <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  <Player playsInline poster="/assets/poster.png" src={video} />
+                </div>
               )}
-            </Slider>
+            </div>
+          </div>
+
+          {/* Pricing Section */}
+          <div className="flex justify-between items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+            <div className="flex items-center gap-2">
+              <FaDollarSign className="text-green-600" />
+              <span className="font-medium text-lg text-gray-900 dark:text-white">
+                Price per seat: ₹{pricePerSeat}
+              </span>
+            </div>
+            <div className="text-gray-500 dark:text-gray-400">
+              {approved ? (
+                <span className="font-medium text-green-600">Approved</span>
+              ) : (
+                <span className="font-medium text-red-600">Pending Approval</span>
+              )}
+            </div>
           </div>
         </div>
       </div>

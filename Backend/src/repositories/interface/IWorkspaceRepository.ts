@@ -20,4 +20,5 @@ export interface IWorkspaceRepository {
   getTotalWorkspace():Promise<number>;
   findByOwnerId(id:string):Promise<IWorkspace[]| null>;
   findApprovedByOwnerId(id:string,page:number,limit:number):Promise<GetPendingWorkspace| null >;
+  findBothById(id: string): Promise<IWorkspace | null>;
 }

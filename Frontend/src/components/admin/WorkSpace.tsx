@@ -5,16 +5,16 @@ import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { setModal, setTempData } from "../../redux/slices/adminSlice";
+import { setModal } from "../../redux/slices/adminSlice";
 import { getAllPendingSubmission } from "../../services/adminService";
 import { Pagination } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 
-export default function WorkspaceSubmissionTable() {
+const WorkspaceSubmissionTable = () => {
   const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [limit] = useState(5); // Keep the limit static for now
+  const [limit] = useState(5);
   const dispatch = useDispatch();
   const { modal } = useSelector((state: RootState) => state.admin);
 
@@ -39,81 +39,73 @@ export default function WorkspaceSubmissionTable() {
     }
   };
 
-
-
   const handleEdit = (workspace: IWorkspace) => {
     dispatch(setModal({ type: "edit", data: workspace }));
   };
 
+  const getStatusStyles = (workspace: IWorkspace) => {
+    if (workspace.approved) return "bg-emerald-500";
+    if (workspace.rejected) return "bg-red-500";
+    return "bg-amber-500";
+  };
+
   return (
-    <div className="container mx-auto px-4 py-6">
-      <div className="w-full overflow-x-auto">
-        <table className="min-w-full bg-white shadow-md rounded-lg">
-          <thead>
-            <tr className="bg-gray-100 border-b">
-              <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="overflow-hidden rounded-xl shadow-lg ring-1 ring-black ring-opacity-5">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Building Name
               </th>
-              <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Location
               </th>
-              <th className="py-3 px-4 text-left text-sm font-medium text-gray-600">
+              <th scope="col" className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Status
               </th>
-              <th className="py-3 px-4 text-center text-sm font-medium text-gray-600">
+              <th scope="col" className="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Actions
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-white divide-y divide-gray-200">
             {workspaces.length ? (
               workspaces.map((workspace) => (
-                <tr key={workspace._id} className="border-b hover:bg-gray-50">
-                  <td className="py-4 px-4">
+                <tr key={workspace._id} className="hover:bg-gray-50 transition-colors duration-200">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                     {workspace.buildingName}
                   </td>
-                  <td className="py-4 px-4">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                     <div className="flex items-center space-x-2">
                       <span>{workspace.location}</span>
-                      <FaLocationArrow
-                        className="text-blue-500 cursor-pointer"
-                        onClick={() =>
-                          window.open(
-                            `https://www.google.com/maps/search/${workspace.location}`,
-                            "_blank"
-                          )
-                        }
-                      />
+                      <button
+                        onClick={() => window.open(`https://www.google.com/maps/search/${workspace.location}`, "_blank")}
+                        className="text-blue-600 hover:text-blue-800 transition-colors duration-200"
+                      >
+                        <FaLocationArrow className="h-4 w-4" />
+                      </button>
                     </div>
                   </td>
-                  <td className="py-4 px-4">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-xs font-semibold text-white ${
-                        workspace.approved ? "bg-green-500" :
-                        workspace.rejected ? "bg-red-500" :
-                        "bg-yellow-500"
-                      }`}
-                    >
-                      {workspace.approved ? "Approved" :
-                      workspace.rejected ? "Rejected" :
-                      "Pending"}
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className={`inline-flex px-2.5 py-1 text-xs font-semibold rounded-full text-white ${getStatusStyles(workspace)}`}>
+                      {workspace.approved ? "Approved" : workspace.rejected ? "Rejected" : "Pending"}
                     </span>
                   </td>
-                  <td className="py-4 px-4 text-center">
-                    <div className="flex justify-center space-x-2">
-                      <Link state={{workspace}} to={`/admin/workspace-view/${workspace?._id}`}>
-                      <button
-                        className="text-white bg-blue-500 hover:bg-blue-600 rounded-full p-2 transition-colors"
+                  <td className="px-6 py-4 whitespace-nowrap text-center">
+                    <div className="flex justify-center space-x-3">
+                      <Link 
+                        to={`/admin/workspace-view/${workspace._id}`}
+                        state={{ workspace }}
+                        className="inline-flex items-center p-2 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-colors duration-200 shadow-sm"
                       >
-                        <FaEye />
-                      </button>
+                        <FaEye className="h-4 w-4" />
                       </Link>
-                      
                       <button
-                        className="text-white bg-green-500 hover:bg-green-600 rounded-full p-2 transition-colors"
                         onClick={() => handleEdit(workspace)}
+                        className="inline-flex items-center p-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors duration-200 shadow-sm"
                       >
-                        <FaEdit />
+                        <FaEdit className="h-4 w-4" />
                       </button>
                     </div>
                   </td>
@@ -121,7 +113,7 @@ export default function WorkspaceSubmissionTable() {
               ))
             ) : (
               <tr>
-                <td colSpan={4} className="py-4 px-4 text-center text-gray-500">
+                <td colSpan={4} className="px-6 py-8 text-center text-sm text-gray-500 bg-gray-50">
                   No pending submissions found.
                 </td>
               </tr>
@@ -130,15 +122,16 @@ export default function WorkspaceSubmissionTable() {
         </table>
       </div>
 
-      {/* Pagination */}
-      <div className="mt-4 flex justify-center">
+      <div className="mt-6 flex justify-center">
         <Pagination
           color="warning"
           total={totalPages}
           initialPage={currentPage}
-          onChange={(page) => setCurrentPage(page)}
+          onChange={setCurrentPage}
         />
       </div>
     </div>
   );
-}
+};
+
+export default WorkspaceSubmissionTable;
