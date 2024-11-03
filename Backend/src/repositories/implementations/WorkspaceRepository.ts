@@ -14,11 +14,29 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     this.collection = WorkspaceModel;
   }
 
+
+  async findByIdAndUpdate(workspaceId: string, data: Workspace): Promise<Workspace | null> {
+
+    try {
+      const updatedWorkspace = await this.collection.findByIdAndUpdate(
+        workspaceId,
+        data,
+        { new: true }
+      );
+
+      return updatedWorkspace;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+    
+  }
+
   async create(workspace: Workspace): Promise<Workspace | null> {
     try {
 
       console.log(workspace);
-      
+
 
       const result = await this.collection.create(workspace);
 
@@ -26,7 +44,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     } catch (error) {
 
       console.log(error);
-      
+
       throw error;
       return null;
     }
@@ -123,9 +141,9 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     }
   }
 
-  
 
-  async getWithFilters( query:string,filter: Partial<IFilters> , page:number,limit:number) : Promise<Workspace[] | null> {
+
+  async getWithFilters(query: string, filter: Partial<IFilters>, page: number, limit: number): Promise<Workspace[] | null> {
     try {
       console.log("====================================");
       console.log(filter);
@@ -139,7 +157,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
           { state: { $regex: query, $options: "i" } },
         ],
       };
-  
+
       // Combine search query with filters using $and operator
       const combinedQuery = {
         $and: [
@@ -153,7 +171,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
         .skip((page - 1) * limit)
         .limit(limit)
         .sort({ createdAt: -1 })
-        
+
 
       return workspaces;
     } catch (error) {
@@ -184,68 +202,68 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     }
   }
 
-async findByOwnerId(id: string): Promise<Workspace[] | null> {
+  async findByOwnerId(id: string): Promise<Workspace[] | null> {
     try {
-        const workspaces = await this.collection.find({ ownerId: id });
-        return workspaces;
+      const workspaces = await this.collection.find({ ownerId: id });
+      return workspaces;
     } catch (error) {
 
-       throw error
-       
+      throw error
+
     }
-}
-  
+  }
+
 
   async getTotalWorkspace(): Promise<number> {
     try {
-      
-    const totalWorkspaces = await this.collection.countDocuments({ approved: true });
 
-    return totalWorkspaces;
+      const totalWorkspaces = await this.collection.countDocuments({ approved: true });
+
+      return totalWorkspaces;
     } catch (error) {
       return null
     }
 
-      
+
   }
 
-   async findApprovedByOwnerId(id: string, page: number, limit: number): Promise<GetPendingWorkspace | null> {
-       try {
-        
+  async findApprovedByOwnerId(id: string, page: number, limit: number): Promise<GetPendingWorkspace | null> {
+    try {
 
-        const data = await WorkspaceModel.find({ approved :true ,ownerId:id })
+
+      const data = await WorkspaceModel.find({ approved: true, ownerId: id })
         .skip((page - 1) * limit)
         .limit(limit)
 
-      const approvedWorkspaces =  data 
-      const totalUser = await WorkspaceModel.countDocuments({ approved:true , ownerId:id });
+      const approvedWorkspaces = data
+      const totalUser = await WorkspaceModel.countDocuments({ approved: true, ownerId: id });
       const totalPages = Math.ceil(totalUser / limit);
 
 
-        return { approvedWorkspaces, totalPages };
+      return { approvedWorkspaces, totalPages };
 
 
-       } catch (error) {
-        
-       }
-   }
+    } catch (error) {
 
-   async findBothById(id: string): Promise<Workspace | null> {
-       try {
+    }
+  }
 
-        
-
-        const workspace = await this.collection.findOne({ _id: id }).populate('ownerId','-password');
+  async findBothById(id: string): Promise<Workspace | null> {
+    try {
 
 
 
-        return workspace;
+      const workspace = await this.collection.findOne({ _id: id }).populate('ownerId', '-password');
 
 
-       } catch (error) {
-        return null;
-       }
-   }
+
+      return workspace;
+
+
+    } catch (error) {
+      return null;
+    }
+  }
 
 
 

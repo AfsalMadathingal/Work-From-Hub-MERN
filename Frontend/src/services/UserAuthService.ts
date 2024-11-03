@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { IUsers } from "../@types/user";
 import { Alert } from "../utils/alert";
 import { auth, provider } from "../utils/firebase";
@@ -23,12 +23,12 @@ export const sendOTP = async (credentials :  Partial<IUsers>) =>{
 
     return response;
     
-  } catch (error ) {
-
-
-    
-    return error.response.data
-    
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 
 }
@@ -41,9 +41,10 @@ export const register = async (user: Partial<IUsers>,otp: IOTP) => {
       return response.data.data;
     }
     return null;
-  } catch (error) {
+  }  catch (error: unknown) {
 
-    const responseData = error?.response?.data;
+    if (error instanceof AxiosError) {
+      const responseData = error?.response?.data;
 
     if (responseData?.statusCode === 500) {
     
@@ -65,7 +66,11 @@ export const register = async (user: Partial<IUsers>,otp: IOTP) => {
 
    
     return new Alert(true, "An unexpected error occurred.");
+    } else {
+      return null
+    }
   }
+
 };
 
 
@@ -82,11 +87,12 @@ export const login = async (credential: Partial <IUsers>)=>{
       }
 
 
-  } catch (error) {
-
-    return error.response
-    
-    
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 
 }
@@ -99,10 +105,12 @@ export const signInWithGoogle = async () => {
 
     return response.data
   
-  } catch (error) {
-
-    return error.response
-   
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 };
 
@@ -124,10 +132,12 @@ export const logout = async ()=>{
     
     return null
 
-  } catch (error) {
-
-    return error.response
-
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 
 }
@@ -144,9 +154,12 @@ export const forgotPasswordSendOTP = async (email:string)=>{
 
     return response
     
-  } catch (error) {
-    
-    return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 
 }
@@ -158,9 +171,12 @@ export const forgotPasswordVerifyOTP = async (otp :string,email:string)=>{
 
     return response
     
-  } catch (error) {
-    
-    return error.response
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 }
 
@@ -171,8 +187,11 @@ export const forgotPasswordReset = async (password :string,token:string)=>{
 
     return response
     
-  } catch (error) {
-    
-    return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 }

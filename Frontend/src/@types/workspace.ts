@@ -24,4 +24,7 @@ export interface IWorkspace {
     workingDays:string;
     ownerId: string;
     [key: string]: any;
+    createdAt?: string;
+    updatedAt?: string; 
+    __v?: number; 
   }

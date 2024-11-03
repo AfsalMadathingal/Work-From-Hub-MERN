@@ -270,9 +270,7 @@ const validate = (data: Partial<IUsers>) => {
 export const emailValidate = (email: string) => {
   const { error } = emailSchema.validate({ email });
 
-  ;
-  ;
-  ;
+
   if (error) {
     const formattedErrors: { [key: string]: string } = {};
     error.details.forEach((detail) => {

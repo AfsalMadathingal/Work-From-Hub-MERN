@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import { IBUsers } from "../@types/businessUser";
 import { Alert } from "../utils/alert";
 import { IOTP } from "../@types/otp";
@@ -17,10 +17,12 @@ export const sendOTP = async (credentials :  Partial<IBUsers>) =>{
     const response = await api.post('/api/business/auth/send-otp',credentials)
     return response;
     
-  } catch (error ) {
-
-    return error.response.data
-    
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 
 }
@@ -31,31 +33,35 @@ export const register = async (user: Partial<IBUsers>, otp: IOTP) => {
     const response = await api.post("/api/business/auth/register", { user, otp });
 
     return response.data.success ? response.data.data : null;
-  } catch (error) {
-    const responseData = error?.response?.data;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      const responseData = error?.response?.data;
 
-    if (responseData?.statusCode === 500) {
-      return new Alert(true, responseData.error);
-    }
-
-    try {
-      const errorData = JSON.parse(responseData?.error || "[]");
-
-      if (Array.isArray(errorData)) {
-        const formattedErrors: { [key: string]: string } = {};
-        errorData.forEach((detail: { path: string[]; message: string }) => {
-          if (detail.path?.[0]) {
-            formattedErrors[detail.path[0]] = detail.message;
-          }
-        });
-
-        return formattedErrors;
+      if (responseData?.statusCode === 500) {
+        return new Alert(true, responseData.error);
       }
-    } catch (parseError) {
-      console.error("Error parsing response error:", parseError);
+  
+      try {
+        const errorData = JSON.parse(responseData?.error || "[]");
+  
+        if (Array.isArray(errorData)) {
+          const formattedErrors: { [key: string]: string } = {};
+          errorData.forEach((detail: { path: string[]; message: string }) => {
+            if (detail.path?.[0]) {
+              formattedErrors[detail.path[0]] = detail.message;
+            }
+          });
+  
+          return formattedErrors;
+        }
+      } catch (parseError) {
+        console.error("Error parsing response error:", parseError);
+      }
+  
+      return new Alert(true, "An unexpected error occurred.");
+    } else {
+      return null
     }
-
-    return new Alert(true, "An unexpected error occurred.");
   }
 };
 
@@ -75,11 +81,12 @@ export const login = async (credential: Partial <IBUsers>)=>{
       return null
 
 
-  } catch (error) {
-
-    return error.response
-    
-    
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 
 }
@@ -104,14 +111,14 @@ export const logout = async ()=>{
     
     return null
 
-  } catch (error) {
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
 
-    console.log('====================================');
-    console.log(error.response);
-    console.log('====================================');
+      return null 
 
-    return null
-
+    }
   }
 
 

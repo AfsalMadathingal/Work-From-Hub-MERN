@@ -4,6 +4,7 @@ import '@fontsource/poppins/400.css';
 import '@fontsource/poppins/500.css';
 import '@fontsource/poppins/700.css';
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const theme = createTheme({
   typography: {
     fontFamily: 'Poppins, sans-serif',
@@ -24,7 +25,7 @@ export const theme = createTheme({
   },
 });
 
-export const MuiThemeProvider  = ({ children    }) => (
+export const MuiThemeProvider : React.FC<{ children: React.ReactNode }> = ({ children }) => (
   <ThemeProvider theme={theme}>
     {children}
   </ThemeProvider>

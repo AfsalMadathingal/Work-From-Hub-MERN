@@ -11,49 +11,28 @@ import {
   FaSnowflake,
   FaToilet,
   FaChair,
-  FaTable,
   FaDollarSign,
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { approveWorkspace, rejectWorkspace } from "../../services/adminService";
 import Dialog from "./Dialog";
-import { IBUsers } from "../../@types/businessUser";
+import { notify } from "../../utils/NotificationService";
+import { IWorkspace } from "../../@types/workspace";
 
-interface WorkspaceDetailProps {
-  workspace: {
-    _id: string;
-    buildingName: string;
-    state: string;
-    district: string;
-    location: string;
-    pinCode: string;
-    street: string;
-    contactNo: string;
-    powerBackup: boolean;
-    ac: boolean;
-    bathroom: boolean;
-    photos: string[];
-    video: string;
-    tablesAvailable: number;
-    seatsPerTable: number;
-    ownerId: IBUsers;
-    approved: boolean;
-    createdAt: string;
-    updatedAt: string;
-    rejected: boolean;
-    pricePerSeat: number;
-    __v: number;
-  };
-}
 
-const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
+
+const WorkspaceDetail: React.FC<Partial<IWorkspace>> = ({ workspace }) => {
   const [confirmDialog, setConfirmDialog] = useState<boolean>(false);
   const [onDialogConfirm, setOnDialogConfirm] = useState<() => void>(() => {});
   const [onDialogCancel, setOnDialogCancel] = useState<() => void>(() => {});
   const [dialogTitle, setDialogTitle] = useState<string>("");
   const [dialogMessage, setDialogMessage] = useState<string>("");
   const navigate = useNavigate();
+
+  if (!workspace) {
+    return <div>Loading...</div>;
+  }
 
   const {
     pricePerSeat,
@@ -77,11 +56,37 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     ownerId,
   } = workspace;
 
+
+
   const openInGoogleMaps = () => {
     window.open(`https://www.google.com/maps/search/${location}`, "_blank");
   };
 
   const handleDialog = (action: "approve" | "reject") => {
+
+    if(action === "reject"){
+
+
+        notify.prompt({
+          title: "Enter Reason",
+          label: "Reason",
+          placeholder: "Type your reason here",
+        }).then((reason) => {
+
+
+          if (reason) {
+            handleReject(reason);
+          }
+
+
+        });
+
+        
+        return
+    }
+
+
+
     const config = {
       approve: {
         title: "Approve Workspace",
@@ -118,9 +123,9 @@ const WorkspaceDetail: React.FC<WorkspaceDetailProps> = ({ workspace }) => {
     }
   };
 
-  const handleReject = async () => {
+  const handleReject = async (reason:string) => {
     try {
-      const response = await rejectWorkspace(workspace._id);
+      const response = await rejectWorkspace(workspace._id,reason);
       setConfirmDialog(false);
       if (response.status === 200) {
         navigate(-1);

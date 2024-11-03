@@ -5,7 +5,8 @@ interface QuickFiltersProps {
   onFilterChange: (filters: FilterState) => void;
 }
 
-interface FilterState {
+export interface FilterState {
+  search: string;
   ac: boolean;
   restRoom: boolean;
   powerBackup: boolean;
@@ -22,7 +23,7 @@ const amenities = [
 ];
 
 const QuickFilters: React.FC<QuickFiltersProps> = ({ onFilterChange }) => {
-  const [filters, setFilters] = useState<FilterState>({
+  const [filters, setFilters] = useState<Partial<FilterState>>({
     ac: false,
     restRoom: false,
     powerBackup: false,

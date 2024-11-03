@@ -1,7 +1,6 @@
 
 import { motion } from 'framer-motion';
-
-const AnimatedPage = ({ children }) => {
+const AnimatedPage = ({ children }: { children: React.ReactNode }) => {
   const animations = {
     initial: { opacity: 0, y: 50 },
     animate: { opacity: 1, y: 0 },

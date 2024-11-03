@@ -1,4 +1,5 @@
 
+import { AxiosError } from "axios";
 import { IAdmin } from "../@types/admin";
 import { adminAxiosInstance } from "./instance/adminInstance";
 
@@ -25,11 +26,14 @@ export const login = async (credential: Partial <IAdmin>)=>{
       return null
 
 
-  } catch (error) {
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
 
-    return error.response
-    
-    
+      return null 
+
+    }
   }
 
 }
@@ -53,11 +57,14 @@ export const logout = async ()=>{
     
     return null
 
-  } catch (error) {
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
 
-    return error.response
+      return null 
 
-
+    }
   }
 
 

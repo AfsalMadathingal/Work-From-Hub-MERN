@@ -1,14 +1,13 @@
 import React, { useState } from "react";
 import { CardElement, useStripe, useElements } from "@stripe/react-stripe-js";
-import { userAxiosInstance } from "../../services/instance/userInstance";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import toast from "react-hot-toast";
-import { setModal } from "../../redux/slices/userSlice";
 import ReactLoading from "react-loading";
-import { createPaymentIntentForBooking, updateBookingStatus, updatePaymentStatus } from "../../services/userServices";
+import { createPaymentIntentForBooking, updateBookingStatus } from "../../services/userServices";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { FaCheck } from "react-icons/fa";
+import { IUsers } from "../../@types/user";
 
 interface BookingPaymentFormProps {
   bookingDetails: {
@@ -29,13 +28,12 @@ const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails 
   const [processing, setProcessing] = useState(false);
   const [succeeded, setSucceeded] = useState(false);
   const user = useSelector((state: RootState) => state.user.user as IUsers);
-  const dispatch = useDispatch();
   const [isPaymentStarted, setIsPaymentStarted] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    toast.info("Processing your booking, please do not close this tab or refresh the page.");
+    toast("Processing your booking, please do not close this tab or refresh the page.");
     setProcessing(true);
     try {
       if (!stripe || !elements) {
@@ -49,7 +47,7 @@ const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails 
 
       const response = await createPaymentIntentForBooking(bookingDetails.seatId, bookingDetails.workspaceId, bookingDetails.date);
 
-      const stripeResponse = response.data.data.paymentIntent;
+      const stripeResponse = response?.data.data.paymentIntent;
 
       const { client_secret } = stripeResponse;
 
@@ -65,10 +63,8 @@ const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails 
       } else {
         if (result.paymentIntent.status === "succeeded") {
           setIsPaymentStarted(true);
-         const response = await updateBookingStatus(result, user, bookingDetails, stripeResponse);
-         ;
-         ;
-         ;
+        await updateBookingStatus(result, user, { ...bookingDetails, date: new Date(bookingDetails.date) }, stripeResponse);
+
           setSucceeded(true);
           toast.success("Booking Payment Successful");
           setIsPaymentStarted(false);
@@ -83,7 +79,7 @@ const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails 
 
       setProcessing(false);
     } catch (error) {
-      ;
+      console.error(error);
       setProcessing(false);
       toast.error("Payment Failed, Please Try Again");
    

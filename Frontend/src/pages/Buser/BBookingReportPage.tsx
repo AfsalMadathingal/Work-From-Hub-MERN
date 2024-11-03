@@ -1,4 +1,3 @@
-import React from 'react'
 import BusinessUserLayout from '../../components/businessUser/BusinessUserLayout';
 import BDetailedBookingsReport from '../../components/businessUser/BDetailedBookingsReport';
 

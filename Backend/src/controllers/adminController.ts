@@ -10,6 +10,7 @@ import BookingService from "../services/implementations/BookingServices";
 import { workerData } from "worker_threads";
 import { http } from "winston";
 import { error } from "console";
+import { IWorkspace } from "entities/workspace";
 
 class AdminController {
   private userService: UserService;
@@ -193,9 +194,19 @@ class AdminController {
     try {
       const { id } = req.params;
 
-      const workspaceRejected = await this.workspaceService.rejectWorkspace(id);
+      const {reason  } = req.body;
 
-      if (!workspaceRejected) {
+      const data= {
+        rejected :true,
+        rejectionReason:reason,
+        approved:false,
+      } as IWorkspace
+
+      const updatedWp = await this.workspaceService.findByIdAndUpdate(id,data)
+
+      // const workspaceRejected = await this.workspaceService.rejectWorkspace(id);
+
+      if (!updatedWp) {
         return res
           .status(422)
           .json(new ApiResponse(422, null, "Unprocessable Entity"));
@@ -203,7 +214,9 @@ class AdminController {
 
       return res
         .status(200)
-        .json(new ApiResponse(200, workspaceRejected, "Workspace Rejected successfully"));
+        .json(new ApiResponse(200, updatedWp, "Workspace Rejected successfully"));
+
+        
     } catch (error) {
       next(error);
     }

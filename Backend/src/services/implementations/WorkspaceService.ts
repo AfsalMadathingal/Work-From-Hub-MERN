@@ -32,6 +32,13 @@ export default class WorkspaceService implements IWorkspaceService {
     this.bUserRepository = new BusinessRepository();
   }
 
+  async findByIdAndUpdate(workspaceId: string, data: IWorkspace): Promise<IWorkspace | null> {
+        
+    const ws = await this.workspaceRepository.findByIdAndUpdate(workspaceId,data)
+
+    return ws
+  }
+
   async submitWorkspaceListing(
     req: Request & {
       user: IBusinessUser;

@@ -1,4 +1,4 @@
-import { IWorkspace } from "../@types/workspace";
+import { AxiosError } from "axios";
 import { businessUserApi } from "./instance/BusinessInstance";
 
 
@@ -15,9 +15,12 @@ export const  submitWorkspaceData = async(data : FormData)=>{
 
         return response
         
-    } catch (error) {
-        
-        return error.response
+    }  catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        return error.response;
+      } else {
+        return null
+      }
     }
 
 }
@@ -35,8 +38,12 @@ export const getAllPendingSubmission = async (
       
   
       return response;
-    } catch (error) {
-      return error.response;
+    }  catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        return error.response;
+      } else {
+        return null
+      }
     }
   };
 
@@ -54,8 +61,12 @@ export const getAllPendingSubmission = async (
       
   
       return response;
-    } catch (error) {
-      return error.response;
+    }  catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        return error.response;
+      } else {
+        return null
+      }
     }
   };
   
@@ -71,8 +82,12 @@ export const getAllPendingSubmission = async (
       );
   
       return response;
-    } catch (error) {
-      return error.response;
+    }  catch (error: unknown) {
+      if (error instanceof AxiosError) {
+        return error.response;
+      } else {
+        return null
+      }
     }
   };
 
@@ -83,8 +98,12 @@ export const getBookingsByOwnerId = async (ownerId: string, page: number, itemsP
     );
 
     return response;
-  } catch (error) {
-    return error.response;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 };
 
@@ -95,9 +114,12 @@ export const getDataForDashboard = async()=>{
 
      return response
     
-  } catch (error) {
-
-    return error.response;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 }
 
@@ -110,8 +132,11 @@ export const getDetailedReport = async (filters:URLSearchParams)=>{
 
     return response
 
-  } catch (error) {
-    
-    return error.response
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null
+    }
   }
 }

@@ -3,37 +3,14 @@ import AdminLayout from "../../components/admin/AdminLayout";
 import WorkspaceDetail from "../../components/admin/WorkspaceDetail";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import { getWorkspace, getWorkspaceById } from "../../services/adminService";
+import { getWorkspace } from "../../services/adminService";
 import Loading from "react-loading";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { IWorkspace } from "../../@types/workspace";
 
 const View = () => {
   const { workspaceId } = useParams();
-  const [workspace, setWorkspace] = useState<IWorkspace>({
-    _id: "",
-    buildingName: "",
-    state: "",
-    district: "",
-    location: "",
-    pinCode: "",
-    street: "",
-    contactNo: "",
-    powerBackup: false,
-    ac: false,
-    bathroom: false,
-    tablesAvailable: 0,
-    seatsPerTable: 0,
-    photos: [],
-    video: "",
-    imageAdded: false,
-    videoAdded: false,
-    pricePerSeat: 0,
-    timing: "",
-    workingDays: "",
-    approved: false,
-    ownerId: "",
-  });
+  const [workspace, setWorkspace] = useState<Partial<IWorkspace>>();
    const [loading, setLoading]= useState<boolean>(false);
 
   const fetchWorkspace = async () => {
@@ -49,7 +26,7 @@ const View = () => {
       console.log(response);
       console.log('====================================');
 
-      if (!response.data.data) {
+      if (!response?.data.data) {
         setLoading(false);
         toast.error("Workspace not found");
         return;

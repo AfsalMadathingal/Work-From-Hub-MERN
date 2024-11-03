@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import{ useEffect} from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/adminSlice';

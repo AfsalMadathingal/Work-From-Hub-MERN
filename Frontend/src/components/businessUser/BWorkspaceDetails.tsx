@@ -30,6 +30,8 @@ const WorkspaceDetail = () => {
     approved,
     createdAt,
     pricePerSeat,
+    rejected,
+    rejectionReason
   } = workspace;
 
   return (
@@ -39,13 +41,18 @@ const WorkspaceDetail = () => {
         <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
           {buildingName}
         </h1>
-        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-          approved 
-            ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100"
-            : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100"
-        }`}>
-          {approved ? "Approved" : "Pending"}
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+            approved
+              ? "bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-100"
+              : "bg-red-100 text-red-700 dark:bg-red-900 dark:text-red-100"
+          }`}>
+            {approved && "Approved"}
+            {rejected && "Rejected"}
+            {!approved && !rejected && "Pending"}
+          </span>
+          {rejected && <p className="text-sm text-gray-600 dark:text-gray-300">Reason For Rejection: {rejectionReason}</p>}
+        </div>
       </div>
 
       {/* Main Image */}

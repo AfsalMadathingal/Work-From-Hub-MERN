@@ -1,6 +1,8 @@
 import { adminAxiosInstance } from "./instance/adminInstance";
 import { IUsers } from "../@types/user";
 import { IBUsers } from "../@types/businessUser";
+import { AxiosError } from "axios";
+import { IPlan } from "../@types/plan";
 
 const api = adminAxiosInstance;
 
@@ -20,12 +22,18 @@ export const getPlans = async (
     );
 
     return response;
-  } catch (error) {
-    return error.response;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
-export const createPlan = async (accessToken: string, plan) => {
+export const createPlan = async (accessToken: string, plan : IPlan) => {
 
 
   
@@ -44,8 +52,14 @@ export const createPlan = async (accessToken: string, plan) => {
 export const changePlanStatus = async (id: string, action: string) => {
   try {
     return await api.patch("/api/admin/plan", { id, action });
-  } catch (error) {
-    return error.response;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
@@ -56,8 +70,14 @@ export const getAllUsers = async (page: number, itemsPerPage: number) => {
     );
 
     return response;
-  } catch (error) {
-    return error.response;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
@@ -71,8 +91,14 @@ export const getAllBusinessUsers = async (
     );
 
     return response;
-  } catch (error) {
-    return error.response;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
@@ -83,24 +109,32 @@ export const manageBlockAndUnblock = async (user: IUsers) => {
     );
 
     return response;
-  } catch (error) {
-    return (
-      error.response || { status: 500, data: { message: "An error occurred" } }
-    );
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
 export const blockAndUnblockBUser = async (user: IBUsers | null) => {
   try {
     const response = await adminAxiosInstance.patch(
-      `/api/admin/business-user/block-and-unblock/${user._id}`
+      `/api/admin/business-user/block-and-unblock/${user?._id}`
     );
 
     return response;
-  } catch (error) {
-    return (
-      error.response || { status: 500, data: { message: "An error occurred" } }
-    );
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null
+
+    }
   }
 };
 
@@ -109,8 +143,14 @@ export const EditUser = async (user: IUsers) => {
     const response = await adminAxiosInstance.patch(`/api/admin/users`, user);
 
     return response;
-  } catch (error) {
-    return error.response;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
@@ -122,8 +162,14 @@ export const editBusinessUser = async (user: IUsers) => {
     );
 
     return response;
-  } catch (error) {
-    return error.response;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
@@ -138,8 +184,14 @@ export const searchPlans = async (
     );
 
     return response;
-  } catch (error) {
-    return error.response;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
@@ -156,8 +208,14 @@ export const getAllPendingSubmission = async (
     
 
     return response;
-  } catch (error) {
-    return error.response;
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 };
 
@@ -172,8 +230,14 @@ export const getOwnerById = async (id:string)=>{
 
       return response
 
-  } catch (error) {
-      return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 }
 
@@ -185,22 +249,33 @@ export const approveWorkspace = async (id:string)=>{
 
     return response
 
-  } catch (error) {
-    return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 }
 
-export const rejectWorkspace = async (id:string)=>{
+export const rejectWorkspace = async (id:string,reason:string)=>{
   try {
     
 
-    const response = await api.patch(`/api/admin/reject-workspace/${id}`)
+    const response = await api.patch(`/api/admin/reject-workspace/${id}`,{reason})
 
     return response
 
-  } catch (error) {
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
 
-    return error.response
+      return null 
+
+    }
   }
 }
 
@@ -213,8 +288,14 @@ export const getAllApprovedWorkspaces = async (page: number, itemsPerPage: numbe
 
       return response
 
-  } catch (error) {
-      return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 }
 
@@ -222,8 +303,14 @@ export const validateAdminSession = async ()=>{
   try {
     const response = await adminAxiosInstance.get('/api/admin/validate-session')
     return response
-  } catch (error) {
-    return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 }
 
@@ -235,9 +322,14 @@ export const getAllBookings = async (page: number, itemsPerPage: number) => {
 
     return response
 
-  } catch (error) {
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
 
-    return error.response
+      return null 
+
+    }
   }
 }
 
@@ -249,10 +341,14 @@ export const getDashboardData = async ()=>{
 
     return response; 
 
-  } catch (error) {
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
 
-    return error.response 
+      return null 
 
+    }
   }
 }
 
@@ -264,9 +360,14 @@ export const getDetailedReport = async (filters:URLSearchParams)=>{
 
     return response
 
-  } catch (error) {
-    
-    return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 }
 
@@ -279,8 +380,14 @@ export const getWorkspaceById = async  (id:string) =>{
     return response;
 
     
-  } catch (error) {
-    return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 }
 
@@ -293,7 +400,13 @@ export const getWorkspace  = async  (id:string) =>{
     return response;
 
     
-  } catch (error) {
-    return error.response
+  }  catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+
+      return null 
+
+    }
   }
 }

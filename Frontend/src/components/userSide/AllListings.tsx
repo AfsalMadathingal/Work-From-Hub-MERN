@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
-import QuickFilters from './QuickFilters';
+import QuickFilters, { FilterState } from './QuickFilters';
 import Listings from './Listings';
 
+
+
+
+
 const AllListings: React.FC = () => {
-  const [filters, setFilters] = useState({});
+const [filters, setFilters] = useState<Partial<FilterState>>({});
 
   // Function to update filters
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<FilterState>) => {
     setFilters((prevFilters) => ({
       ...prevFilters,
       ...newFilters,
     }));
 
     // Update the URL parameters without refreshing the page
-    const param = Object.keys(newFilters)
-      .map((key) => `${key}=${newFilters[key]}`)
-      .join('&');
+ const param = Object.keys(newFilters)
+   .map((key) => `${key}=${newFilters[key as keyof FilterState]}`)
+   .join('&');
 
     window.history.pushState({}, '', `?${param}`);
   };
@@ -27,11 +31,11 @@ const AllListings: React.FC = () => {
     const params = new URLSearchParams(url.search);
 
     // Convert URLSearchParams to an object and set as initial filters
-    const initialFilters = {};
+    // Convert URLSearchParams to an object and set as initial filters
+    const initialFilters: { [key: string]: string } = {};
     params.forEach((value, key) => {
       initialFilters[key] = value;
     });
-
     // Set filters if query params exist
     if (Object.keys(initialFilters).length > 0) {
       setFilters(initialFilters);
@@ -44,7 +48,7 @@ const AllListings: React.FC = () => {
         {/* Search Section with Glass Effect */}
         <div className="backdrop-blur-lg bg-white/80 dark:bg-gray-800/80 rounded-2xl shadow-lg p-4 mb-8">
           <SearchBar
-            onSearch={(searchQuery) => handleFilterChange({ search: searchQuery })}
+          onSearch={(searchQuery) => handleFilterChange({ ...filters, search: searchQuery } as Partial<FilterState>)}
             defaultValue={filters.search || ''}
           />
         </div>

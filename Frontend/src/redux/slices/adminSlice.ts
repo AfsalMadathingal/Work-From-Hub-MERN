@@ -54,7 +54,7 @@ const adminSlice = createSlice({
 
 });
 
-export const { setUser, setLoading, setError ,setIsAuthenticated , setTempData, setAccessToken ,setModal , setFormData , resetAdmin ,setPageTitle , setModalConfig} = adminSlice.actions;
+export const { setUser, setLoading, setError ,setIsAuthenticated , setTempData, setAccessToken ,setModal , setFormData , resetAdmin ,setPageTitle } = adminSlice.actions;
 
 export default adminSlice.reducer;
 

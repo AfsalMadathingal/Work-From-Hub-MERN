@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import loginSchema from "../../utils/userValidator";
-import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
-import { PRIMARY_COLOR } from "../../constant/colors";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setLoading,
@@ -32,9 +29,13 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
-  const { loading, error, isAuthenticated } = useSelector(
+  const { loading} = useSelector(
     (state: RootState) => state.user
   );
+  const error: {
+    email?: string;
+    password?: string;
+  } = useSelector((state: RootState) => state.user.error);
   const [otpToken, setOtpToken] = useState("");
   const [resetPassword, setResetPassword] = useState(false);
   const dispatch = useDispatch();
@@ -57,7 +58,7 @@ const LoginPage: React.FC = () => {
       const response = await login({ email, password });
 
       if (response.success) {
-        const { userFound, accessToken, refreshToken } = response.data;
+        const { userFound, accessToken } = response.data;
         localStorage.setItem("accessToken", accessToken);
         dispatch(setUser(userFound));
         dispatch(setIsAuthenticated(true));
@@ -94,18 +95,19 @@ const LoginPage: React.FC = () => {
         toast.success("something Went Wrong");
       }
     } catch (error) {
+      console.error(error);
       dispatch(setLoading(false));
       toast.error("Something went Wrong!");
       ;
     }
   };
 
-  const handleForgotPassword = async (email) => {
+  const handleForgotPassword = async (email : string) => {
     dispatch(setLoading(true));
 
     const response = await forgotPasswordSendOTP(email);
 
-    if (response?.status == 400 || response.status == 500) {
+    if (response?.status == 400 || response?.status == 500) {
       toast.error(
         response.status == 500
           ? response.data.error
@@ -139,7 +141,7 @@ const LoginPage: React.FC = () => {
 
       const response = await forgotPasswordVerifyOTP(otp, email);
 
-      if (response.data.statusCode == 400 || response.data.statusCode == 500) {
+      if (response?.data.statusCode == 400 || response?.data.statusCode == 500) {
         toast.error(response.data.message || "Enter valid OTP");
       }
 

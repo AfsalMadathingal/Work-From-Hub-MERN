@@ -57,7 +57,6 @@ const PaymentForm: React.FC = ({ activePlan }) => {
         setError(result.error.message as string);
       } else {
         if (result.paymentIntent.status === "succeeded") {
-          ;
           setIsPaymentStarted(true);
           await updatePaymentStatus(result,user,stripeResponse)
           setSucceeded(true);

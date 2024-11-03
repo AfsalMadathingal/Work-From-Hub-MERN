@@ -5,33 +5,64 @@ import toast from "react-hot-toast";
 import { getAllWorkspaces } from "../../services/BuserService";
 import { logout } from "../../services/adminAuth";
 import type { IWorkspace } from "../../@types/workspace";
+import { notify } from "../../utils/NotificationService";
 
 const WorkspaceListing = () => {
   const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [limit] = useState(5);
+  const [activeFilter, setActiveFilter] = useState('all');
+  const [filteredWorkspaces, setFilteredWorkspaces] = useState<IWorkspace[]>([]);
+  
+   const handleViewReason = async (workspace: IWorkspace) => {
+    
+     notify.info(`Reason: ${workspace.rejectionReason}`);
+
+  };
 
   useEffect(() => {
     fetchWorkspaces(currentPage);
+
   }, [currentPage]);
+
+  useEffect(() => {
+    filterWorkspaces();
+  }, [workspaces, activeFilter]);
 
   const fetchWorkspaces = async (page: number) => {
     try {
       const response = await getAllWorkspaces(page, limit);
       if (response.status === 200) {
-        const filteredData = response.data.data.filter(
-          (workspace: IWorkspace) => !workspace.approved
-        );
-        setWorkspaces(filteredData);
+        setWorkspaces(response.data.data);
         setTotalPages(response.data.data.totalPages);
       } else if (response.status === 401) {
+
         await logout();
         toast.error("Session expired");
       }
     } catch (error) {
+
       toast.error("Failed to fetch workspaces");
     }
+  };
+
+  const filterWorkspaces = () => {
+    let filtered = [...workspaces];
+    switch (activeFilter) {
+      case 'pending':
+        filtered = workspaces.filter(w => !w.approved && !w.rejected);
+        break;
+      case 'approved':
+        filtered = workspaces.filter(w => w.approved);
+        break;
+      case 'rejected':
+        filtered = workspaces.filter(w => w.rejected);
+        break;
+      default:
+        break;
+    }
+    setFilteredWorkspaces(filtered);
   };
 
   const getStatusBadgeClass = (workspace: IWorkspace) => {
@@ -46,9 +77,30 @@ const WorkspaceListing = () => {
     return "Pending";
   };
 
+  const FilterButton = ({ status, label }: { status: string; label: string }) => (
+    <button
+      onClick={() => setActiveFilter(status)}
+      className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 
+        ${activeFilter === status 
+          ? 'bg-blue-500 text-white shadow-sm' 
+          : 'bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700'
+        }`}
+    >
+      {label}
+    </button>
+  );
+
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Filter Buttons */}
+        <div className="mb-6 flex flex-wrap gap-3">
+          <FilterButton status="all" label="All Workspaces" />
+          <FilterButton status="pending" label="Pending" />
+          <FilterButton status="approved" label="Approved" />
+          <FilterButton status="rejected" label="Rejected" />
+        </div>
+
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
@@ -63,14 +115,19 @@ const WorkspaceListing = () => {
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Status
                   </th>
+                  {activeFilter === "rejected" && (
+                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                      Rejection Reason
+                    </th>
+                  )}
                   <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
               <tbody className="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
-                {workspaces.length > 0 ? (
-                  workspaces.map((workspace) => (
+                {filteredWorkspaces.length > 0 ? (
+                  filteredWorkspaces.map((workspace) => (
                     <tr 
                       key={workspace._id}
                       className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
@@ -96,6 +153,14 @@ const WorkspaceListing = () => {
                           {getStatusText(workspace)}
                         </span>
                       </td>
+
+                      {activeFilter === "rejected" && (
+                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-300">
+                          <button 
+                          onClick={() => handleViewReason(workspace)}
+                          className="text-blue-500 hover:text-blue-600">View Reason</button>
+                        </td>
+                      )}
                       <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
                         <div className="flex items-center justify-end space-x-3">
                           <Link
@@ -121,7 +186,7 @@ const WorkspaceListing = () => {
                       colSpan={4} 
                       className="px-6 py-4 text-center text-sm text-gray-500 dark:text-gray-400"
                     >
-                      No pending submissions found
+                      No {activeFilter !== 'all' ? activeFilter : ''} workspaces found
                     </td>
                   </tr>
                 )}

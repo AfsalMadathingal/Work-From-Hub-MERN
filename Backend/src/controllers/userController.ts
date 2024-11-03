@@ -521,10 +521,6 @@ class UserController {
 
       const bookings = await this.bookingService.getBookingsByUserId(userId)
 
-      console.log('================bookings====================');
-      console.log(bookings);
-      console.log('====================================');
-
       return res
         .status(200)
         .json(new ApiResponse(200, bookings, "fetched successfully"));
@@ -535,7 +531,9 @@ class UserController {
   };
 
   public getSeatById = async (req: Request, res: Response, next: NextFunction) => {
+  
     try {
+
 
       const { id } = req.params;
 
@@ -553,6 +551,8 @@ class UserController {
 
     } catch (error) {
       next(error);
+
+
     }
   };
 
@@ -609,6 +609,10 @@ class UserController {
       const { bookingId } = req.params;
 
 
+
+      console.log('====================================');
+      console.log(bookingId);
+      console.log('====================================');
 
 
       

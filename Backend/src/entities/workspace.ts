@@ -20,6 +20,9 @@ export interface IWorkspace extends Document {
   updatedAt?: Date;
   approved?:boolean;
   rejected?:boolean;
+  rejectionReason?:string;
+  isOnHold?:boolean;
+  holdingReason?:string;
   listed?:boolean;
   pricePerSeat?:number;
   timing?:string;

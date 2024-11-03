@@ -6,46 +6,49 @@ import FAQAccordion from "../../components/userSide/Faq";
 
 const LandingPage: React.FC = () => {
   return (
-    <>
-      <Navbar />
-      <div className="bg-beige min-h-screen m-0 px-56  dark:bg-gray-900 dark:text-white">
+    <div className="flex flex-col min-h-screen">
+    <Navbar />
+    <main className="flex-grow bg-beige dark:bg-gray-900 dark:text-white">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Hero Section */}
-        <section className="container mx-auto flex flex-col md:flex-row items-center  space-y-6 md:space-y-0 md:space-x-12">
-          <div className="flex-1 text-center md:text-left px-4">
-            <h2 className="text-3xl md:text-5xl font-bold text-gray-900 dark:text-white">
-              Tired of working alone?
-            </h2>
-            <p className="text-gray-600 mt-4 md:mt-6 leading-relaxed text-lg dark:text-gray-300">
-              Join our vibrant workspaces to connect with like-minded professionals and spark your social life!
-            </p>
-            <div className="mt-6 flex flex-col md:flex-row justify-center md:justify-start space-y-4 md:space-y-0 md:space-x-4">
-              <Link to="/login">
-                <button className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition-all">
-                  Book a seat
-                </button>
-              </Link>
-              <a href="tel:+91123456789">
-                <button className="border border-orange-500 text-orange-500 hover:bg-orange-100 px-6 py-3 rounded-lg transition-all">
-                  Call Us
-                </button>
-              </a>
+        <section className="mb-12">
+          <div className="flex flex-col md:flex-row items-center gap-8 md:gap-12">
+            <div className="flex-1 text-center md:text-left">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white">
+                Tired of working alone?
+              </h2>
+              <p className="text-gray-600 dark:text-gray-300 mt-4 md:mt-6 text-base lg:text-lg">
+                Join our vibrant workspaces to connect with like-minded professionals and spark your social life!
+              </p>
+              <div className="mt-6 flex flex-col sm:flex-row justify-center md:justify-start gap-4">
+                <Link to="/login">
+                  <button className="w-full sm:w-auto bg-orange-500 hover:bg-orange-600 text-white px-6 py-3 rounded-lg transition-all">
+                    Book a seat
+                  </button>
+                </Link>
+                <a href="tel:+91123456789" className="w-full sm:w-auto">
+                  <button className="w-full sm:w-auto border border-orange-500 text-orange-500 hover:bg-orange-100 px-6 py-3 rounded-lg transition-all">
+                    Call Us
+                  </button>
+                </a>
+              </div>
             </div>
-          </div>
-          <div className="flex-1 px-4">
-            <img
-              src="hero-1.png"
-              alt="Working alone"
-              className="w-full h-auto object-cover"
-            />
+            <div className="flex-1">
+              <img
+                src="hero-1.png"
+                alt="Working alone"
+                className="w-full h-auto object-cover rounded-lg"
+              />
+            </div>
           </div>
         </section>
 
         {/* Info Section */}
-        <section className="container mx-auto mt-12 bg-white p-8 rounded-lg shadow-lg dark:bg-gray-800">
+        <section className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 sm:p-8 mb-12">
           <h3 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white text-center">
             What Is <span className="text-orange-500">Work From Hub?</span>
           </h3>
-          <p className="text-gray-600 mt-4 md:mt-6 leading-relaxed text-lg dark:text-gray-300 text-center">
+          <p className="text-gray-600 dark:text-gray-300 mt-4 md:mt-6 text-base lg:text-lg text-center max-w-4xl mx-auto">
             Welcome to WorkFromHub, your ultimate solution for remote workspaces!
             At WorkFromHub, we understand the challenges of working from home,
             such as isolation, distractions, and power issues. Our platform
@@ -60,12 +63,13 @@ const LandingPage: React.FC = () => {
         </section>
 
         {/* FAQ Section */}
-        <section className="container p-5 ">
+        <section className="mb-12">
           <FAQAccordion />
         </section>
       </div>
-      <Footer />
-    </>
+    </main>
+    <Footer />
+  </div>
   );
 };
 

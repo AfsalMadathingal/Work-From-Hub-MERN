@@ -20,6 +20,7 @@ import { PRIMARY_COLOR } from "../../constant/colors";
 import OTPForm from "../../components/userSide/OTPForm";
 import AnimatedPage from "../../components/Animation";
 import { Image } from "@nextui-org/react";
+import axios from "axios";
 
 const UserRegister: React.FC = () => {
   const [fullName, setFullName] = useState("");
@@ -27,9 +28,16 @@ const UserRegister: React.FC = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const dispatch = useDispatch();
-  const { loading, modal, error } = useSelector(
+  const { loading, modal } = useSelector(
     (state: RootState) => state.user
   );
+
+  const error :{
+    fullName?: string;
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+  } = useSelector((state: RootState) => state.user.error);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,13 +62,15 @@ const UserRegister: React.FC = () => {
       dispatch(setError({}));
       dispatch(setFormData({ fullName, email, password }));
 
-      const otpResponse = await sendOTP({ fullName, email, password });
-
-      if (otpResponse?.status === 200) {
-        dispatch(setModal(true));
-      } else if (otpResponse?.error) {
-        toast.error(otpResponse.error);
-      }
+     const otpResponse = await sendOTP({ fullName, email, password });
+     
+     if (axios.isAxiosError(otpResponse)) {
+       toast.error(otpResponse.message);
+     } else if (otpResponse?.status === 200) {
+       dispatch(setModal(true));
+     } else {
+       toast.error("Something went wrong");
+     }
 
       dispatch(setLoading(false));
     } catch (error) {

@@ -1,7 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
-import { PRIMARY_COLOR } from "../../constant/colors";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setLoading,
@@ -21,8 +19,12 @@ const BusinessLogin: React.FC = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const navigate = useNavigate();
-  const { loading, error , } = useSelector((state: RootState) => state.businessUser);
+  const { loading } = useSelector((state: RootState) => state.businessUser);
   const dispatch = useDispatch();
+  const error :{
+    email?: string;
+    password?: string
+  } = useSelector((state: RootState) => state.businessUser.error);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

@@ -5,18 +5,17 @@ import { useDispatch, useSelector } from "react-redux";
 import { setLoading } from "../../redux/slices/userSlice";
 import toast from "react-hot-toast";
 import {
-  createPaymentIntentForBooking,
   getAvailableSeats,
   getSingleWorkspace,
   reserveSeatAPI,
 } from "../../services/userServices";
 import { IWorkspace } from "../../@types/workspace";
-import { loadStripe } from "@stripe/stripe-js";
 import BookingPaymentForm from "./BookingPaymentForm";
 import { RootState } from "../../redux/store/store";
 import PaymentSuccessModal from "./PaymentSuccessModal";
+import { ISeat } from "../../@types/seat";
 
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PK);
+
 
 const BookingPaymentPage = () => {
   const [couponCode, setCouponCode] = useState("");
@@ -26,11 +25,10 @@ const BookingPaymentPage = () => {
   const [paymentModal, setPaymentModal] = useState(false);
   const [paymentSuccess, setPaymentSuccess] = useState(false);
   const { user } = useSelector((state: RootState) => state.user);
-  const [tables, setTables] = useState<any[]>([]);
-  const [availableSeats, setAvailableSeats] = useState<string[]>([]);
-  const [clientSecret, setClientSecret] = useState<string | null>(null);
+
+
   const { id } = useParams();
-  const timerId = React.useRef(null);
+const timerId = React.useRef<Timeout>(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -40,10 +38,14 @@ const BookingPaymentPage = () => {
   const date = searchParams.get("date");
 
   useEffect(() => {
-    fetchAvailableSeats(date, seatId, id);
+    fetchAvailableSeats(date as string, id as string);
     reserveSeat();
     startTimer();
-    return () => clearInterval(timerId.current);
+    return () => {
+      if (timerId.current !== null) {
+        clearInterval(timerId.current);
+      }
+    };
   }, []);
 
   const closePaymentModal = () => {
@@ -64,7 +66,7 @@ const BookingPaymentPage = () => {
     }, 1000);
   };
 
-  const fetchAvailableSeats = async (selectedDate, seatId, id) => {
+const fetchAvailableSeats = async (selectedDate: string, id : string) => {
     try {
       dispatch(setLoading(true));
       const [workspaceResponse, seatsAvailableResponse] = await Promise.all([
@@ -73,16 +75,16 @@ const BookingPaymentPage = () => {
       ]);
 
       if (
-        workspaceResponse.status === 200 &&
-        seatsAvailableResponse.status === 200
+        workspaceResponse?.status === 200 &&
+        seatsAvailableResponse?.status === 200
       ) {
         const seatData = seatsAvailableResponse.data.data;
 
         const availableSeatsArray = seatData
-          .filter((seat) => !seat.availability[selectedDate])
-          .map((seat) => `${seat.tableNumber}-${seat.seatNumber}`);
+          .filter((seat :{ availability: {[key: string]: boolean}}) => !seat.availability[selectedDate])
+          .map((seat : ISeat) => `${seat.tableNumber}-${seat.seatNumber}`);
 
-        setAvailableSeats(availableSeatsArray);
+;
 
         const groupedTables = seatData.reduce((tables, seat) => {
           let table = tables.find((t) => t.tableNumber === seat.tableNumber);
@@ -95,7 +97,7 @@ const BookingPaymentPage = () => {
           return tables;
         }, []);
 
-        setTables(groupedTables);
+
         setWorkspace(workspaceResponse.data.data);
         setAmount(workspaceResponse.data.data.pricePerSeat); // Assuming amount is based on workspace price
       }
