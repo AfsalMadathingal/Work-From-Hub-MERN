@@ -192,7 +192,7 @@ const LoginPage: React.FC = () => {
 
   useEffect(() => {
     dispatch(setError({}));
-  }, []);
+  }, [dispatch]);
 
   return (
     <>

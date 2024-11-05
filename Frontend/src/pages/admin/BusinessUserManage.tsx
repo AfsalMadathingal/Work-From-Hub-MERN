@@ -11,7 +11,7 @@ const BusinessUserManage : React.FC = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Business User Management"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { passwordChangeValidator, validatePassword } from '../../utils/userValidator';
+import { useState } from 'react';
+import { passwordChangeValidator } from '../../utils/userValidator';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { changePassword } from '../../services/userServices';
@@ -8,11 +8,12 @@ import { FaEye, FaEyeSlash } from 'react-icons/fa';
 import { setLoading } from '../../redux/slices/userSlice';
 import ReactLoading from 'react-loading';
 
-const PasswordResetModal = ({ isOpen, onClose }) => {
+const PasswordResetModal: React.FC<{ isOpen: boolean; onClose: () => void }> = ({ isOpen, onClose }) => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [error,setError] = useState({});
+  const [error,setError] = useState<
+    { [key: string]: string }>({});
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -24,7 +25,7 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     dispatch(setLoading(true));
     // Handle password change logic here
@@ -47,13 +48,26 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
 
     try {
 
-        const response = await changePassword(currentPassword, newPassword , user?.email);
+        try {
+
+          if (user && user.email) {
+            const response = await changePassword(currentPassword, newPassword, user.email);
+            if (response?.status === 200) {
+              toast.success(response.data.message);
+              onClose();
+             
+          } 
+          } else {
+            toast.error("something went wrong");
+            console.error("User or email is undefined");
+          }
+        } catch (error) {
+
+          toast.error("something went wrong");
+          console.error(error);
+        }
         
-        if (response.status === 200) {
-            toast.success(response.data.message);
-            onClose();
-           
-        } 
+        
 
         
 
@@ -61,6 +75,8 @@ const PasswordResetModal = ({ isOpen, onClose }) => {
         dispatch(setLoading(false));
 
     } catch (error) {
+      console.log(error);
+      
       clearFields();
         toast.error("Something went wrong");
         

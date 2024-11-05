@@ -52,10 +52,14 @@ const BuildingForm: React.FC = () => {
     libraries: ["places"],
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, type, files } = e.target;
-
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, type } = e.target;
+    
     if (type === "file") {
+      const files = (e.target as HTMLInputElement).files;
+      
       if (name === "photos") {
         const photoFiles = files ? Array.from(files) : null;
         setFormData((prev) => ({
@@ -63,8 +67,7 @@ const BuildingForm: React.FC = () => {
           [name]: photoFiles,
           imageAdded: true,
         }));
-
-        // Create photo previews
+  
         if (photoFiles) {
           const newPreviews = photoFiles.map(file => URL.createObjectURL(file));
           setPreviews(prev => ({
@@ -79,8 +82,7 @@ const BuildingForm: React.FC = () => {
           [name]: videoFile,
           videoAdded: true,
         }));
-
-        // Create video preview
+  
         if (videoFile) {
           setPreviews(prev => ({
             ...prev,
@@ -88,10 +90,15 @@ const BuildingForm: React.FC = () => {
           }));
         }
       }
+    } else if (type === "checkbox") {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: (e.target as HTMLInputElement).checked,
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
-        [name]: type === "checkbox" ? e.target.checked : e.target.value,
+        [name]: e.target.value,
       }));
     }
   };

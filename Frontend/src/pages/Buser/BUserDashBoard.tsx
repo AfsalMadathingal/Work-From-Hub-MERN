@@ -12,7 +12,7 @@ const BUserDashBoard = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Dashboard"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

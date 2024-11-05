@@ -9,7 +9,19 @@ import ListingCard from './ListingCard';
 import ListingCardSkeleton from './ListingCardSkeloton';
 import NotFound from './NotFound';
 
-const Listings: React.FC<{ filters: any }> = ({ filters }) => {
+interface Filters {
+  search?: string;
+  location?: string;
+  ac?: string;
+  restRoom?: string;
+  powerBackup?: string;
+  wifiAvailable?: string;
+  rating?: string;
+  price?: string;
+}
+
+
+const Listings: React.FC<{ filters: Filters }> = ({ filters }) => {
   const [listings, setListings] = useState<IWorkspace[]>([]);
   const { loading } = useSelector((state: RootState) => state.user);
   const [currentPage, setCurrentPage] = useState(1);
@@ -18,13 +30,13 @@ const Listings: React.FC<{ filters: any }> = ({ filters }) => {
   const dispatch = useDispatch();
   const prevFiltersRef = useRef(filters);
 
-  const fetchListings = async (filters: any, page = 1) => {
+  const fetchListings = async (filters: Filters, page = 1) => {
     try {
       dispatch(setLoading(true));
       const response = await getWorkspace(page, filters, listPerLoad);
       await new Promise((resolve) => setTimeout(resolve, 300));
       
-      if (response.status === 200) {
+      if (response?.status === 200) {
         const newWorkspaces = response.data.data.approvedWorkspaces || response.data.data;
         const total = response.data.data.totalPages;
         
@@ -36,6 +48,7 @@ const Listings: React.FC<{ filters: any }> = ({ filters }) => {
         toast.error("Failed to fetch listings");
       }
     } catch (error) {
+      console.log(error);
       toast.error("An error occurred while fetching listings");
     } finally {
       dispatch(setLoading(false));
@@ -48,17 +61,19 @@ const Listings: React.FC<{ filters: any }> = ({ filters }) => {
       setCurrentPage(nextPage);
       fetchListings(filters, nextPage);
     } else {
-      toast.info("No more listings to load");
+      toast("No more listings to load");
     }
   };
 
   useEffect(() => {
+   
     if (prevFiltersRef.current !== filters) {
       setCurrentPage(1);
       setListings([]);
       fetchListings(filters, 1);
     }
     prevFiltersRef.current = filters;
+    
   }, [filters]);
 
   return (

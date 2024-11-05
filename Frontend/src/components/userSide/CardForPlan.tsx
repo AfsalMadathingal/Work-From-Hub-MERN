@@ -1,10 +1,12 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import styled from "styled-components";
 import { fetchActivePlan } from "../../services/userServices";
+import { IPlan } from "../../@types/plan";
 
-const CardForPlan = ({ setIsSubscribeClicked }) => {
-  const [activePlan, setActivePlan] = useState<any>(null);
+const CardForPlan = ({ setIsSubscribeClicked }: { setIsSubscribeClicked: (value: boolean) => void }) => {
+
+  const [activePlan, setActivePlan] = useState< IPlan>({} as IPlan);
 
   const getActivePlan = async () => {
     try {
@@ -12,13 +14,13 @@ const CardForPlan = ({ setIsSubscribeClicked }) => {
       ;
 
       // Fix the typo: use `statusCode` instead of `statusCose`
-      if (response.status === 200) {
+      if (response?.status === 200) {
         setActivePlan(response.data.data);
       } else {
         toast.error("Failed to fetch active plan.");
       }
     } catch (error) {
-      ;
+      console.log(error);
       toast.error("An error occurred while fetching the plan.");
     }
   };

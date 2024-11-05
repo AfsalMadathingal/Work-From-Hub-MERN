@@ -12,7 +12,7 @@ const BUserBookingHistory = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Bookings"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

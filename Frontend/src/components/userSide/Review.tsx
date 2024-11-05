@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import { createReview } from '../../services/userServices';
 import { reviewValidator } from '../../utils/userValidator';
@@ -23,12 +22,14 @@ const ReviewForm = ({ workspaceId }: { workspaceId: string }) => {
 
     const response = await  createReview(rating,comment,workspaceId)
 
-    if(response.data.success){
+    if(response?.data.success){
 
       toast.success('Review submitted successfully!');
       return;
     }
     } catch (err) {
+
+      console.log(err);
 
       toast.error('Something went wrong!');
     }

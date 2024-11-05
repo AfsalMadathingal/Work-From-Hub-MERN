@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Pencil as PencilIcon, Plus } from 'lucide-react';
 import { toast } from 'react-hot-toast';
@@ -9,12 +9,15 @@ import { validateEditing } from '../../utils/userValidator';
 import { IUsers } from '../../@types/user';
 import ProfileEdit from './ProfileEdit';
 
+
+
 const ProfileDetails = () => {
-  const { user, error } = useSelector((state: RootState) => state.user);
+  const user  = useSelector((state: RootState) => state.user.user);
   const [isEdit, setIsEdit] = useState(false);
   const dispatch = useDispatch();
 
-  const handleEdit = async (userForEdit: IUsers) => {
+
+  const handleEdit = async (userForEdit: Partial<IUsers>) => {
     dispatch(setLoading(true));
 
     const validationError = validateEditing(userForEdit);
@@ -25,15 +28,15 @@ const ProfileDetails = () => {
     }
 
     const userWithId = { ...userForEdit, id: user?._id };
-    const response = await editUserData(userWithId);
+    const response = await editUserData(userWithId as unknown as IUsers);
 
-    if (response.status === 409) {
+    if (response?.status === 409) {
       dispatch(setLoading(false));
       toast.error(response.data.message);
       return null;
     }
 
-    if (response.status === 200) {
+    if (response?.status === 200) {
       dispatch(setLoading(false));
       dispatch(setUser(response.data.data));
       setIsEdit(false);
@@ -77,7 +80,7 @@ const ProfileDetails = () => {
 
   return (
     <>
-      {isEdit && (
+      {isEdit && user && (
         <ProfileEdit
           isOpen={isEdit}
           user={user}
@@ -117,11 +120,12 @@ const ProfileDetails = () => {
                 onClick={() => setIsEdit(true)} 
               />
               
-              <ProfileField 
-                label="BIRTHDAY" 
-                value={user?.date_of_birth} 
-                onClick={() => setIsEdit(true)} 
-              />
+          <ProfileEdit
+            isOpen={isEdit}
+            user={user}
+            onConfirm={handleEdit}
+            onCancel={() => setIsEdit(false)}
+          />
               
               <ProfileField 
                 label="GENDER" 

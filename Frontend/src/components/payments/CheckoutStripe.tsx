@@ -1,6 +1,5 @@
 import React from 'react';
 import { useStripe } from '@stripe/react-stripe-js';
-import axios from 'axios';
 import { userAxiosInstance } from '../../services/instance/userInstance';
 
 interface CheckoutButtonProps {

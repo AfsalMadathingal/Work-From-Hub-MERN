@@ -12,7 +12,7 @@ const SubmitNewWorkspace = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Submit New Workspace"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

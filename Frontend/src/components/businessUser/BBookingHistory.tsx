@@ -2,22 +2,45 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import toast from 'react-hot-toast';
 import ReactLoading from 'react-loading';
+import { getBookingsByOwnerId } from '../../services/BuserService';
+import { RootState } from '../../redux/store/store';
+import { IUsers } from '../../@types/user';
+import { ISeat } from '../../@types/seat';
+import { IWorkspace } from '../../@types/workspace';
+import { IBUsers } from '../../@types/businessUser';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
-import { getBookingsByOwnerId } from '../../services/BuserService';
-import BookingDetailsModal from '../admin/BookingDetailsModal';
-import { RootState } from '../../redux/store/store';
+import { UserOptions } from 'jspdf-autotable';
+import BBookingDetailsModal from './BBookingDeatailsModal';
+
+// Define the table options type
+interface jsPDFWithPlugin extends jsPDF {
+  autoTable: (options: UserOptions) => jsPDFWithPlugin;
+}
 
 interface Booking {
   workspaceName: string;
   userInfo: IUsers[];
-  seatInfo: ISeat[];
+  seatInfo: Partial<ISeat>[];
   workspaceInfo: IWorkspace;
   date: string;
   amount: string;
   status: string;
   paymentIntentId: string;
+  paymentMethod: string;
+  paymentStatus: string;
 }
+
+// interface Bookings {
+//   workspaceName: string;
+//   userId: IUsers;
+//   seatId: ISeat;
+//   workspaceId: IWorkspace;
+//   date: string;
+//   amount: string;
+//   status: string;
+//   paymentIntentId: string;
+// }
 
 const BBookingHistory: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -25,42 +48,46 @@ const BBookingHistory: React.FC = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [loading, setLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
-  const { user } = useSelector((state: RootState) => state.businessUser);
+  const [selectedBooking, setSelectedBooking] = useState<Booking>({} as Booking);
+  const  user:IBUsers  = useSelector((state: RootState) => state.businessUser.user);
   const bookingsPerPage = 8;
 
-  const fetchBookings = async (page: number) => {
-    try {
-      setLoading(true);
-      const response = await getBookingsByOwnerId(user?._id, page, bookingsPerPage);
-      if (response.status === 200) {
-        setBookings(response.data.data);
-        setTotalPages(Math.ceil(response.data.data.totalBookings / bookingsPerPage));
-      }
-      setLoading(false);
-    } catch (error) {
-      setLoading(false);
-      toast.error('An error occurred while fetching bookings');
-    }
-  };
+
 
   useEffect(() => {
+    const fetchBookings = async (page: number) => {
+      try {
+        setLoading(true);
+        const response = await getBookingsByOwnerId(user?._id, page, bookingsPerPage);
+        if (response?.status === 200) {
+          setBookings(response.data.data);
+          setTotalPages(Math.ceil(response.data.data.totalBookings / bookingsPerPage));
+        }
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching bookings:', error);
+        setLoading(false);
+        toast.error('An error occurred while fetching bookings');
+      }
+    };
     fetchBookings(currentPage);
-  }, [currentPage]);
+  }, [currentPage, user?._id]);
 
   const handleDownloadInvoice = (booking: Booking) => {
-    const doc = new jsPDF();
-    
+    // Cast the document to include autoTable
+    const doc = new jsPDF() as jsPDFWithPlugin;
+      
     doc.setFontSize(18);
     doc.setTextColor('#ff6f00');
     doc.text('INVOICE', 105, 20, { align: 'center' });
-    
+      
     doc.setFontSize(12);
     doc.setTextColor('#000000');
     doc.text(`Workspace: ${booking.workspaceInfo?.buildingName}`, 20, 55);
     doc.text(`Date: ${new Date().toLocaleDateString()}`, 20, 65);
     doc.text(`Transaction ID: ${booking.paymentIntentId}`, 20, 75);
-    
+      
+    // Now TypeScript knows about autoTable
     doc.autoTable({
       head: [['Booking Details', 'Description']],
       body: [
@@ -73,19 +100,19 @@ const BBookingHistory: React.FC = () => {
       startY: 90,
       theme: 'striped',
     });
-    
+      
     doc.save('invoice.pdf');
   };
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8">
-      {isModalOpen && (
-        <BookingDetailsModal
-          booking={selectedBooking}
-          onClose={() => setIsModalOpen(false)}
-        />
-      )}
-      
+    {isModalOpen && (
+      <BBookingDetailsModal
+        isOpen={isModalOpen}
+        booking={selectedBooking}
+        onClose={() => setIsModalOpen(false)}
+      />
+    )}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
@@ -111,7 +138,7 @@ const BBookingHistory: React.FC = () => {
                     </td>
                   </tr>
                 ) : (
-                  bookings?.map((booking, index) => (
+                  bookings?.map((booking , index) => (
                     <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                         {booking.workspaceInfo?.buildingName}

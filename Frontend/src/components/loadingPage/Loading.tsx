@@ -1,17 +1,16 @@
-// Example.tsx
-import React from 'react';
+import { LoadingType } from 'react-loading';
 import ReactLoading from 'react-loading';
 
 interface LoadingProps {
-  type: string;
+  type: LoadingType;
   color: string;
-  transparent:boolean;
+  transparent: boolean;
 }
 
-const LoadingPageWithReactLoading: React.FC<LoadingProps> = ({ type, color , transparent=false}) => {
+const LoadingPageWithReactLoading: React.FC<LoadingProps> = ({ type, color, transparent = false }) => {
   return (
-    <div className={ transparent? `fixed inset-0 flex items-center justify-center bg-black bg-opacity-50` : `loading-screen h-screen flex justify-center items-center`}>
-      <ReactLoading type={type}   color={color} height={60} width={60} />
+    <div className={transparent ? `fixed inset-0 flex items-center justify-center bg-black bg-opacity-50` : `loading-screen h-screen flex justify-center items-center`}>
+      <ReactLoading type={type} color={color} height={60} width={60} />
 
     </div>
   );

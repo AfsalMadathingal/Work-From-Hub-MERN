@@ -1,4 +1,3 @@
-import React from "react";
 
 const Wallet = () => {
   const balance = 1250.75; // Wallet balance

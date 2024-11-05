@@ -1,7 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { Carousel } from "react-responsive-carousel";
+import { useEffect, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css";
-import { Star, Wifi, Battery } from "lucide-react";
+import { Star, Battery } from "lucide-react";
 import { Link, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import {
@@ -9,7 +8,6 @@ import {
   getReviews,
   getSingleWorkspace,
 } from "../../services/userServices";
-import ReactPlayer from "react-player";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import { setLoading } from "../../redux/slices/userSlice";
@@ -19,60 +17,118 @@ import {
   FaCalendar,
   FaChair,
   FaClock,
-  FaLocationArrow,
   FaMapMarkerAlt,
   FaPhoneAlt,
   FaRupeeSign,
   FaTicketAlt,
 } from "react-icons/fa";
 import ReviewForm from "./Review";
+import WorkspaceCarousel from "./WorkspaceCarousel";
+
+interface Review {
+  userId: {
+    fullName: string;
+  };
+  rating: number;
+  comment: string;
+}
+
+export interface Workspace {
+  _id: string;
+  buildingName: string;
+  district: string;
+  photos: string[];
+  video?: string;
+  seatsPerTable: number;
+  tablesAvailable: number;
+  timing: string;
+  pricePerSeat: number;
+  workingDays: string;
+  contactNo: string;
+  location: string;
+  amenities: string[];
+}
+
+interface QuickInfoItem {
+  icon: React.ElementType; // For icons from react-icons
+  label: string;
+  value: string | number;
+}
+
+
 
 const WorkspaceView = () => {
-  const [workspace, setWorkspace] = useState({});
-  const [reviews, setReviews] = useState([]);
-  const [availableSeats, setAvailableSeats] = useState(0);
+  const [workspace, setWorkspace] = useState({} as Workspace);
+  const [reviews, setReviews] = useState <Review []>([] as Review []);
+  // const [availableSeats, setAvailableSeats] = useState(0);
   const { loading } = useSelector((state: RootState) => state.user);
   const dispatch = useDispatch();
   const { id } = useParams<string>();
 
-  const fetchDetails = async () => {
-    try {
-      dispatch(setLoading(true));
-      const response = await getSingleWorkspace(id as string);
-      if (response.status === 200) {
-        const seatsAvailable = await getAvailableSeats(id as string);
-        if (seatsAvailable.status === 200) {
-          const seatData = seatsAvailable.data.data;
-          const available = seatData.reduce((acc: number, el) => {
-            if (el.isAvailable) acc++;
-            return acc;
-          }, 0);
-          setAvailableSeats(available);
-        }
-      }
-      await new Promise((resolve) => setTimeout(resolve, 300));
-      setWorkspace(response.data.data);
-      dispatch(setLoading(false));
-    } catch (error) {
-      dispatch(setLoading(false));
-      toast.error("An error occurred. Please try again.");
-    }
-  };
+  const quickInfoItems: QuickInfoItem[] = [
+    {
+      icon: FaChair,
+      label: "Seats",
+      value: workspace.seatsPerTable * workspace.tablesAvailable,
+    },
+    {
+      icon: FaClock,
+      label: "Hours",
+      value: workspace.timing,
+    },
+    {
+      icon: FaRupeeSign,
+      label: "Price",
+      value: `₹${workspace?.pricePerSeat}`,
+    },
+    {
+      icon: FaCalendar,
+      label: "Days",
+      value: workspace.workingDays,
+    },
+  ];
 
-  const fetchReviews = async () => {
-    try {
-      const response = await getReviews(id as string);
-      if (response.status === 200) setReviews(response.data.data);
-    } catch (error) {
-      toast.error("An error occurred. Please try again.");
-    }
-  };
+ 
 
   useEffect(() => {
+    const fetchDetails = async () => {
+      try {
+        dispatch(setLoading(true));
+        const response = await getSingleWorkspace(id as string);
+        if (response?.status === 200) {
+          const seatsAvailable = await getAvailableSeats(id as string);
+          if (seatsAvailable?.status === 200) {
+            // const seatData = seatsAvailable.data.data;
+            // const available = seatData.reduce((acc: number, el: { isAvailable: boolean }) => {
+            //   if (el.isAvailable) acc++;
+            //   return acc;
+            // }, 0);
+            // setAvailableSeats(available);
+          }
+        }
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        setWorkspace(response?.data.data);
+        dispatch(setLoading(false));
+      } catch (error) {
+        console.error(error);
+        dispatch(setLoading(false));
+        toast.error("An error occurred. Please try again.");
+      }
+    };
+  
+    const fetchReviews = async () => {
+      try {
+        const response = await getReviews(id as string);
+        if (response?.status === 200) setReviews(response.data.data);
+      } catch (error) {
+        console.error(error);
+        toast.error("An error occurred. Please try again.");
+      }
+    };
     window.scrollTo(0, 0);
     fetchDetails();
     fetchReviews();
-  }, []);
+  }, [dispatch, id]);
 
   return (
     <>
@@ -98,43 +154,63 @@ const WorkspaceView = () => {
             </div>
 
             {/* Main Content */}
+
+            
             <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden">
-              {/* Image Carousel */}
+
+            <WorkspaceCarousel workspace={workspace} />
+{/* 
               <div className="h-[400px]">
                 <Carousel showThumbs={false} showStatus={false}>
                   {workspace.photos?.length > 0 ? (
                     workspace.photos.map((image: string, index: number) => (
                       <div key={index} className="h-[400px]">
-                        <img src={image} alt="Office" className="object-cover w-full h-full" />
+                        <img
+                          src={image}
+                          alt="Office"
+                          className="object-cover w-full h-full"
+                        />
                       </div>
                     ))
                   ) : (
                     <div className="h-[400px] flex items-center justify-center bg-gray-100 dark:bg-gray-700">
-                      <p className="text-gray-500 dark:text-gray-400">No photos available</p>
+                      <p className="text-gray-500 dark:text-gray-400">
+                        No photos available
+                      </p>
                     </div>
                   )}
                   {workspace.video && (
                     <div className="h-[400px]">
-                      <ReactPlayer url={workspace.video} width="100%" height="100%" controls />
+                      <ReactPlayer
+                        url={workspace.video}
+                        width="100%"
+                        height="100%"
+                        controls
+                      />
                     </div>
                   )}
                 </Carousel>
-              </div>
+              </div> */}
 
               {/* Quick Info */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 p-4">
-                {[
-                  { icon: FaChair, label: "Seats", value: workspace.seatsPerTable * workspace.tablesAvailable },
-                  { icon: FaClock, label: "Hours", value: workspace.timing },
-                  { icon: FaRupeeSign, label: "Price", value: `₹${workspace?.pricePerSeat}` },
-                  { icon: FaCalendar, label: "Days", value: workspace.workingDays },
-                ].map(({ icon: Icon, label, value }) => (
-                  <div key={label} className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
-                    <Icon className="mx-auto text-gray-600 dark:text-gray-300 mb-1" />
-                    <p className="text-xs text-gray-500 dark:text-gray-400">{label}</p>
-                    <p className="font-medium text-gray-900 dark:text-white">{value}</p>
-                  </div>
-                ))}
+                {quickInfoItems.map((item, index) => {
+                  const Icon = item.icon;
+                  return (
+                    <div
+                      key={index}
+                      className="text-center p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                    >
+                      <Icon className="mx-auto text-gray-600 dark:text-gray-300 mb-1" />
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        {item.label}
+                      </p>
+                      <p className="font-medium text-gray-900 dark:text-white">
+                        {item.value}
+                      </p>
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Actions */}
@@ -171,10 +247,15 @@ const WorkspaceView = () => {
 
             {/* Amenities */}
             <div className="mt-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Amenities</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">
+                Amenities
+              </h3>
               <div className="flex flex-wrap gap-2">
                 {["AC", "Free Wifi", "Power Backup"].map((amenity) => (
-                  <div key={amenity} className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2">
+                  <div
+                    key={amenity}
+                    className="px-3 py-2 bg-gray-50 dark:bg-gray-700 rounded-lg text-sm text-gray-600 dark:text-gray-300 flex items-center gap-2"
+                  >
                     <Battery className="text-sm" />
                     {amenity}
                   </div>
@@ -185,10 +266,15 @@ const WorkspaceView = () => {
             {/* Reviews */}
             <div className="mt-6 p-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Reviews</h3>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                  Reviews
+                </h3>
                 <div className="flex items-center gap-2">
                   <div className="px-3 py-1 bg-green-500 text-white rounded-lg text-sm">
-                    {(reviews.reduce((acc, curr) => acc + curr?.rating, 0) / reviews.length).toFixed(1)}
+                    {(
+                      reviews.reduce((acc, curr) => acc + curr?.rating, 0) /
+                      reviews.length
+                    ).toFixed(1)}
                     <Star className="inline ml-1" size={14} />
                   </div>
                   <span className="text-sm text-gray-500 dark:text-gray-400">
@@ -199,23 +285,34 @@ const WorkspaceView = () => {
 
               <div className="space-y-3">
                 {reviews.length > 0 ? (
-                  reviews.slice(0, 3).map((review: any, index: number) => (
-                    <div key={index} className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                  reviews.slice(0, 3).map((review: Review, index: number) => (
+                    <div
+                      key={index}
+                      className="p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                    >
                       <div className="flex items-center justify-between mb-2">
                         <h4 className="font-medium text-gray-900 dark:text-white">
                           {review.userId.fullName}
                         </h4>
                         <div className="flex">
                           {Array.from({ length: review.rating }).map((_, i) => (
-                            <Star key={i} className="text-yellow-400" size={14} />
+                            <Star
+                              key={i}
+                              className="text-yellow-400"
+                              size={14}
+                            />
                           ))}
                         </div>
                       </div>
-                      <p className="text-sm text-gray-600 dark:text-gray-300">{review.comment}</p>
+                      <p className="text-sm text-gray-600 dark:text-gray-300">
+                        {review.comment}
+                      </p>
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">No reviews yet</p>
+                  <p className="text-center text-gray-500 dark:text-gray-400 py-4">
+                    No reviews yet
+                  </p>
                 )}
               </div>
             </div>

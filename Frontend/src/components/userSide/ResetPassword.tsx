@@ -1,5 +1,5 @@
 
-import React, { FC, useEffect, useState } from "react";
+import  { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import ReactLoading from "react-loading";
@@ -29,7 +29,11 @@ const ResetPasswordModal: FC<DialogProps> = ({
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state: RootState) => state.user);
+  const { loading } = useSelector((state: RootState) => state.user);
+
+  const error:{
+    password?: string
+  } = useSelector((state: RootState) => state.user.error);
 
   useEffect(() => {
     if (isOpen) {

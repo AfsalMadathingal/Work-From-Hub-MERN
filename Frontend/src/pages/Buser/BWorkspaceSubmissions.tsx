@@ -12,7 +12,7 @@ const BWorkspaceSubmissions = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Workspace Submission"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

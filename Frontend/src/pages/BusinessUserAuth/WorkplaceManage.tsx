@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import BusinessUserLayout from '../../components/businessUser/BusinessUserLayout';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/businessUserSlice';
@@ -11,7 +11,7 @@ const WorkplaceManage = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Business User Management"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

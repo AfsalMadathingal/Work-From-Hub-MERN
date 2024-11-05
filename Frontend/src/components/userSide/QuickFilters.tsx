@@ -6,13 +6,13 @@ interface QuickFiltersProps {
 }
 
 export interface FilterState {
-  search: string;
-  ac: boolean;
-  restRoom: boolean;
-  powerBackup: boolean;
-  wifiAvailable: boolean;
-  rating: string;
-  price: string;
+  search?: string;
+  ac?: boolean;
+  restRoom?: boolean;
+  powerBackup?: boolean;
+  wifiAvailable?: boolean;
+  rating?: string;
+  price?: string;
 }
 
 const amenities = [

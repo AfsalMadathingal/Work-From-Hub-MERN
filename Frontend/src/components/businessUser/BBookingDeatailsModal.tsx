@@ -4,28 +4,31 @@ import { IWorkspace } from '../../@types/workspace';
 import { IUsers } from '../../@types/user';
 import { ISeat } from '../../@types/seat';
 
+
+
 interface Bookings {
   workspaceName: string;
-  userId: IUsers;
-  seatId: ISeat;
-  workspaceId: IWorkspace;
+  userInfo: IUsers[];
+  seatInfo: Partial<ISeat>;
+  workspaceInfo: IWorkspace;
   date: string;
   amount: string;
   status: string;
   paymentIntentId: string;
   paymentMethod: string;
   paymentStatus: string;
-
 }
 
-const BookingDetailsModal = ({
+interface BookingDetailsModalProps {
+  isOpen: boolean;
+  booking: Bookings;
+  onClose: () => void;
+}
+
+const BBookingDetailsModal: React.FC<BookingDetailsModalProps> = ({
   isOpen,
   booking,
   onClose,
-}: {
-  isOpen: boolean;
-  booking:Bookings;
-  onClose: () => void;
 }) => {
 
 
@@ -37,7 +40,7 @@ const BookingDetailsModal = ({
     return () => {
       document.body.style.overflow = 'unset';
     };
-  }, []);
+  }, [booking]);
 
   if(!isOpen || !booking) {
     return null;
@@ -93,12 +96,12 @@ const BookingDetailsModal = ({
                 <div className="flex justify-between">
                   <span className="font-medium text-gray-500 dark:text-gray-300">User</span>
                   <span className="text-gray-900 dark:text-white text-right">
-                    <div>{booking?.userId?.fullName}</div>
+                    <div>{booking?.userInfo[0]?.fullName}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {booking?.userId?.email}
+                      {booking?.userInfo[0]?.email}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {booking?.userId?.phone}  
+                      {booking?.userInfo[0]?.phone}  
                     </div>
                   </span>
                 </div>
@@ -109,12 +112,12 @@ const BookingDetailsModal = ({
                 <div className="flex justify-between">
                   <span className="font-medium text-gray-500 dark:text-gray-300">Workspace</span>
                   <span className="text-right text-gray-900 dark:text-white">
-                    <div>{booking?.workspaceId?.buildingName}</div>
+                    <div>{booking?.workspaceInfo?.buildingName}</div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {booking?.workspaceId?.street}, {booking?.workspaceId?.district}
+                      {booking?.workspaceInfo?.street}, {booking?.workspaceInfo?.district}
                     </div>
                     <div className="text-sm text-gray-500 dark:text-gray-400">
-                      {booking?.workspaceId?.state}, {booking?.workspaceId?.pinCode}
+                      {booking?.workspaceInfo?.state}, {booking?.workspaceInfo?.pinCode}
                     </div>
                   </span>
                 </div>
@@ -125,7 +128,7 @@ const BookingDetailsModal = ({
                 <div className="flex justify-between">
                   <span className="font-medium text-gray-500 dark:text-gray-300">Seat Details</span>
                   <span className="text-gray-900 dark:text-white">
-                    Table {booking?.seatId.tableNumber}, Seat {booking?.seatId.seatNumber}
+                    Table {booking?.seatInfo.tableNumber}, Seat {booking?.seatInfo.seatNumber}
                   </span>
                 </div>
               </div>
@@ -180,4 +183,4 @@ const BookingDetailsModal = ({
   );
 };
 
-export default BookingDetailsModal;
+export default BBookingDetailsModal;

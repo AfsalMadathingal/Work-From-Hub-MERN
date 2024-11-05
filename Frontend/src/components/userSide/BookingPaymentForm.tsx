@@ -11,6 +11,7 @@ import { IUsers } from "../../@types/user";
 
 interface BookingPaymentFormProps {
   bookingDetails: {
+    userId: string;
     amount: number; // The amount for the booking
     customerEmail: string; // Customer's email for payment
     seatId: string; // The seat ID for the booking
@@ -21,7 +22,7 @@ interface BookingPaymentFormProps {
   onSuccess: () => void;
 }
 
-const BookingPaymentForm: React.FC<BookingPaymentFormProps> = ({ bookingDetails , onSuccess , onFinish}) => {
+const BookingPaymentForm:  React.FC<BookingPaymentFormProps> = ({ bookingDetails , onSuccess , onFinish}) => {
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);

@@ -13,7 +13,6 @@ import { IWorkspace } from "../../@types/workspace";
 import BookingPaymentForm from "./BookingPaymentForm";
 import { RootState } from "../../redux/store/store";
 import PaymentSuccessModal from "./PaymentSuccessModal";
-import { ISeat } from "../../@types/seat";
 
 
 
@@ -28,7 +27,7 @@ const BookingPaymentPage = () => {
 
 
   const { id } = useParams();
-const timerId = React.useRef<Timeout>(null);
+const timerId = React.useRef<NodeJS.Timeout | null>(null);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -38,7 +37,85 @@ const timerId = React.useRef<Timeout>(null);
   const date = searchParams.get("date");
 
   useEffect(() => {
-    fetchAvailableSeats(date as string, id as string);
+    const startTimer = () => {
+      timerId.current = setInterval(() => {
+        setTimeLeft((prevTime) => {
+          if (prevTime <= 1) {
+            clearInterval(timerId.current!);
+            navigate(-1); // Go back when timer expires
+            toast.error("Seat reservation timed out. Please try again later.");
+            return 0;
+          }
+          return prevTime - 1;
+        });
+      }, 1000);
+    };
+  
+  const fetchAvailableSeats = async ( id : string) => {
+      try {
+        dispatch(setLoading(true));
+        const [workspaceResponse, seatsAvailableResponse] = await Promise.all([
+          getSingleWorkspace(id),
+          getAvailableSeats(id),
+        ]);
+  
+        if (
+          workspaceResponse?.status === 200 &&
+          seatsAvailableResponse?.status === 200
+        ) {
+          // const seatData = seatsAvailableResponse.data.data;
+  
+  //         const availableSeatsArray = seatData
+  //           .filter((seat :{ availability: {[key: string]: boolean}}) => !seat.availability[selectedDate])
+  //           .map((seat : ISeat) => `${seat.tableNumber}-${seat.seatNumber}`);
+  
+  // ;
+  
+  //         const groupedTables = seatData.reduce((tables, seat) => {
+  //           let table = tables.find((t) => t.tableNumber === seat.tableNumber);
+  //           if (!table) {
+  //             table = { tableNumber: seat.tableNumber, seats: [] };
+  //             tables.push(table);
+  //           }
+  //           table.seats.push(seat);
+  //           table.seats.sort((a, b) => a.seatNumber - b.seatNumber);
+  //           return tables;
+  //         }, []);
+  
+  
+          setWorkspace(workspaceResponse.data.data);
+          setAmount(workspaceResponse.data.data.pricePerSeat); // Assuming amount is based on workspace price
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("An error occurred. Please try again.");
+      } finally {
+        dispatch(setLoading(false));
+      }
+    };
+  
+    const reserveSeat = async () => {
+      try {
+        const response = await reserveSeatAPI(
+          seatId as string,
+          id as string,
+          date as string
+        );
+  
+        if (response?.status === 403) {
+          navigate("/user/bookings");
+        }
+  
+        if (response?.status === 404) {
+          toast.error("The seat is already reserved.");
+          navigate("/workspace");
+        }
+      } catch (error) {
+        console.error(error);
+        toast.error("Failed to reserve seat. Please try again.");
+      }
+    };
+    fetchAvailableSeats(id as string);
     reserveSeat();
     startTimer();
     return () => {
@@ -46,101 +123,26 @@ const timerId = React.useRef<Timeout>(null);
         clearInterval(timerId.current);
       }
     };
-  }, []);
+  }, [date, dispatch, id, navigate, seatId]);
 
   const closePaymentModal = () => {
     setPaymentModal(false);
   };
 
-  const startTimer = () => {
-    timerId.current = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timerId.current);
-          navigate(-1); // Go back when timer expires
-          toast.error("Seat reservation timed out. Please try again later.");
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-  };
 
-const fetchAvailableSeats = async (selectedDate: string, id : string) => {
-    try {
-      dispatch(setLoading(true));
-      const [workspaceResponse, seatsAvailableResponse] = await Promise.all([
-        getSingleWorkspace(id),
-        getAvailableSeats(id),
-      ]);
-
-      if (
-        workspaceResponse?.status === 200 &&
-        seatsAvailableResponse?.status === 200
-      ) {
-        const seatData = seatsAvailableResponse.data.data;
-
-        const availableSeatsArray = seatData
-          .filter((seat :{ availability: {[key: string]: boolean}}) => !seat.availability[selectedDate])
-          .map((seat : ISeat) => `${seat.tableNumber}-${seat.seatNumber}`);
-
-;
-
-        const groupedTables = seatData.reduce((tables, seat) => {
-          let table = tables.find((t) => t.tableNumber === seat.tableNumber);
-          if (!table) {
-            table = { tableNumber: seat.tableNumber, seats: [] };
-            tables.push(table);
-          }
-          table.seats.push(seat);
-          table.seats.sort((a, b) => a.seatNumber - b.seatNumber);
-          return tables;
-        }, []);
-
-
-        setWorkspace(workspaceResponse.data.data);
-        setAmount(workspaceResponse.data.data.pricePerSeat); // Assuming amount is based on workspace price
-      }
-    } catch (error) {
-      toast.error("An error occurred. Please try again.");
-    } finally {
-      dispatch(setLoading(false));
-    }
-  };
-
-  const reserveSeat = async () => {
-    try {
-      const response = await reserveSeatAPI(
-        seatId as string,
-        id as string,
-        date as string
-      );
-
-      if (response?.status === 403) {
-        navigate("/user/bookings");
-      }
-
-      if (response?.status === 404) {
-        toast.error("The seat is already reserved.");
-        navigate("/workspace");
-      }
-    } catch (error) {
-      toast.error("Failed to reserve seat. Please try again.");
-    }
-  };
 
   const handleSuccess = () => {
     setPaymentSuccess(true);
-    clearInterval(timerId.current);
+    clearInterval(timerId.current!);
   };
 
-  const formatTime = (time) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    return `${minutes.toString().padStart(2, "0")}:${seconds
-      .toString()
-      .padStart(2, "0")}`;
-  };
+const formatTime = (time: number) => {
+  const minutes = Math.floor(time / 60);
+  const seconds = time % 60;
+  return `${minutes.toString().padStart(2, "0")}:${seconds
+    .toString()
+    .padStart(2, "0")}`;
+};;
 
   return (
     <>
@@ -151,29 +153,28 @@ const fetchAvailableSeats = async (selectedDate: string, id : string) => {
           bookingDetails={{
             seatId: seatId as string,
             workspaceId: workspace?._id as string,
-            date,
+            date: date ?? '',
             amount,
           }}
         />
       )}
 
-      {paymentModal &&  user &&(
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity backdrop:blur">
-          <BookingPaymentForm
-            onSuccess={handleSuccess}
-            onFailure={closePaymentModal}
-            onFinish={closePaymentModal}
-            bookingDetails={{
-              amount,
-              customerEmail: user?.email,
-              userId: user?._id,
-              seatId,
-              workspaceId: id,
-              date,
-            }}
-          />
-        </div>
-      )}
+     {paymentModal && user && user.email && (
+       <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 transition-opacity backdrop:blur">
+        <BookingPaymentForm
+          onSuccess={handleSuccess}
+          onFinish={closePaymentModal}
+          bookingDetails={{
+            amount,
+            customerEmail: user.email,
+            userId: user._id!,
+            seatId : seatId!,
+            workspaceId: id!,
+            date : date!,
+          }}
+        />
+       </div>
+     )}
 
       <div className="max-w-2xl mx-auto p-4 dark:bg-gray-800 shadow-lg rounded-lg">
         <div className="bg-gray-200 flex items-center mb-6 dark:bg-gray-700 rounded-lg p-5">

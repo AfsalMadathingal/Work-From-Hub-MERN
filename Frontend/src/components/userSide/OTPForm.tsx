@@ -1,12 +1,12 @@
-import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
+import React, { useState, useEffect, ChangeEvent} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { toast } from 'react-toastify';
-import { PRIMARY_COLOR } from '../../constant/colors';
 import { setAccessToken, setError, setFormData, setIsAuthenticated, setLoading, setModal, setUser } from '../../redux/slices/userSlice';
 import { register, sendOTP } from '../../services/UserAuthService';
 import { useNavigate } from 'react-router-dom';
 import { Checkmark } from 'react-checkmark'
+import { AxiosError } from 'axios';
 
 const OTPForm: React.FC = () => {
   const [otp, setOtp] = useState<string[]>(['', '', '', '',]);
@@ -54,11 +54,9 @@ const OTPForm: React.FC = () => {
       }
 
       if (apiResponse?.data) {
-        const { user, accessToken, refreshToken } = apiResponse.data;
+        const { user, accessToken } = apiResponse.data;
         setVerified(true);
-        ;
-        ;
-        ;
+
         await new Promise((resolve) => setTimeout(() => resolve("wait for animation"), 3000));
         dispatch(setModal(false));
         dispatch(setLoading(false));
@@ -73,21 +71,23 @@ const OTPForm: React.FC = () => {
         dispatch(setLoading(false));
         dispatch(setError(apiResponse));
       }
-    } catch (error) {
-      toast.error(error.message);
+     } catch (error: unknown) {
+      toast.error((error as Error).message);
     }
   };
 
-  const handleResend = async () => {
-    if (timer === 0) {
-      setTimer(60); // Reset timer to 60 seconds
-      const otpResponse = await sendOTP(formData);
+const handleResend = async () => {
+  if (timer === 0) {
+    setTimer(60); // Reset timer to 60 seconds
+    const otpResponse = await sendOTP(formData);
 
-      if(otpResponse?.error){
-        toast.error(otpResponse.error)
-      }
+    if (otpResponse instanceof AxiosError) {
+      toast.error(otpResponse.message);
+    } else if (otpResponse?.data?.error) {
+      toast.error(otpResponse.data.error);
     }
-  };
+  }
+};
   const handleClose = () => {
     dispatch(setModal(false));
   };

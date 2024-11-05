@@ -1,3 +1,5 @@
+
+
 import React, { useEffect, useState } from "react";
 import validate from "../../utils/userRegisterValidator";
 import { sendOTP, signInWithGoogle } from "../../services/UserAuthService";
@@ -101,7 +103,8 @@ const UserRegister: React.FC = () => {
 
   useEffect(() => {
     dispatch(setError({}));
-  }, []);
+    
+  }, [dispatch]);
 
   return (
     <>

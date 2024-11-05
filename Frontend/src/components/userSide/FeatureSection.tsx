@@ -1,21 +1,18 @@
 import React, { useEffect, useState } from "react";
-import StripePayment from "../subscription/stripe";
-import axios from "axios";
-import { userAxiosInstance } from "../../services/instance/userInstance";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import CheckoutButton from "../payments/CheckoutStripe";
 import PaymentForm from "./PaymentForm";
 import { fetchActivePlan } from "../../services/userServices";
 import CardForPlan from "./CardForPlan";
 import toast from "react-hot-toast";
 import { setModal } from "../../redux/slices/userSlice";
+import { IPlan } from "../../@types/plan";
 
 const FeatureSection = function FeaturesSection() {
   const { modal , user  } = useSelector((state: RootState) => state.user);
   const [isSubscribeClicked, setIsSubscribeClicked] = React.useState(false);
   const dispatch = useDispatch();
-  const [activePlan, setActivePlan] = useState<any>(null);
+  const [activePlan, setActivePlan] = useState<IPlan>({} as IPlan);
 
   const getActivePlan = async () => {
     try {
@@ -23,13 +20,13 @@ const FeatureSection = function FeaturesSection() {
       ;
 
       // Fix the typo: use `statusCode` instead of `statusCose`
-      if (response.status === 200) {
+      if (response?.status === 200) {
         setActivePlan(response.data.data);
       } else {
         toast.error("Failed to fetch active plan.");
       }
     } catch (error) {
-      ;
+      console.log(error);
       toast.error("An error occurred while fetching the plan.");
     }
   };

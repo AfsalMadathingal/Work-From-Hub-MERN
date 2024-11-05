@@ -1,5 +1,6 @@
 import React from "react";
-export const EyeIcon = (props) => (
+
+export const EyeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     aria-hidden="true"
     fill="none"

@@ -1,14 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import LoadingPageWithReactLoading from "../../components/loadingPage/Loading";
-import { PRIMARY_COLOR } from "../../constant/colors";
+import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   setLoading,
   setError,
-  setUser,
-  setIsAuthenticated,
-  setAccessToken,
   setModal,
   setFormData,
 } from "../../redux/slices/businessUserSlice";
@@ -16,8 +11,16 @@ import { RootState } from "../../redux/store/store";
 import validate from "../../utils/userRegisterValidator";
 import ReactLoading from "react-loading";
 import toast from "react-hot-toast";
-import { register, sendOTP } from "../../services/BUserAuthService";
+import {sendOTP } from "../../services/BUserAuthService";
 import BusinessUserOTPForms from "../../components/businessUser/BusinessUserOTPForm";
+import axios from "axios";
+
+interface Errors {
+  fullName?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
 
 const BusinessLogin: React.FC = () => {
   const [fullName, setFullName] = useState("");
@@ -26,9 +29,13 @@ const BusinessLogin: React.FC = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
 
-  const { loading, error, modal } = useSelector(
+  const { loading, modal } = useSelector(
     (state: RootState) => state.businessUser
   );
+
+
+
+  const error  : Errors = useSelector((state: RootState) => state.businessUser.error);
   const dispatch = useDispatch();
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -54,42 +61,46 @@ const BusinessLogin: React.FC = () => {
 
     try {
       const otpResponse = await sendOTP({ fullName, email, password });
-
-      if (otpResponse?.status === 200) {
+    
+      if (axios.isAxiosError(otpResponse)) {
+        toast.error(otpResponse.message);
+      } else if (otpResponse?.status === 200) {
         dispatch(setModal(true));
-      } else if (otpResponse?.error) {
-        toast.error(otpResponse.error);
+      } else {
+        toast.error("Something went wrong");
       }
-      dispatch(setLoading(false));
     } catch (error) {
+      dispatch(setLoading(false));
+      console.error(error);
+      
       toast.error("Failed to submit. Please try again later.");
     } finally {
       dispatch(setLoading(false));
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    try {
-      dispatch(setLoading(true));
-      const response = await signInWithGoogle();
+  // const handleGoogleSignIn = async () => {
+  //   try {
+  //     dispatch(setLoading(true));
+  //     const response = await signInWithGoogle();
 
-      if (response?.success) {
-        const { user, accessToken } = response.data;
+  //     if (response?.success) {
+  //       const { user, accessToken } = response.data;
 
-        dispatch(setUser(user));
-        dispatch(setIsAuthenticated(true));
-        dispatch(setLoading(false));
-        dispatch(setAccessToken(accessToken));
-        toast.success("Welcome");
-      } else {
-        dispatch(setLoading(false));
-        toast.success("something Went Wrong");
-      }
-    } catch (error) {
-      dispatch(setLoading(false));
-      toast.error("Something went Wrong!");
-    }
-  };
+  //       dispatch(setUser(user));
+  //       dispatch(setIsAuthenticated(true));
+  //       dispatch(setLoading(false));
+  //       dispatch(setAccessToken(accessToken));
+  //       toast.success("Welcome");
+  //     } else {
+  //       dispatch(setLoading(false));
+  //       toast.success("something Went Wrong");
+  //     }
+  //   } catch (error) {
+  //     dispatch(setLoading(false));
+  //     toast.error("Something went Wrong!");
+  //   }
+  // };
 
   useEffect(() => {});
 

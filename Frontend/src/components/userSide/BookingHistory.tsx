@@ -23,7 +23,7 @@ export default function BookingHistory() {
   const [selectedWorkspace, setSelectedWorkspace] = useState<IWorkspace | null>(
     null
   );
-  const [selectedBooking, setSelectedBooking] = useState <IBookingDetails> ();
+  const [selectedBooking, setSelectedBooking] = useState <IBookingDetails> ({}as IBookingDetails);
   const [isDetailsOpen, setIsDetailsOpen] = useState(false);
   const [page, setPage] = useState(1);
   const user = useSelector((state: RootState) => state.user.user as IUsers);
@@ -56,6 +56,7 @@ export default function BookingHistory() {
   };
 
   // Fetch bookings and workspace names
+
   const fetchBookings = async () => {
 
     if(!user){
@@ -81,7 +82,6 @@ export default function BookingHistory() {
       toast.error("Something went wrong");
     }
   };
-
   const handleShowDetails = async (item : IBookingDetails) => {
     setIsDetailsOpen(true);
     const { workspaceId, seatId } = item;
@@ -123,6 +123,7 @@ export default function BookingHistory() {
   };
 
   useEffect(() => {
+   
     fetchBookings();
   }, []);
 

@@ -11,7 +11,7 @@ const MembershipPlan : React.FC =  () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Plan Management"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

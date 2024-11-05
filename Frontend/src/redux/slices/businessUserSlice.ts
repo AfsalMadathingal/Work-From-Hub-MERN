@@ -1,9 +1,12 @@
 import { createSlice } from '@reduxjs/toolkit';
+import { IBUsers } from '../../@types/businessUser';
+
+
 
 const initialState = {
-  user: null,
+  user: {} as IBUsers,
   loading: false,
-  error: {},
+  error: {} ,
   isAuthenticated:false,
   accessToken: "",
   modal:false,

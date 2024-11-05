@@ -1,12 +1,18 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import SummaryStatics from "../common/SummaryStatics";
 import RevenueChart from "../common/RevenueChart";
 import RecentBookings from "../common/RecentBookings";
 import { getDataForDashboard } from "../../services/BuserService";
 
+interface SummaryData {
+  workspaceCount: number;
+  bookingCount: number;
+  totalRevenue: number;
+}
+
 const BUserDashboard = () => {
-  const [summaryData, setSummaryData] = useState({});
+  const [summaryData, setSummaryData] = useState <SummaryData>({} as SummaryData);
   const [recentBookings, setRecentBookings] = useState([]);
   const [chartData, setChartData] = useState([
     {
@@ -19,9 +25,7 @@ const BUserDashboard = () => {
     try {
       const response = await getDataForDashboard();
 
-      const data = response.data.data;
-
-      ;
+      const data = response?.data.data;
 
       const summary: {
         bookingCount: number;
@@ -34,7 +38,7 @@ const BUserDashboard = () => {
       summary.workspaceCount = data?.workspaceData.length;
 
       summary.totalRevenue = data?.bookingData?.reduce(
-        (total, booking) => total + booking.amount,
+        (total: number, booking: { amount: number }) => total + booking.amount,
         0
       );
 
@@ -53,7 +57,7 @@ const BUserDashboard = () => {
         return days;
       };
 
-      const groupedBookings = data.bookingData.reduce((acc, booking) => {
+      const groupedBookings = data.bookingData.reduce((acc: { [date: string]: { date: string, bookings: number } }, booking: { createdAt: string }) => {
         const date = new Date(booking.createdAt).toISOString().split("T")[0];
         if (!acc[date]) {
           acc[date] = { date, bookings: 1 };
@@ -71,11 +75,8 @@ const BUserDashboard = () => {
 
       setChartData(finalResult);
       setSummaryData(summary);
-
-      ;
-      ;
-      ;
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong");
     }
   };

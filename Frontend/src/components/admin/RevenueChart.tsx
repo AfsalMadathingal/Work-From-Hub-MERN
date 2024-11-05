@@ -1,16 +1,22 @@
-import { Line } from "react-chartjs-2"; // Assuming you're using chart.js
-import "chart.js/auto"; // Make sure chart.js is installed
+import { Line } from "react-chartjs-2";
+import "chart.js/auto";
 import { Link } from "react-router-dom";
 
-export default function RevenueChart({ chartData }) {
-  const bookingSorted = chartData.sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
-  // Prepare data for the chart
-  const xAxisData = bookingSorted.map((item) => item.date); // Extract dates for x-axis
-  const seriesData = bookingSorted.map((item) => item.bookings); // Extract bookings for series data
+interface ChartData {
+  date: string;
+  bookings: number;
+}
 
-  // Data structure for Chart.js
+export default function RevenueChart({ chartData }: { chartData: ChartData[] }) {
+  const sortedChartData = chartData.sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return dateB - dateA;
+  });
+
+  const xAxisData = sortedChartData.map((item) => item.date);
+  const seriesData = sortedChartData.map((item) => item.bookings);
+
   const data = {
     labels: xAxisData,
     datasets: [
@@ -18,47 +24,46 @@ export default function RevenueChart({ chartData }) {
         label: "Bookings",
         data: seriesData,
         fill: false,
-        backgroundColor: "#4ADE80", // Tailwind green-400
-        borderColor: "#22C55E", // Tailwind green-500
-        pointBackgroundColor: "#16A34A", // Tailwind green-600 for points
-        tension: 0.4, // Curve the line
+        backgroundColor: "#4ADE80",
+        borderColor: "#22C55E",
+        pointBackgroundColor: "#16A34A",
+        tension: 0.4,
       },
     ],
   };
 
-  // Chart.js options
   const options = {
     responsive: true,
     maintainAspectRatio: false,
     plugins: {
       legend: {
         display: true,
-        position: "top",
+        position: "top" as const,
         labels: {
-          color: "#374151", // Tailwind gray-700
+          color: "#374151",
         },
       },
       tooltip: {
-        backgroundColor: "#374151", // Tailwind gray-700
-        titleColor: "#FFF", // White text for tooltip title
-        bodyColor: "#D1D5DB", // Tailwind gray-300 for body text
+        backgroundColor: "#374151",
+        titleColor: "#FFF",
+        bodyColor: "#D1D5DB",
       },
     },
     scales: {
       x: {
         ticks: {
-          color: "#6B7280", // Tailwind gray-500
+          color: "#6B7280",
         },
         grid: {
-          color: "#E5E7EB", // Tailwind gray-200 for grid lines
+          color: "#E5E7EB",
         },
       },
       y: {
         ticks: {
-          color: "#6B7280", // Tailwind gray-500
+          color: "#6B7280",
         },
         grid: {
-          color: "#E5E7EB", // Tailwind gray-200
+          color: "#E5E7EB",
         },
       },
     },
@@ -71,8 +76,6 @@ export default function RevenueChart({ chartData }) {
           Bookings Overview
         </h2>
         <div className="relative h-72 w-full">
-          {" "}
-          {/* Chart container with a fixed height */}
           <Line data={data} options={options} />
         </div>
       </div>

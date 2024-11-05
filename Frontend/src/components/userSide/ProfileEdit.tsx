@@ -1,29 +1,14 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import ReactLoading from "react-loading";
 import AnimatedPage from "../Animation";
+import { IUsers } from "../../@types/user";
 
 interface DialogProps {
   isOpen: boolean;
-  user: {
-    fullName: string;
-    phone: string;
-    date_of_birth: Date;
-    pin_code: string;
-    state: string;
-    city: string;
-    gender?: string;
-  };
-  onConfirm: (user: {
-    fullName: string;
-    phone: string;
-    date_of_birth: Date;
-    pin_code: string;
-    state: string;
-    city: string;
-    gender?: string;
-  }) => Promise<boolean | null>;
+  user: IUsers;
+  onConfirm: (user:Partial<IUsers>) => Promise<boolean | null>;
   onCancel: () => void;
 }
 
@@ -44,7 +29,17 @@ const ProfileEdit: FC<DialogProps> = ({
   const [state, setState] = useState(user.state);
 
   const [city, setCity] = useState(user.city);
-  const { loading, error } = useSelector((state: RootState) => state.user);
+  const { loading } = useSelector((state: RootState) => state.user);
+
+  const error:{
+    fullName?: string
+    date_of_birth?: string
+    phone?: string
+    pin_code?: string
+    state?: string
+    city?: string
+    gender?: string
+  } = useSelector((state: RootState) => state.user.error);
 
   useEffect(() => {
     if (isOpen) {
@@ -101,13 +96,13 @@ const ProfileEdit: FC<DialogProps> = ({
                 onChange={(e) => setPhone(e.target.value)}
               />
 
-              <input
-                type="date"
-                className="p-2 border border-gray-300 rounded-lg w-full"
-                placeholder="Date of Birth"
-                value={date_of_birth?.slice(0, 10)}
-                onChange={(e) => setdate_of_birth(e.target.value)}
-              />
+            <input
+              type="date"
+              className="p-2 border border-gray-300 rounded-lg w-full"
+              placeholder="Date of Birth"
+              value={  date_of_birth?.slice(0, 10)}
+             onChange={(e) => setdate_of_birth(e.target.value)}
+            />
             </div>
             {error?.date_of_birth && (
               <p className="text-red-500 p-0 m-0 ">{error.date_of_birth}</p>

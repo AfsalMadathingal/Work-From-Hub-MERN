@@ -1,5 +1,5 @@
 export interface IBUsers {
-    _id?: string;
+    _id: string;
     email?: string | null;
     fullName?: string | null;
     password?: string | null;

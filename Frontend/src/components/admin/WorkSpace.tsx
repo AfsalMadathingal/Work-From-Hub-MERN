@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { FaEdit, FaEye, FaLocationArrow } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
+import { useDispatch } from "react-redux";
 import { setModal } from "../../redux/slices/adminSlice";
 import { getAllPendingSubmission } from "../../services/adminService";
 import { Pagination } from "@nextui-org/react";
@@ -17,7 +16,7 @@ const WorkspaceSubmissionTable = () => {
   const [limit] = useState(5);
   const [activeFilter, setActiveFilter] = useState('all');
   const dispatch = useDispatch();
-  const { modal } = useSelector((state: RootState) => state.admin);
+
 
   useEffect(() => {
     fetchWorkspaces(currentPage);
@@ -26,16 +25,17 @@ const WorkspaceSubmissionTable = () => {
   const fetchWorkspaces = async (page: number) => {
     try {
       const response = await getAllPendingSubmission(page, limit);
-      if (response.status === 200) {
+      if (response?.status === 200) {
         setWorkspaces(response.data.data.pendingSubmissions);
         setTotalPages(response.data.data.totalPages);
-      } else if (response.status === 401) {
+      } else if (response?.status === 401) {
         await logout();
         toast.error("Session expired");
       } else {
         toast.error("Something went wrong");
       }
     } catch (error) {
+      console.error("Error fetching workspaces:", error);
       toast.error("An error occurred while fetching workspaces");
     }
   };

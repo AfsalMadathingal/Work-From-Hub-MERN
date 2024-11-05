@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Modal, Button, Typography, Box, SvgIcon } from "@mui/material";
+import { Modal,  Typography, Box, SvgIcon } from "@mui/material";
 import { FaCheckCircle } from "react-icons/fa";
 import { Spacer } from "@nextui-org/react";
 import {
@@ -8,6 +8,7 @@ import {
 } from "../../services/userServices";
 import { ISeat } from "../../@types/seat";
 import { useNavigate } from "react-router-dom";
+import { IWorkspace } from "../../@types/workspace";
 
 interface PaymentSuccessModalProps {
   visible: boolean;
@@ -18,7 +19,7 @@ interface PaymentSuccessModalProps {
     date: string;
     amount: number;
   };
-  onSuccess: () => void;
+
 }
 
 const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
@@ -27,20 +28,23 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
   bookingDetails,
 }) => {
   const [seat, setSeat] = React.useState<ISeat>();
-  const [workspace, setWorkspace] = React.useState<string>("");
+  const [workspace, setWorkspace] = React.useState<Partial<IWorkspace>>({});
   const navigate = useNavigate();
 
-  const { seatId, workspaceId, date, amount } = bookingDetails;
+  const { seatId, workspaceId } = bookingDetails;
 
+
+  useEffect(() => {
+    
   const fetchSeat = async () => {
     try {
       const response = await getAvailableSeats(workspaceId);
 
-      const seats = response.data.data;
+      const seats = response?.data.data;
 
-      const seatData = seats.filter((seat) => seat._id === seatId)[0];
+      const seatData = seats.filter((seat:ISeat) => seat._id === seatId)[0];
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         setSeat(seatData);
         ;
       }
@@ -52,7 +56,7 @@ const PaymentSuccessModal: React.FC<PaymentSuccessModalProps> = ({
   const getWorkspace = async () => {
     try {
       const response = await getSingleWorkspace(workspaceId);
-      setWorkspace(response.data.data);
+      setWorkspace(response?.data.data);
     } catch (error) {
       console.error(error);
     }
@@ -65,12 +69,10 @@ const timeout = () => {
   }, 5000);
 
 };
-
-  useEffect(() => {
     fetchSeat();
     getWorkspace();
     timeout();
-  }, []);
+  }, [navigate, seatId, workspaceId]);
 
   return (
     <Modal

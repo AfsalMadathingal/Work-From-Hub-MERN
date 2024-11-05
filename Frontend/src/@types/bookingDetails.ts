@@ -7,7 +7,7 @@ export interface IBookingDetails {
     status: string;
     paymentIntentId?: string;
     paymentStatus?: string;
-    amount?: number;
+    amount: number;
     currency?: string;
     paymentMethod?: string;
     paymentDate?: Date;

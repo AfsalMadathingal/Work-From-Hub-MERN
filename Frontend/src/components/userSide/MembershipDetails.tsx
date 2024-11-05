@@ -1,8 +1,13 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { fetchActivePlan } from "../../services/userServices";
 
-const Modal = ({ isOpen, onClose }) => {
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+const Modal = ({ isOpen, onClose }: ModalProps) => {
   return (
     <div
       className={`fixed z-50 inset-0 overflow-y-auto transition-all duration-300 ${
@@ -47,7 +52,6 @@ const Modal = ({ isOpen, onClose }) => {
 
 const MembershipDetails = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [planName, setPlanName] = useState("Premium Subscription");
   const [planPrice, setPlanPrice] = useState("19.99");
   const [renewalDate, setRenewalDate] = useState("June 1, 2024");
   const [isActive, setIsActive] = useState(false);
@@ -58,11 +62,12 @@ const MembershipDetails = () => {
   const getActivePlan = async () => {
     try {
       const response = await fetchActivePlan();
-      if (response.status === 200) {
+      if (response?.status === 200) {
         const plan = response.data.data;
         if (plan.status === "active") {
           setIsActive(true);
         }
+
         setPlanPrice(plan.price);
         const renewalDate = new Date(plan.createdAt);
         renewalDate.setDate(renewalDate.getDate() + 30);
@@ -71,6 +76,7 @@ const MembershipDetails = () => {
         toast.error("Something went wrong");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Something went wrong");
     }
   };
@@ -109,7 +115,7 @@ const MembershipDetails = () => {
             </svg>
           </div>
           <div>
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">{planName}</h2>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Premium Membership</h2>
             <p className="text-gray-500 mt-1 dark:text-gray-400">Active Subscription</p>
           </div>
         </div>

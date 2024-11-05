@@ -15,26 +15,27 @@ const PrivateRoute: React.FC<PrivateRouteProps> = ({ element: Element }) => {
 
   const navigate =  useNavigate();
   const dispatch = useDispatch();
-  const validateSession = async () => {
-    const response = await validateAdminSession();
-    if(response.status === 200){
-      return;
-    }
-
-    if(response.status === 401){
-      await logout();
-      dispatch(resetAdmin());
-      navigate("/admin/login");
-      toast.error("Session expired Please login again");
-    }
-  }
 
 
   useEffect(() => {
+    const validateSession = async () => {
+      const response = await validateAdminSession();
+      if(response?.status === 200){
+        return;
+      }
+  
+      if(response?.status === 401){
+        await logout();
+        dispatch(resetAdmin());
+        navigate("/admin/login");
+        toast.error("Session expired Please login again");
+      }
+    }
+  
 
 validateSession();
 
-  }, []);
+  }, [dispatch, navigate]);
 
   const { isAuthenticated } = useSelector((state: RootState) => state.admin);
 

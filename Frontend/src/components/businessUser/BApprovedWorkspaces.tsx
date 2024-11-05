@@ -1,10 +1,8 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { FaEdit, FaEye, FaLocationArrow, FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
-import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/store/store";
 import { Pagination } from "@nextui-org/react";
 import { Link } from "react-router-dom";
 import { getApprovedWorkspaces } from "../../services/BuserService";
@@ -17,27 +15,29 @@ const BApprovedWorkspaces = () => {
   const [limit] = useState(5);
 
   useEffect(() => {
-    fetchWorkspaces(currentPage);
-  }, [currentPage]);
-
-  const fetchWorkspaces = async (page: number) => {
-    try {
-      const response = await getApprovedWorkspaces(page, limit);
-      if (response.status === 200) {
-        setWorkspaces(response.data.data.approvedWorkspaces);
-        setTotalPages(response.data.data.totalPages);
-      } else if (response.status === 401) {
-        await logout();
-        toast.error("Session expired");
-      } else {
-        toast.error("Something went wrong");
+    const fetchWorkspaces = async (page: number) => {
+      try {
+        const response = await getApprovedWorkspaces(page, limit);
+        if (response?.status === 200) {
+          setWorkspaces(response.data.data.approvedWorkspaces);
+          setTotalPages(response.data.data.totalPages);
+        } else if (response?.status === 401) {
+          await logout();
+          toast.error("Session expired");
+        } else {
+          toast.error("Something went wrong");
+        }
+      } catch (error) {
+        console.log(error);
+        toast.error("An error occurred while fetching workspaces");
       }
-    } catch (error) {
-      toast.error("An error occurred while fetching workspaces");
-    }
-  };
+    };
+  
+    fetchWorkspaces(currentPage);
+  }, [currentPage, limit]);
 
-  const handleEdit = (workspace: IWorkspace) => {};
+  
+  const handleEdit = () => {};
 
   const getStatusStyles = (workspace: IWorkspace) => {
     if (workspace.approved) return "bg-emerald-500";
@@ -103,17 +103,17 @@ const BApprovedWorkspaces = () => {
                           <FaEye className="h-4 w-4" />
                         </Link>
                         <button
-                          onClick={() => handleEdit(workspace)}
+                          onClick={() => handleEdit()}
                           className="p-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors dark:bg-emerald-500 dark:hover:bg-emerald-600"
                         >
                           <FaEdit className="h-4 w-4" />
                         </button>
                         <button
-                          onClick={() => handleDelete(workspace)}
+                          onClick={() => alert("Are you sure?")}
                           className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors dark:bg-red-500 dark:hover:bg-red-600"
                         >
                           <FaTrash className="h-4 w-4" />
-                        </button>
+                        </button>  
                       </div>
                     </td>
                   </tr>

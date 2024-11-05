@@ -1,6 +1,13 @@
-import React from "react";
 
-const SummaryCard = ({ icon, label, value }) => {
+
+type SummaryCardProps = {
+  icon: string;
+  label: string;
+  value: number | string;
+};
+
+const SummaryCard = ({ icon, label, value }: SummaryCardProps) => {
+
   return (
     <>
       {!value ? (
@@ -30,7 +37,14 @@ const SummaryCard = ({ icon, label, value }) => {
   );
 };
 
-const Summary = ({ summaryData }) => {
+interface SummaryData {
+  workspaceCount: number;
+  bookingCount: number;
+  totalRevenue: number;
+}
+
+const Summary = ({ summaryData }: { summaryData: SummaryData }) => {
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
       <SummaryCard
@@ -52,7 +66,12 @@ const Summary = ({ summaryData }) => {
   );
 };
 
-const SummaryStatics = ({ summaryData }) => {
+interface SummaryData {
+  workspaceCount: number;
+  bookingCount: number;
+  totalRevenue: number;
+}
+const SummaryStatics = ({ summaryData }: { summaryData: SummaryData }) => {
   return (
     <div className="bg-white dark:bg-gray-800 p-6 rounded-md shadow-lg">
       <Summary summaryData={summaryData} />

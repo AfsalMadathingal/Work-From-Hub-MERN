@@ -8,7 +8,7 @@ import ReactLoading from "react-loading";
 import BookingDetailsModal from "./BookingDetailsModal";
 import jsPDF from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Optional: for table support
-
+import { UserOptions } from 'jspdf-autotable';
 interface Booking {
   workspaceName: string;
   userId: IUsers;
@@ -18,8 +18,17 @@ interface Booking {
   amount: string;
   status: string;
   paymentIntentId: string;
+  _id: string;
+  checkIn: string;
+  checkOut: string;
+  paymentStatus: string;
+  paymentMethod: string;
 }
 
+interface jsPDFWithPlugin extends jsPDF {
+  autoTable: (options: UserOptions) => jsPDFWithPlugin;
+  lastAutoTable: { finalY: number };
+}
 const AdminBookingHistory: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +42,7 @@ const AdminBookingHistory: React.FC = () => {
     try {
       setLoading(true);
       const response = await getAllBookings(page, bookingsPerPage);
-      if (response.status === 200) {
+      if (response?.status === 200) {
         setBookings(response.data.data.bookings);
         setTotalPages(
           Math.ceil(response.data.data.totalBookings / bookingsPerPage)
@@ -41,6 +50,7 @@ const AdminBookingHistory: React.FC = () => {
       }
       setLoading(false);
     } catch (error) {
+      console.error("Error fetching bookings:", error);
       setLoading(false);
       toast.error("An error occurred while fetching bookings");
     }
@@ -51,7 +61,7 @@ const AdminBookingHistory: React.FC = () => {
   }, [currentPage]);
 
   const handleDownloadInvoice = (booking: Booking) => {
-    const doc = new jsPDF();
+    const doc = new jsPDF() as jsPDFWithPlugin;
 
     // Add a logo
     const logoUrl = "/logo.png"; // Replace with your logo URL
@@ -154,11 +164,11 @@ const AdminBookingHistory: React.FC = () => {
 
   return (
     <>
-      <BookingDetailsModal
-        isOpen={isModalOpen}
-        booking={selectedBooking}
-        onClose={() => setIsModalOpen(false)}
-      />
+    <BookingDetailsModal
+      isOpen={isModalOpen}
+      booking={selectedBooking !== null ? selectedBooking : {} as Booking}
+      onClose={() => setIsModalOpen(false)}
+    />
 
       <div className="container mx-auto px-4">
         <div className="overflow-x-auto rounded-lg border dark:border-gray-700">

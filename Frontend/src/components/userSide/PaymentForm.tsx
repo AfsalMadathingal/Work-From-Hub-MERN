@@ -10,7 +10,14 @@ import { updatePaymentStatus } from "../../services/userServices";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { IUsers } from "../../@types/user";
 
-const PaymentForm: React.FC = ({ activePlan }) => {
+interface PaymentFormProps {
+  activePlan: {
+    stripeId: string;
+  };
+}
+
+const PaymentForm: React.FC<PaymentFormProps> = ({ activePlan }) => {
+
   const stripe = useStripe();
   const elements = useElements();
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +74,7 @@ const PaymentForm: React.FC = ({ activePlan }) => {
   
       setProcessing(false);
     } catch (error) {
-      
+      console.log(error);
       setProcessing(false);
       toast.error("Payment Failed Try again");
     }

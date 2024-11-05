@@ -16,16 +16,17 @@ const ApprovedWorkspaces = () => {
     const fetchWorkspaces = async (page: number, limit: number) => {
       try {
         const response = await getAllApprovedWorkspaces(page, limit);
-        if (response.status === 200) {
+        if (response?.status === 200) {
           setWorkspaces(response.data.data.approvedWorkspaces);
           setTotalPages(response.data.data.totalPages);
-        } else if (response.status === 401) {
+        } else if (response?.status === 401) {
           await logout();
           toast.error("Session expired");
         } else {
           toast.error("Something went wrong");
         }
       } catch (error) {
+        console.error("Error fetching workspaces:", error);
         toast.error("An error occurred while fetching workspaces");
       }
     };

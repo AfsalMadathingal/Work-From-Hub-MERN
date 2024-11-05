@@ -54,10 +54,10 @@ export default function BusinessUserTable() {
 
   const fetchUsers = async (page: number, itemsPerPage: number) => {
     const response = await getAllBusinessUsers(page, itemsPerPage);
-    if (response.status === 200) {
+    if (response?.status === 200) {
       setUsers(response.data.data.allUsers);
       setTotalPages(response.data.data.totalPages);
-    } else if (response.status === 401) {
+    } else if (response?.status === 401) {
       await logout();
       toast.error("session expired");
     } else {
@@ -68,12 +68,12 @@ export default function BusinessUserTable() {
   const handleBlock = async () => {
     try {
       const response = await blockAndUnblockBUser(selectedUser);
-      if (response.status === 200) {
+      if (response?.status === 200) {
         toast.success(response.data.message);
         await fetchUsers(currentPage, itemsPerPage);
         setSelectedUser(null);
         dispatch(setModal(false));
-      } else if (response.status === 401) {
+      } else if (response?.status === 401) {
         await logout();
         toast.error("Session expired");
       } else {
@@ -100,14 +100,14 @@ export default function BusinessUserTable() {
   const saveEditedUser = async (user: Partial<IBUsers>) => {
     
     const response = await editBusinessUser(user as IUsers);
-    if (response.status === 200) {
-      toast.info(response.data.message);
+    if (response?.status === 200) {
+      toast(response.data.message);
       await fetchUsers(currentPage, itemsPerPage);
       setEditUserModal(false);
-    } else if (response.status === 401) {
+    } else if (response?.status === 401) {
       await logout();
       toast.error("session expired");
-    } else if (response.status === 409) {
+    } else if (response?.status === 409) {
       toast.error(response.data.message);
     } else {
       toast.error("something went wrong");

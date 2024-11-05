@@ -45,7 +45,7 @@ const ProfileSidebar = () => {
     dispatch(setUser({}));
     navigate("/login");
     dispatch(setIsAuthenticated(false));
-    toast.info("Logged out successfully");
+    toast.success("Logged out successfully");
   };
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -62,37 +62,38 @@ const ProfileSidebar = () => {
     }
   };
 
-  const handlePhotoSave = async () => {
-    dispatch(setLoading(true));
+const handlePhotoSave = async () => {
+  dispatch(setLoading(true));
 
-    try {
-      const cropper = cropperRef.current?.cropper;
-      const croppedCanvas = cropper.getCroppedCanvas();
-      croppedCanvas.toBlob((blob) => {
-        if (blob && selectedFile) {
-          const formData = new FormData();
-          formData.append("image", blob, `${user?._id}_${selectedFile.name}`);
-          formData.append("id", user?._id);
+  try {
+    const cropper = cropperRef.current?.cropper;
+    const croppedCanvas = cropper?.getCroppedCanvas();
+    croppedCanvas?.toBlob((blob) => {
+      if (blob && selectedFile && user) {
+        const formData = new FormData();
+        formData.append("image", blob, `${user._id}_${selectedFile.name}`);
+        formData.append("id", user._id!);
 
-          editUserProfilePic(formData).then((response) => {
-            if (response.status === 200) {
-              dispatch(setUser(response.data?.data));
-              handleCancel();
-              toast.success("Profile picture uploaded successfully");
-            } else {
-              toast.error("Failed to upload profile picture");
-            }
-            dispatch(setLoading(false));
-          });
-        }
-      }, selectedFile?.type);
-    } catch (error) {
-      console.error("Error uploading profile picture:", error);
-      toast.error("Error occurred while uploading profile picture");
-      dispatch(setLoading(false));
-    }
-  };
-
+        editUserProfilePic(formData).then((response) => {
+          if (response?.status === 200) {
+            dispatch(setUser(response.data?.data));
+            handleCancel();
+            toast.success("Profile picture uploaded successfully");
+          } else {
+            toast.error("Failed to upload profile picture");
+          }
+          dispatch(setLoading(false));
+        });
+      } else {
+        console.error("User or selected file is null or undefined");
+      }
+    }, selectedFile?.type);
+  } catch (error) {
+    console.error("Error uploading profile picture:", error);
+    toast.error("Error occurred while uploading profile picture");
+    dispatch(setLoading(false));
+  }
+};
   const handleCancel = () => {
     setEditProfilePic(false);
     setProfilePic(user?.profile_pic);

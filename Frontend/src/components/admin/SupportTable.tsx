@@ -11,11 +11,25 @@ import {
   Paper,
   Button,
   Typography,
-  Box
+  Box,
 } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { PRIMARY_COLOR } from '../../constant/colors';
 import BadgeForSupport from './BadgeForSupport';
+
+// Define types for users and messages
+type User = {
+  id: string;
+  name: string;
+  email: string;
+  unreadCount: number;
+};
+
+type Message = {
+  userId: string;
+  message: string;
+  isAdmin?: boolean;
+};
 
 const theme = createTheme({
   palette: {
@@ -35,9 +49,9 @@ const SOCKET_URL = 'http://localhost:5000';
 
 const AdminChat: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
-  const [users, setUsers] = useState<{ id: string; name: string; email: string; unreadCount: number }[]>([]);
+  const [users, setUsers] = useState<User[]>([]);
   const [selectedUser, setSelectedUser] = useState<{ id: string; name: string } | null>(null);
-  const [messages, setMessages] = useState<{ userId: string; message: string; isAdmin?: boolean }[]>([]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [message, setMessage] = useState<string>('');
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [isChatStarted, setIsChatStarted] = useState(false);
@@ -52,8 +66,8 @@ const AdminChat: React.FC = () => {
     // Handle initial users list
     newSocket.on('connectedUsers', (userList) => {
       if (!userList) return;
-      const updatedUsers = Object.values(userList).map(user => ({ ...user, unreadCount: 0 }));
-      setUsers(updatedUsers);
+    const updatedUsers = Object.values(userList).map((user) => ({ ...user as object, unreadCount: 0 }));
+      setUsers(updatedUsers as User[]);
     });
 
     // Handle new user messages with improved notification
@@ -76,7 +90,7 @@ const AdminChat: React.FC = () => {
 
       // Show toast notification if chat is not focused
       if (!document.hasFocus() || selectedUser?.id !== msg.userId) {
-        toast.info(`New message from ${users.find(u => u.id === msg.userId)?.name || 'User'}`);
+        toast(`New message from ${users.find(u => u.id === msg.userId)?.name || 'User'}`);
       }
     });
 
@@ -87,7 +101,7 @@ const AdminChat: React.FC = () => {
         setSelectedUser(null);
         setIsChatOpen(false);
         setIsChatStarted(false);
-        toast.info('User has disconnected');
+        toast('User has disconnected');
       }
     });
 
@@ -148,11 +162,11 @@ const AdminChat: React.FC = () => {
     );
   };
 
-  const handleEndChat = () => {
-    setIsChatStarted(false);
-    setSelectedUser(null);
-    setIsChatOpen(false);
-  };
+  // const handleEndChat = () => {
+  //   setIsChatStarted(false);
+  //   setSelectedUser(null);
+  //   setIsChatOpen(false);
+  // };
 
   const hasUsers = users.length > 0;
 

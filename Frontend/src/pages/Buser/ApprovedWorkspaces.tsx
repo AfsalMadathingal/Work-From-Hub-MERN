@@ -12,7 +12,7 @@ const ApprovedWorkspaces = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Approved Workspaces"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import { IUsers } from '../../@types/user';
 
 interface IinitialState {
-  user: IUsers | null
+  user: IUsers 
   loading: boolean,
   error: object,
   isAuthenticated: boolean,
@@ -13,7 +13,7 @@ interface IinitialState {
 
 
 const initialState: IinitialState= {
-  user: null,
+  user: {} as IUsers,
   loading: false,
   error: {},
   isAuthenticated:false,
@@ -50,7 +50,7 @@ const userSlice = createSlice({
     },setFormData(state,action){
       state.formData = action.payload
     },resetUser(state){
-      state.user = {};
+      state.user = {} as IUsers;
       state.loading = false;
       state.error = {};
       state.isAuthenticated = false;

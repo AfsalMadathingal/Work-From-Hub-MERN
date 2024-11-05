@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import SummaryStatics from "./SummaryStatics";
 import RevenueChart from "./RevenueChart";
 import NewUsers from "./NewUsers";
@@ -7,7 +7,12 @@ import toast from "react-hot-toast";
 import { getDashboardData } from "../../services/adminService";
 
 const Dashboard = () => {
-  const [summaryData, setSummaryData] = useState({});
+  const [summaryData, setSummaryData] = useState({
+    userCount: 0,
+    workspaceCount: 0,
+    bookingCount: 0,
+    totalRevenue: 0,
+  });
   const [newUsers, setNewUsers] = useState([]);
   const [recentBookings, setRecentBookings] = useState([]);
    const [chartData, setChartData] = useState([{
@@ -19,15 +24,15 @@ const Dashboard = () => {
     try {
       const response = await getDashboardData();
 
-      const data = response.data.data;
+      const data = response?.data.data;
 
-      const summary: {bookingCount: number; userCount: number; workspaceCount: number; totalRevenue: number} = { bookingCount: 0, userCount: 0, workspaceCount: 0, totalRevenue: 0 };
+      const summary: {bookingCount: number; userCount: number; workspaceCount: number; totalRevenue: number ;} = { bookingCount: 0, userCount: 0, workspaceCount: 0, totalRevenue: 0 };
 
       summary.bookingCount = data?.bookingData?.bookingsCount;
       summary.userCount = data?.userData?.userCount;
       summary.workspaceCount = data?.workspaceData;
       summary.totalRevenue = data?.bookingData?.bookingsData.reduce(
-        (total, booking) => total + booking.amount,
+        (total : number, booking: { amount: number }) => total + booking.amount,
         0
       );
 
@@ -49,15 +54,15 @@ const Dashboard = () => {
       };
       
       // Step 1: Group bookings by date
-      const groupedBookings = lastSevenBookings.reduce((acc, booking) => {
-        const date = new Date(booking.date).toISOString().split('T')[0]; // Extract only the date part
-        if (!acc[date]) {
-          acc[date] = { date, bookings: 1 };
-        } else {
-          acc[date].bookings += 1;
-        }
-        return acc;
-      }, {});
+     const groupedBookings = lastSevenBookings.reduce((acc: { [date: string]: { date: string, bookings: number } }, booking: { date: string }) => {
+       const date = new Date(booking.date).toISOString().split('T')[0]; // Extract only the date part
+       if (!acc[date]) {
+         acc[date] = { date, bookings: 1 };
+       } else {
+         acc[date].bookings += 1;
+       }
+       return acc;
+     }, {});
       
       // Step 2: Get the last 7 days and ensure each date has a booking count
       const lastSevenDays = getLastSevenDays();
@@ -71,6 +76,7 @@ const Dashboard = () => {
       setNewUsers(data?.userData?.users);
       setSummaryData(summary);
     } catch (error) {
+      console.error("Error fetching dashboard data:", error);
       toast.error("Something went wrong");
     }
   };

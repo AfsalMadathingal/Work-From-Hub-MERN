@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import { toast } from 'react-toastify';
-import { userEditValidate } from '../../utils/adminValidator';
-import { IUsers } from '../../@types/user';
-
+import React, { useState, useEffect } from "react";
+import { toast } from "react-toastify";
+import { userEditValidate } from "../../utils/adminValidator";
+import { IUsers } from "../../@types/user";
 
 interface IProps {
   user: IUsers | null;
-  onSave: (data: any) => void;
+  onSave: (data: Partial<IUsers>) => void;
   onCancel: () => void;
 }
 
 interface Errors {
   fullName?: string;
   email?: string;
-
 }
 const EditUserProfile: React.FC<IProps> = ({ user, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
@@ -26,11 +24,11 @@ const EditUserProfile: React.FC<IProps> = ({ user, onSave, onCancel }) => {
 
   const [isVisible, setIsVisible] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
-  const [errors, setErrors] = useState <Errors>({});
+  const [errors, setErrors] = useState<Errors>({});
 
   useEffect(() => {
     setShowProfile(true);
-    setTimeout(() => setIsVisible(true), 10); 
+    setTimeout(() => setIsVisible(true), 10);
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -39,8 +37,6 @@ const EditUserProfile: React.FC<IProps> = ({ user, onSave, onCancel }) => {
   };
 
   const handleSave = () => {
-
-
     const formattedErrors = userEditValidate({
       fullName: formData.fullName,
       email: formData.email,
@@ -49,13 +45,13 @@ const EditUserProfile: React.FC<IProps> = ({ user, onSave, onCancel }) => {
       setErrors(formattedErrors);
       return;
     }
-    if (formData.fullName  == user?.fullName && formData.email == user?.email) {
-      toast.error('If you dont want to change any details, please click cancel.');
+    if (formData.fullName == user?.fullName && formData.email == user?.email) {
+      toast.error(
+        "If you dont want to change any details, please click cancel."
+      );
       return;
     }
 
-    
-    
     onSave(formData);
   };
 
@@ -72,38 +68,48 @@ const EditUserProfile: React.FC<IProps> = ({ user, onSave, onCancel }) => {
   return (
     <div
       className={`fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 transition-opacity duration-300 ${
-        isVisible ? 'opacity-100' : 'opacity-0'
+        isVisible ? "opacity-100" : "opacity-0"
       }`}
     >
       <div
         className={`bg-white rounded-lg shadow-lg p-6 w-96 transform transition-all duration-300 ${
-          isVisible ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+          isVisible ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0"
         }`}
       >
-        <h2 className="text-xl font-semibold text-center mb-4">Edit User Profile</h2>
+        <h2 className="text-xl font-semibold text-center mb-4">
+          Edit User Profile
+        </h2>
         {/* Name Input */}
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Name</label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Name
+          </label>
           <input
             type="text"
             name="fullName"
-            value={formData.fullName || ''}
+            value={formData.fullName || ""}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
-          {errors.fullName && <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>}
+          {errors.fullName && (
+            <p className="text-red-500 text-sm mt-1">{errors.fullName}</p>
+          )}
         </div>
         {/* Email Input */}
         <div className="mb-4">
-          <label className="block text-gray-700 text-sm font-bold mb-2">Email</label>
+          <label className="block text-gray-700 text-sm font-bold mb-2">
+            Email
+          </label>
           <input
             type="email"
             name="email"
-            value={formData.email   || ''}
+            value={formData.email || ""}
             onChange={handleChange}
             className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
-          {errors.email && <p className="text-red-500 text-sm mt-1">{errors.email}</p>}
+          {errors.email && (
+            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+          )}
         </div>
 
         {/* Save and Cancel Buttons */}

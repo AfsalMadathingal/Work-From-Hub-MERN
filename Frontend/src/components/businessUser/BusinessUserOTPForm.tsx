@@ -1,5 +1,5 @@
  
-import React, { useState, useEffect, ChangeEvent, FormEvent, useRef } from 'react';
+import React, { useState, useEffect, ChangeEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { toast } from 'react-toastify';
@@ -56,7 +56,7 @@ const BusinessUserOTPForms: React.FC = () => {
       }
   
       if (apiResponse?.data) {
-        const { user, accessToken, refreshToken } = apiResponse.data;
+        const { user, accessToken } = apiResponse.data;
         
         setVerified(true);
         
@@ -83,16 +83,16 @@ const BusinessUserOTPForms: React.FC = () => {
     }
   };
   
-  const handleResend = async () => {
-    if (timer === 0) {
-      setTimer(60); // Reset timer to 60 seconds
-      const otpResponse = await sendOTP(formData);
+const handleResend = async () => {
+  if (timer === 0) {
+    setTimer(60); // Reset timer to 60 seconds
+    const otpResponse = await sendOTP(formData);
 
-      if(otpResponse?.error){
-        toast.error(otpResponse.error)
-      }
+    if (otpResponse?.data && otpResponse.data.error) {
+      toast.error(otpResponse.data.error)
     }
-  };
+  }
+};
   const handleClose = () => {
     dispatch(setModal(false));
   };

@@ -1,15 +1,25 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import * as XLSX from 'xlsx';
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import { getDetailedReport } from '../../services/adminService';
+import { IUsers } from '../../@types/user';
+
+
+interface Booking {
+  workspaceName: string;
+  userId: IUsers;
+  date: string;
+  amount: string;
+  status: string;
+  paymentIntentId: string;
+}
 
 const DetailedBookingsReport = () => {
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState <Booking[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
 
   // State for Filters
   const [filters, setFilters] = useState({
@@ -21,8 +31,9 @@ const DetailedBookingsReport = () => {
   });
 
   // PDF Export
-  const generatePDF = () => {
-    const reportElement = document.getElementById('report-content');
+const generatePDF = () => {
+  const reportElement = document.getElementById('report-content');
+  if (reportElement) {
     html2canvas(reportElement).then((canvas) => {
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
@@ -32,7 +43,10 @@ const DetailedBookingsReport = () => {
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save('detailed-bookings-report.pdf');
     });
-  };
+  } else {
+    console.error('Report element not found');
+  }
+};
 
   // Excel Export
   const exportToExcel = () => {
@@ -43,7 +57,6 @@ const DetailedBookingsReport = () => {
   };
 
   const fetchBookingsData = async () => {
-    setLoading(true);
     try {
       const query = new URLSearchParams({
         name: filters.name,
@@ -57,22 +70,20 @@ const DetailedBookingsReport = () => {
       const response = await getDetailedReport(query);
   
 
-      setBookings(response.data.data.bookings);
-      setTotalPages(response.data.data.totalPages);
+      setBookings(response?.data.data.bookings);
+      setTotalPages(response?.data.data.totalPages);
     } catch (error) {
       console.error('Error fetching bookings:', error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e : React.FormEvent) => {
     e.preventDefault(); 
     setPage(1);
     fetchBookingsData(); 
   };
 
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage : number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setPage(newPage);
     }
@@ -155,14 +166,18 @@ const DetailedBookingsReport = () => {
             </tr>
           </thead>
           <tbody className="text-gray-600 text-sm font-light">
+
+
+
+
             {bookings.map((booking, index) => (
               <tr key={index} className="border-b border-gray-200 hover:bg-gray-100">
-                <td className="py-3 px-6">{booking.userId.fullName}</td>
-                <td className="py-3 px-6">{booking.date.slice(0, 10)}</td>
-                <td className={`py-3 px-6 ${booking.status === 'success' ? 'text-green-500' : 'text-red-500'}`}>
-                  {booking.status}
+                <td className="py-3 px-6">{booking?.userId?.fullName}</td>
+                <td className="py-3 px-6">{booking?.date.slice(0, 10)}</td>
+                <td className={`py-3 px-6 ${booking?.status === 'success' ? 'text-green-500' : 'text-red-500'}`}>
+                  {booking?.status}
                 </td>
-                <td className="py-3 px-6">{booking.amount}</td>
+                <td className="py-3 px-6">{booking?.amount}</td>
               </tr>
             ))}
           </tbody>

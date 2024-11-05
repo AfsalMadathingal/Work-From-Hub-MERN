@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
 import ReactLoading from "react-loading";
@@ -30,7 +30,11 @@ const ForgotPasswordModal: FC<DialogProps> = ({
   const [otp, setOtp] = useState(["", "", "", ""]);
   const [email, setEmail] = useState("");
   const dispatch = useDispatch();
-  const { loading, error } = useSelector((state: RootState) => state.user);
+  const { loading} = useSelector((state: RootState) => state.user);
+
+  const error : {
+    email?: string
+  }= useSelector((state: RootState) => state.user.error);
 
   useEffect(() => {
     if (isOpen) {

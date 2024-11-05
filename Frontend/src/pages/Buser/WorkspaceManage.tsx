@@ -11,7 +11,7 @@ const BWorkspaceManage = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Workspace Listing"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

@@ -29,11 +29,13 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
     <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300">
       {/* Image Container */}
       <div className="relative h-48 md:h-full md:w-1/3 md:absolute md:left-0 md:top-0">
-        <img
-          src={listing?.photos[0] as string}
-          alt={listing.buildingName}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
+        {listing.photos && (
+          <img
+            src={listing.photos[0] as string}
+            alt={listing.buildingName}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+        )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
       </div>
 

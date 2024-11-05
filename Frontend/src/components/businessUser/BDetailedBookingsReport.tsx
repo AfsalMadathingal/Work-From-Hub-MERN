@@ -4,13 +4,30 @@ import html2canvas from 'html2canvas';
 import * as XLSX from 'xlsx';
 import { FaFileExcel, FaFilePdf } from 'react-icons/fa';
 import { getDetailedReport } from '../../services/BuserService';
+import { IUsers } from '../../@types/user';
+import { ISeat } from '../../@types/seat';
+import { IWorkspace } from '../../@types/workspace';
+
+
+ interface IBooking {
+  workspaceName: string;
+  userId: IUsers;
+  seatInfo: ISeat[];
+  workspaceInfo: IWorkspace;
+  date: string;
+  amount: string;
+  status: string;
+  paymentIntentId: string;
+}
 
 
 const BDetailedBookingsReport = () => {
-  const [bookings, setBookings] = useState([]);
+  const [bookings, setBookings] = useState<IBooking[]>([]);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [loading, setLoading] = useState(false);
+
+
+
 
   // State for Filters
   const [filters, setFilters] = useState({
@@ -22,18 +39,23 @@ const BDetailedBookingsReport = () => {
   });
 
   // PDF Export
-  const generatePDF = () => {
-    const reportElement = document.getElementById('report-content');
-    html2canvas(reportElement).then((canvas) => {
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+const generatePDF = () => {
+  const reportElement = document.getElementById('report-content');
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save('detailed-bookings-report.pdf');
-    });
-  };
+  if (!reportElement) {
+    console.error('Report element not found');
+    return;
+  }
+  html2canvas(reportElement ?? {}).then((canvas) => {
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF('p', 'mm', 'a4');
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save('detailed-bookings-report.pdf');
+  });
+};
 
   // Excel Export
   const exportToExcel = () => {
@@ -44,7 +66,7 @@ const BDetailedBookingsReport = () => {
   };
 
   const fetchBookingsData = async () => {
-    setLoading(true);
+
     try {
       const query = new URLSearchParams({
         buildingName: filters.name,
@@ -58,26 +80,24 @@ const BDetailedBookingsReport = () => {
       const response = await  getDetailedReport(query);
   
 
-      setBookings(response.data.data.bookings);
-      setTotalPages(response.data.data.totalPages);
+      setBookings(response?.data.data.bookings);
+      setTotalPages(response?.data.data.totalPages);
     } catch (error) {
       console.error('Error fetching bookings:', error);
-    } finally {
-      setLoading(false);
-    }
+    } 
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e:React.FormEvent) => {
     e.preventDefault(); 
     setPage(1);
     fetchBookingsData(); 
   };
 
-  const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= totalPages) {
-      setPage(newPage);
-    }
-  };
+const handlePageChange = (newPage: number) => {
+  if (newPage >= 1 && newPage <= totalPages) {
+    setPage(newPage);
+  }
+};
 
   useEffect(() => {
     fetchBookingsData();

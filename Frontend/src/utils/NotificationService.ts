@@ -116,7 +116,7 @@ class NotificationService {
     return this.isDarkMode ? darkModeConfig[type] : modalConfig[type];
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   success(title: string, message?: string): Promise<SweetAlertResult<any>> {
     return Swal.fire({
       title,
@@ -126,7 +126,7 @@ class NotificationService {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   error(title: string, message?: string): Promise<SweetAlertResult<any>> {
     return Swal.fire({
       title,
@@ -136,7 +136,7 @@ class NotificationService {
     });
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   warning(title: string, message?: string): Promise<SweetAlertResult<any>> {
     return Swal.fire({
       title,

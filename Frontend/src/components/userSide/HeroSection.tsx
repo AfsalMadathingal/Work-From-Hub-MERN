@@ -1,12 +1,12 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import  { useState } from "react";
+import {  useNavigate } from "react-router-dom";
 
 const HeroSection = function HeroSection() {
   const navigate = useNavigate();
 
   const [query, setQuery] = useState("");
 
-  const handleFormSubmit = (e) => {
+  const handleFormSubmit = (e : React.FormEvent) => {
     e.preventDefault(); // prevent form submission
     // trigger navigation manually to the search page with the query
     navigate(`/workspace?search=${query}`, { state: { query } });

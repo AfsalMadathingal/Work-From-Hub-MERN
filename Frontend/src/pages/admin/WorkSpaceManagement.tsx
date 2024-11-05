@@ -11,7 +11,7 @@ const WorkspaceManagement = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Workspace Management"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

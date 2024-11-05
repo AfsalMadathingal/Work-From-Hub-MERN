@@ -57,10 +57,10 @@ export default function UserManagementTable() {
   const fetchUsers = async (page: number, itemsPerPage: number) => {
     const response = await getAllUsers(page, itemsPerPage);
 
-    if (response.status === 200) {
+    if (response?.status === 200) {
       setUsers(response.data.data.allUsers);
       setTotalPages(response.data.data.totalPages);
-    } else if (response.status === 401) {
+    } else if (response?.status === 401) {
       await logout();
       toast.error("session expired");
     } else {
@@ -74,12 +74,12 @@ export default function UserManagementTable() {
     try {
       const response = await manageBlockAndUnblock(selectedUser as IUsers);
 
-      if (response.status === 200) {
+      if (response?.status === 200) {
         toast.success(response.data.message);
         await fetchUsers(currentPage, itemsPerPage);
         setSelectedUser(null);
         dispatch(setModal(false));
-      } else if (response.status === 401) {
+      } else if (response?.status === 401) {
         await logout();
         setSelectedUser(null);
         dispatch(setModal(false));
@@ -90,6 +90,8 @@ export default function UserManagementTable() {
         toast.error("Something went wrong");
       }
     } catch (error) {
+       console.error(error);
+       
       setSelectedUser(null);
       dispatch(setModal(false));
       toast.error("An error occurred");
@@ -115,14 +117,14 @@ export default function UserManagementTable() {
 
     const response = await EditUser(user);
 
-    if (response.status === 200  ) {
-      toast.info(response.data.message);
+    if (response?.status === 200  ) {
+      toast(response.data.message);
       setEditUserModal(false);
-    } else if (response.status === 401) {
+    } else if (response?.status === 401) {
       await logout();
       toast.error("session expired");
       return
-    }else if(response.status === 409){
+    }else if(response?.status === 409){
 
       toast.error(response.data.message);
       return

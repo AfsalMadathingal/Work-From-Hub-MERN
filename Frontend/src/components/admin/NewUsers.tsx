@@ -7,49 +7,51 @@ import {
   TableRow,
   TableCell,
   User,
-  Chip,
-  Tooltip,
-  ChipProps,
 } from "@nextui-org/react";
+import { Key } from 'react';
 
-const statusColorMap: Record<string, ChipProps["color"]> = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
+// const statusColorMap: Record<string, ChipProps["color"]> = {
+//   active: "success",
+//   paused: "danger",
+//   vacation: "warning",
+// };
 
-interface NewUsersProps {
-  newUsersData: Array<{
-    fullName: string;
-    createdAt: string;
-    profilePic: string;
-    status: string; // added a status field for chip color mapping
-  }>;
+interface INewUser {
+  _id: string;
+  fullName: string;
+  createdAt: string;
+  profilePic: string;
+  status: string;
 }
 
+
+interface NewUsersProps {
+  newUsersData: INewUser[];
+}
 const NewUsers: React.FC<NewUsersProps> = ({ newUsersData }) => {
 
     
-  const renderCell = React.useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
+const renderCell = React.useCallback((item: INewUser, columnKey: Key) => {
+  const cellValue = item[columnKey as keyof INewUser];
 
-    switch (columnKey) {
-      case "fullName":
-        return (
-            <User
-            avatarProps={{radius: "lg", src: user.profilePic}}
-            description={user.email}
-            name={user.fullName}
-          >
-            {user.email}
-          </User>
-        );
-      case "createdAt":
-        return <p>{user.createdAt.slice(0, 10)}</p>;
-      default:
-        return cellValue;
-    }
-  }, []);
+
+  switch (columnKey) {
+    case "fullName":
+      return (
+        <User
+          avatarProps={{ radius: "lg", src: item.profilePic }}
+          description={''} // You might want to add a default description or handle this case differently
+          name={item.fullName}
+        >
+          {''} // You might want to add a default value or handle this case differently
+        </User>
+      );
+    case "createdAt":
+      return <p>{item.createdAt.slice(0, 10)}</p>;
+    default:
+      return cellValue;
+  }
+}, []);
 
   return (
     <div className="bg-white p-6  rounded-md shadow-md mb-8">
@@ -62,7 +64,7 @@ const NewUsers: React.FC<NewUsersProps> = ({ newUsersData }) => {
         <TableBody items={newUsersData}>
         {(item) => (
           <TableRow key={item._id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+            {(columnKey) => <TableCell>{renderCell(item , columnKey)}</TableCell>}
           </TableRow>
         )}
       </TableBody>

@@ -1,11 +1,20 @@
 import { Line } from "react-chartjs-2"; // Assuming you're using chart.js
 import "chart.js/auto"; // Make sure chart.js is installed
 import { Link } from "react-router-dom";
+interface ChartDataItem {
+  date: string;
+  bookings: number;
+}
 
-export default function RevenueChart({ chartData }) {
-  const bookingSorted = chartData.sort(
-    (a, b) => new Date(a.date) - new Date(b.date)
-  );
+
+export default function RevenueChart({ chartData }: { chartData: ChartDataItem[] }) {
+
+
+  console.log(chartData);
+  
+ const bookingSorted = chartData.sort(
+   (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+ );
   // Prepare data for the chart
   const xAxisData = bookingSorted.map((item) => item.date); // Extract dates for x-axis
   const seriesData = bookingSorted.map((item) => item.bookings); // Extract bookings for series data
@@ -33,7 +42,7 @@ export default function RevenueChart({ chartData }) {
     plugins: {
       legend: {
         display: true,
-        position: "top",
+        position: "top" as const,
         labels: {
           color: "#374151", // Tailwind gray-700
         },
@@ -68,7 +77,7 @@ export default function RevenueChart({ chartData }) {
     <div className="bg-white dark:bg-gray-800 border flex flex-col justify-center items-center p-6 border-gray-300 dark:border-gray-700 rounded-md shadow-lg space-y-6">
       <div className="w-full">
         <h2 className="text-xl font-bold text-gray-700 dark:text-gray-300 mb-4 text-center">
-          Bookings Overview
+          Bookings Overview 
         </h2>
         <div className="relative h-72 w-full">
           {/* Chart container with a fixed height */}

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import AdminLayout from '../../components/admin/AdminLayout';
 import { useDispatch } from 'react-redux';
 import { setPageTitle } from '../../redux/slices/adminSlice';
@@ -11,7 +11,7 @@ const BookingHistory = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("Booking History"));
-  }, []);
+  }, [dispatch]);
 
 
   return (

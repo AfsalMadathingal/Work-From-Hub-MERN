@@ -22,48 +22,51 @@ const WorkspaceListing = () => {
   };
 
   useEffect(() => {
+    const fetchWorkspaces = async (page: number) => {
+      try {
+        const response = await getAllWorkspaces(page, limit);
+        if (response?.status === 200) {
+          setWorkspaces(response.data.data);
+          setTotalPages(response.data.data.totalPages);
+        } else if (response?.status === 401) {
+  
+          await logout();
+          toast.error("Session expired");
+        }
+      } catch (error) {
+  
+        console.error("Error fetching workspaces:", error);
+        toast.error("Failed to fetch workspaces");
+      }
+    };
     fetchWorkspaces(currentPage);
 
-  }, [currentPage]);
+  }, [currentPage, limit]);
 
   useEffect(() => {
+    const filterWorkspaces = () => {
+      let filtered = [...workspaces];
+      switch (activeFilter) {
+        case 'pending':
+          filtered = workspaces.filter(w => !w.approved && !w.rejected);
+          break;
+        case 'approved':
+          filtered = workspaces.filter(w => w.approved);
+          break;
+        case 'rejected':
+          filtered = workspaces.filter(w => w.rejected);
+          break;
+        default:
+          break;
+      }
+      setFilteredWorkspaces(filtered);
+    };
     filterWorkspaces();
   }, [workspaces, activeFilter]);
 
-  const fetchWorkspaces = async (page: number) => {
-    try {
-      const response = await getAllWorkspaces(page, limit);
-      if (response.status === 200) {
-        setWorkspaces(response.data.data);
-        setTotalPages(response.data.data.totalPages);
-      } else if (response.status === 401) {
 
-        await logout();
-        toast.error("Session expired");
-      }
-    } catch (error) {
 
-      toast.error("Failed to fetch workspaces");
-    }
-  };
-
-  const filterWorkspaces = () => {
-    let filtered = [...workspaces];
-    switch (activeFilter) {
-      case 'pending':
-        filtered = workspaces.filter(w => !w.approved && !w.rejected);
-        break;
-      case 'approved':
-        filtered = workspaces.filter(w => w.approved);
-        break;
-      case 'rejected':
-        filtered = workspaces.filter(w => w.rejected);
-        break;
-      default:
-        break;
-    }
-    setFilteredWorkspaces(filtered);
-  };
+  
 
   const getStatusBadgeClass = (workspace: IWorkspace) => {
     if (workspace.approved) return "bg-green-500 dark:bg-green-600";

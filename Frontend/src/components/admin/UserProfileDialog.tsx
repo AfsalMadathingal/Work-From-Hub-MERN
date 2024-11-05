@@ -40,7 +40,9 @@ const UserProfileDialog : React.FC<{ user: IUsers; setUserDetailsModal: React.Di
         </div>
         {/* Name, Email, Account Status, Date Joined */}
         <div className="text-center">
-          <h2 className="text-lg font-semibold">{fullName}</h2>
+          <h2 className="text-lg font-semibold text-gray-800 ">
+           {fullName}
+          </h2>
           <p className="text-gray-600">{email}</p>
           <div className="mt-4">
             <p className="text-sm text-gray-500">

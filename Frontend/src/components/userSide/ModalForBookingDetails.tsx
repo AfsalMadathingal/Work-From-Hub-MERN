@@ -1,17 +1,24 @@
 import React from "react";
 import { IWorkspace } from "../../@types/workspace";
 import { ISeat } from "../../@types/seat";
-import jsPDF from "jspdf"; // Import jsPDF
 import "jspdf-autotable"; // Optional: for table support
+import { jsPDF } from "jspdf";
 import { useSelector } from "react-redux";
 import { RootState } from "../../redux/store/store";
-import { Download, X } from 'lucide-react';
+import { Download, X } from "lucide-react";
+import { IBookingDetails } from "../../@types/bookingDetails";
+import { UserOptions } from "jspdf-autotable";
+
+interface jsPDFWithPlugin extends jsPDF {
+  autoTable: (options: UserOptions) => jsPDFWithPlugin;
+}
+
 interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
-  workspace: IWorkspace | null;
-  seat: ISeat | null;
-  booking: any;
+  workspace: IWorkspace ;
+  seat: ISeat ;
+  booking: IBookingDetails;
 }
 
 const ModalForBookingDetails: React.FC<ModalProps> = ({
@@ -26,7 +33,7 @@ const ModalForBookingDetails: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   const handleDownload = () => {
-    const doc = new jsPDF();
+    const doc = new jsPDF() as jsPDFWithPlugin;
 
     // Add a logo
     const logoUrl = "/logo.png"; // Replace with your logo URL
@@ -70,34 +77,33 @@ const ModalForBookingDetails: React.FC<ModalProps> = ({
       body: [
         ["Workspace", workspace?.buildingName],
         ["Seat", `${seat?.tableNumber}-${seat?.seatNumber}`],
-        ["Date", booking.date.split("T")[0]],
+        ["Date", booking.date.toISOString().split("T")[0]],
         ["Amount", booking.amount],
         ["Status", booking.status],
       ],
       startY: 140,
       theme: "striped",
     });
+    // // Footer Section with Note and Signature Area
+    // doc.setFontSize(10);
+    // doc.text(
+    //   "Thank you for booking with us!",
+    //   20,
+    //   doc.lastAutoTable.finalY + 20
+    // );
+    // doc.text(
+    //   "For queries, contact support@example.com",
+    //   20,
+    //   doc.lastAutoTable.finalY + 30
+    // );
 
-    // Footer Section with Note and Signature Area
-    doc.setFontSize(10);
-    doc.text(
-      "Thank you for booking with us!",
-      20,
-      doc.lastAutoTable.finalY + 20
-    );
-    doc.text(
-      "For queries, contact support@example.com",
-      20,
-      doc.lastAutoTable.finalY + 30
-    );
-
-    // Final horizontal line
-    doc.line(
-      20,
-      doc.lastAutoTable.finalY + 40,
-      190,
-      doc.lastAutoTable.finalY + 40
-    );
+    // // Final horizontal line
+    // doc.line(
+    //   20,
+    //   doc.lastAutoTable.finalY + 40,
+    //   190,
+    //   doc.lastAutoTable.finalY + 40
+    // );
 
     // Save the PDF
     doc.save("invoice.pdf");

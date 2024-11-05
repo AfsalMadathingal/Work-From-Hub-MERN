@@ -99,7 +99,10 @@ class AuthController {
         profilePic: photoURL,
       });
 
+      console.log('====================================');
       console.log(userAfterAuth);
+      console.log('====================================');
+
 
       return res
         .status(200)

@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useTheme, ThemeProvider, createTheme } from "@mui/material/styles";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -14,10 +14,7 @@ import ListItemText from "@mui/material/ListItemText";
 import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import DashboardIcon from "@mui/icons-material/Dashboard";
-import BookIcon from "@mui/icons-material/Book";
-import WorkIcon from "@mui/icons-material/Work";
-import { MdDarkMode, MdDashboard, MdLightMode } from "react-icons/md";
+import { MdDarkMode, MdLightMode } from "react-icons/md";
 import { Link, useNavigate } from "react-router-dom";
 import { PRIMARY_COLOR } from "../../constant/colors";
 import { Button } from "@mui/material";

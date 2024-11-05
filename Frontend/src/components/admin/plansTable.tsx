@@ -56,10 +56,22 @@ const PlansTable = () => {
         return;
       }
 
-      const response = await createPlan(accessToken, {
-        price,
-        discount,
-      });
+      const priceInt = parseInt(price);
+      const discountInt = parseInt(discount);
+
+const plan: IPlan = {
+  id: '', // you'll need to generate a unique ID for the plan
+  planId: '', // you'll need to generate a unique plan ID
+  stripeId: '', // you'll need to generate a unique Stripe ID
+  price: priceInt,
+  discount: discountInt,
+  discountAmount: 0, // you'll need to calculate the discount amount
+  createdAt: new Date(),
+  status: 'active', // or whatever the default status is
+  isDeleted: false,
+};
+
+const response = await createPlan(accessToken, plan);
 
       if (response.data.success) {
         toast.success(response.data.message);
@@ -67,6 +79,8 @@ const PlansTable = () => {
         dispatch(setModal(false));
       }
     } catch (error) {
+      console.log(error);
+      
       toast.error("something went wrong");
     }
   };
@@ -78,10 +92,10 @@ const PlansTable = () => {
   ) => {
     const response = await getPlans(accessToken, page, itemsPerPage);
 
-    if (response.status === 200) {
+    if (response?.status === 200) {
       setPlans(response.data.data.allPlans);
       setTotalPages(response.data.data.totalPages);
-    } else if (response.status === 401) {
+    } else if (response?.status === 401) {
       await logout();
       toast.error("session expired");
       dispatch(resetAdmin());
@@ -120,7 +134,7 @@ const PlansTable = () => {
 
     const response = await searchPlans(1, itemsPerPage, searchQuery);
 
-    if (response.status === 200) {
+    if (response?.status === 200) {
       if (response.data.data.length === 0) {
         toast.error("No plans found");
         return;
@@ -133,7 +147,7 @@ const PlansTable = () => {
       }
 
       setPlans(response.data.data);
-    } else if (response.status === 401) {
+    } else if (response?.status === 401) {
       await logout();
       toast.error("session expired");
       dispatch(resetAdmin());

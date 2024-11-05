@@ -13,40 +13,42 @@ const View = () => {
   const [workspace, setWorkspace] = useState<Partial<IWorkspace>>();
    const [loading, setLoading]= useState<boolean>(false);
 
-  const fetchWorkspace = async () => {
-    try {
 
-      toast("Fetching workspace details");
-
-      setLoading(true);
-      const response = await getWorkspace(workspaceId as string);
-
-
-      console.log('====================================');
-      console.log(response);
-      console.log('====================================');
-
-      if (!response?.data.data) {
-        setLoading(false);
-        toast.error("Workspace not found");
-        return;
-      }
-
-      setWorkspace(response.data.data);
-      setLoading(false);
-    } catch (error) {
-      console.log('====================================');
-      console.log(error);
-      console.log('====================================');
-      toast.dismiss();
-      setLoading(false);
-      toast.error("An error occurred while fetching workspace details");
-    }
-  };
 
   useEffect(() => {
+    const fetchWorkspace = async () => {
+      try {
+  
+        toast("Fetching workspace details");
+  
+        setLoading(true);
+        const response = await getWorkspace(workspaceId as string);
+  
+  
+        console.log('====================================');
+        console.log(response);
+        console.log('====================================');
+  
+        if (!response?.data.data) {
+          setLoading(false);
+          toast.error("Workspace not found");
+          return;
+        }
+  
+        setWorkspace(response.data.data);
+        setLoading(false);
+      } catch (error) {
+        console.log('====================================');
+        console.log(error);
+        console.log('====================================');
+        toast.dismiss();
+        setLoading(false);
+        toast.error("An error occurred while fetching workspace details");
+      }
+    };
     fetchWorkspace();
-  }, []);
+    
+  }, [workspaceId]);
 
   return (
     <>

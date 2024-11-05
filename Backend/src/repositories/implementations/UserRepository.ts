@@ -76,11 +76,14 @@ export default class UserRepository implements IUserRepository {
 
     try {
       const userWithSavedToken = await Users.findByIdAndUpdate(
-        { _id: userId },
-        { $push: { refreshToken: refreshToken } }
+        userId,
+        { $push: { refreshToken: refreshToken } },
+        { new: true }
       ).select("-password -refreshToken");
       return userWithSavedToken;
     } catch (error) {
+
+
       return null
     }
     

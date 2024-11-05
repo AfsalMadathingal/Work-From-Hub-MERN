@@ -50,7 +50,6 @@ const WorkspaceDetail: React.FC<Partial<IWorkspace>> = ({ workspace }) => {
     photos,
     video,
     tablesAvailable,
-    seatsPerTable,
     approved,
     createdAt,
     ownerId,
@@ -112,13 +111,15 @@ const WorkspaceDetail: React.FC<Partial<IWorkspace>> = ({ workspace }) => {
     try {
       const response = await approveWorkspace(workspace._id);
       setConfirmDialog(false);
-      if (response.status === 200) {
+      if (response?.status === 200) {
         navigate(-1);
         toast.success("Workspace approved successfully");
       } else {
         toast.error("Something went wrong");
       }
     } catch (error) {
+      console.error(error);
+      
       toast.error("Something went wrong");
     }
   };
@@ -127,13 +128,14 @@ const WorkspaceDetail: React.FC<Partial<IWorkspace>> = ({ workspace }) => {
     try {
       const response = await rejectWorkspace(workspace._id,reason);
       setConfirmDialog(false);
-      if (response.status === 200) {
+      if (response?.status === 200) {
         navigate(-1);
         toast.success("Workspace rejected successfully");
       } else {
         toast.error("Something went wrong");
       }
     } catch (error) {
+      console.error(error);
       toast.error("Something went wrong");
     }
   };
@@ -279,7 +281,7 @@ const WorkspaceDetail: React.FC<Partial<IWorkspace>> = ({ workspace }) => {
             <div className="space-y-4">
               <div className="bg-gray-50 dark:bg-gray-700 rounded-lg">
                 <Slider {...sliderSettings}>
-                  {photos.map((photo, index) => (
+                  {photos.map((photo : string, index : number) => (
                     <div key={index} className="flex justify-center">
                       <img src={photo} alt={`Workspace Image ${index + 1}`} className="w-full h-64 object-cover rounded-lg" />
                     </div>

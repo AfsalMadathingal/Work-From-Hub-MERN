@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
-import { Calendar } from "@nextui-org/react";
+import { useState, useEffect } from "react";
+import { Calendar, DateValue } from "@nextui-org/react";
 import { today, getLocalTimeZone, isWeekend } from "@internationalized/date";
 import { useLocale } from "@react-aria/i18n";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { IWorkspace } from "../../@types/workspace";
 import toast from "react-hot-toast";
 import {
@@ -14,19 +14,53 @@ import { RootState } from "../../redux/store/store";
 import { setLoading } from "../../redux/slices/userSlice";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ReactLoading from "react-loading";
+import { ISeat } from "../../@types/seat";
+
+
+interface Table {
+  tableNumber: number;
+  seats: ISeat[]; // or define a more specific type for seats if possible
+}
+
+
 
 const BookingTable = () => {
   const now = today(getLocalTimeZone());
   const [selectedSeat, setSelectedSeat] = useState<string | null>(null);
   const [seatIdSelected, setIdSeatSelected] = useState("");
-  const [selectedDate, setSelectedDate] = useState();
+const [selectedDate, setSelectedDate] = useState<DateValue>(today(getLocalTimeZone()));
   const [dateSelected, setDateSelected] = useState(false);
   const [availableSeats, setAvailableSeats] = useState<string[]>([]);
   const dispatch = useDispatch();
   const { loading } = useSelector((state: RootState) => state.user);
-  const [tables, setTables] = useState<any[]>([]);
+  const [tables, setTables] = useState<Table[]>([]);
   const { id } = useParams();
-  const [workspaceData, setWorkspace] = useState<IWorkspace>({});
+const [workspaceData, setWorkspace] = useState<IWorkspace>({
+  _id: '',
+  buildingName: '',
+  state: '',
+  district: '',
+  location: '',
+  pinCode: '',
+  street: '',
+  contactNo: '',
+  powerBackup: false,
+  ac: false,
+  bathroom: false,
+  tablesAvailable: 0,
+  seatsPerTable: 0,
+  photos: null,
+  video: null,
+  imageAdded: false,
+  videoAdded: false,
+  pricePerSeat: 0,
+  timing: '',
+  workingDays: '',
+  ownerId: '',
+  createdAt: '',
+  updatedAt: '',
+  __v: 0,
+});
   const [currentTableIndex, setCurrentTableIndex] = useState(0);
   const navigate = useNavigate();
   const { locale } = useLocale();
@@ -38,42 +72,21 @@ const BookingTable = () => {
     setIdSeatSelected(seatId);
   };
 
-  const fetchWorkSpace = async () => {
-    try {
-
-      dispatch(setLoading(true));
-      const response = await getSingleWorkspace(id as string);
-
-      if (response.status === 200) {
-        dispatch(setLoading(false));
-        setWorkspace(response.data.data);
-      } else {
-        toast.error("Failed to fetch workspace details");
-        dispatch(setLoading(false));
-        navigate("/");
-      }
-    } catch (error) {
-          
-      dispatch(setLoading(false));
-      navigate("/");
-      toast.error("Failed to fetch workspace details");
-    }
-  };
+ 
 
 
+const isDateUnavailable = (date: DateValue) => {
+  return (
+    isWeekend(date, locale) ||
+    date.compare(minDate) < 0 ||
+    date.compare(maxDate) > 0
+  );
+};
 
-  const isDateUnavailable = (date: any) => {
-    return (
-      isWeekend(date, locale) ||
-      date.compare(minDate) < 0 ||
-      date.compare(maxDate) > 0
-    );
-  };
-
-  const handleDateChange = (date: any) => {
-    setSelectedDate(date);
-    setDateSelected(true);
-  };
+const handleDateChange = (date: DateValue) => {
+  setSelectedDate(date);
+  setDateSelected(true);
+};
 
   const fetchAvailableSeats = async (selectedDate: string) => {
     try {
@@ -82,14 +95,14 @@ const BookingTable = () => {
       const seatsAvailableResponse = await getAvailableSeats(id as string);
 
       if (
-        workspaceResponse.status === 200 &&
-        seatsAvailableResponse.status === 200
+        workspaceResponse?.status === 200 &&
+        seatsAvailableResponse?.status === 200
       ) {
         const seatData = seatsAvailableResponse.data.data;
 
 
         const availableSeatsArray = seatData
-          .filter((seat: any) => {
+          .filter((seat: ISeat) => {
             const availability = seat.availability[selectedDate];
             return (
               availability === undefined ||
@@ -97,12 +110,12 @@ const BookingTable = () => {
               availability === true
             );
           })
-          .map((seat: any) => `${seat.tableNumber}-${seat.seatNumber}`);
+          .map((seat: ISeat) => `${seat.tableNumber}-${seat.seatNumber}`);
 
 
         setAvailableSeats(availableSeatsArray);
 
-        const groupedTables = seatData.reduce((tables: any[], seat: any) => {
+        const groupedTables = seatData.reduce((tables: Table[], seat: ISeat) => {
           let table = tables.find((t) => t.tableNumber === seat.tableNumber);
           if (!table) {
             table = { tableNumber: seat.tableNumber, seats: [] };
@@ -113,13 +126,14 @@ const BookingTable = () => {
           return tables;
         }, []);
 
-        ;
+        
 
         setTables(groupedTables);
         setWorkspace(workspaceResponse.data.data);
       }
       dispatch(setLoading(false));
     } catch (error) {
+      console.error(error);
       dispatch(setLoading(false));
       toast.error("An error occurred. Please try again.");
     }
@@ -143,8 +157,31 @@ const BookingTable = () => {
   };
 
   useEffect(() => {
+    const fetchWorkSpace = async () => {
+      try {
+  
+        dispatch(setLoading(true));
+        const response = await getSingleWorkspace(id as string);
+  
+        if (response?.status === 200) {
+          dispatch(setLoading(false));
+          setWorkspace(response.data.data);
+        } else {
+          toast.error("Failed to fetch workspace details");
+          dispatch(setLoading(false));
+          navigate("/");
+        }
+      } catch (error) {
+        console.error(error);
+            
+        dispatch(setLoading(false));
+        navigate("/");
+        toast.error("Failed to fetch workspace details");
+      }
+    };
+  
     fetchWorkSpace();
-  }, []);
+  }, [dispatch, id, navigate]);
 
 
 
@@ -190,7 +227,7 @@ const BookingTable = () => {
         <div className="flex justify-center w-full space-x-8">
           {/* Left side (first half of the seats) */}
           <div className="flex flex-col space-y-2">
-            {tables[currentTableIndex].seats.slice(0, Math.ceil(tables[currentTableIndex].seats.length / 2)).map((seat: any) => {
+            {tables[currentTableIndex].seats.slice(0, Math.ceil(tables[currentTableIndex].seats.length / 2)).map((seat: ISeat) => {
               const seatKey = `${tables[currentTableIndex].tableNumber}-${seat.seatNumber}`;
               const isSelected = selectedSeat === seatKey;
               const isAvailable = availableSeats.includes(seatKey);
@@ -217,7 +254,7 @@ const BookingTable = () => {
 
           {/* Right side (second half of the seats) */}
           <div className="flex flex-col space-y-2">
-            {tables[currentTableIndex].seats.slice(Math.ceil(tables[currentTableIndex].seats.length / 2)).map((seat: any) => {
+            {tables[currentTableIndex].seats.slice(Math.ceil(tables[currentTableIndex].seats.length / 2)).map((seat: ISeat) => {
               const seatKey = `${tables[currentTableIndex].tableNumber}-${seat.seatNumber}`;
               const isSelected = selectedSeat === seatKey;
               const isAvailable = availableSeats.includes(seatKey);

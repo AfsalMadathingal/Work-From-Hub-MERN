@@ -11,7 +11,7 @@ const UserManagement = () => {
 
   useEffect(() => {
     dispatch(setPageTitle("User Management"));
-  }, []);
+  }, [dispatch]);
 
    
   return (

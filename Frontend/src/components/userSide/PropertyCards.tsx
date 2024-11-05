@@ -1,4 +1,3 @@
-import React from "react";
 import { PlusCircleIcon, EyeIcon } from "@heroicons/react/24/solid";
 import { Link } from "react-router-dom";
 import AnimatedPage from "../Animation";

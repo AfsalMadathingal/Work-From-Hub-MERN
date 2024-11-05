@@ -1,24 +1,35 @@
-import React, { useEffect } from 'react';
+import{  ReactNode, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '../../redux/store/store';
 import { setLoading } from '../../redux/slices/businessUserSlice';
 
-const RecentBookings = ({ recentBookings }) => {
+type RecentBooking = {
+  date: string;
+  userInfo: [{
+    fullName: string;
+  }];
+  workspaceInfo: {
+    buildingName: string;
+  };
+};
+
+const RecentBookings = ({ recentBookings }: { recentBookings: RecentBooking[] }) => {
   const { loading } = useSelector((state: RootState) => state.businessUser);
   const dispatch = useDispatch();
-  const bookingSorted = recentBookings.sort((a, b) => new Date(b.date) - new Date(a.date));
+ const bookingSorted = recentBookings.sort((a, b) => new Date(b.date?.toString()).getTime() - new Date(a.date?.toString()).getTime());
 
-  const loadingData = async () => {
-    dispatch(setLoading(true));
-    await new Promise((resolve) => setTimeout(resolve, 300));
-    dispatch(setLoading(false));
-  };
 
   useEffect(() => {
+    const loadingData = async () => {
+      dispatch(setLoading(true));
+      await new Promise((resolve) => setTimeout(resolve, 300));
+      dispatch(setLoading(false));
+    };
+  
     loadingData();
-  }, []);
+  }, [dispatch]);
 
-  const TableStructure = ({ children }) => (
+  const TableStructure = ({ children }: { children: ReactNode }) => (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200 p-6 border-b border-gray-200 dark:border-gray-700">
         Recent Bookings

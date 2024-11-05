@@ -1,7 +1,5 @@
 import * as React from "react";
-import { useTheme } from "@mui/material/styles";
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import useMediaQuery from "@mui/material/useMediaQuery";
 import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -49,9 +47,7 @@ export default function ResponsiveDrawer(props: Props) {
   const isDarkMode = useSelector((state : RootState) => state.theme.isDarkMode);
 
 
-  const handleToggle = () => {
-    dispatch(toggleTheme());
-  };
+
   
   const { pageTitle } = useSelector((state: RootState) => state.admin);
   const navigate = useNavigate();

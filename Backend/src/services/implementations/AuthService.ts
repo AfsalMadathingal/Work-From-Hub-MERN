@@ -150,6 +150,10 @@ export default class AuthService implements IAuthService {
       const accessToken = generateAccessToken({ id: userId, role: userAfterSuccess.role });
       const refreshToken = generateRefreshToken({ id: userId, role: userAfterSuccess.role });
 
+      console.log('====================================');
+      console.log(userAfterSuccess);
+      console.log('====================================');
+
       const userAfterSavedToken = await this.userRepository.saveRefreshToken(userId, refreshToken);
   
 

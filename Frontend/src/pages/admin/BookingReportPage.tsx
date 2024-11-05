@@ -1,4 +1,4 @@
-import React from 'react'
+
 import AdminLayout from '../../components/admin/AdminLayout';
 import DetailedBookingsReport from '../../components/admin/DetailedBookingsReport';
 

@@ -138,7 +138,7 @@ export const blockAndUnblockBUser = async (user: IBUsers | null) => {
   }
 };
 
-export const EditUser = async (user: IUsers) => {
+export const EditUser = async (user: Partial<IUsers>) => {
   try {
     const response = await adminAxiosInstance.patch(`/api/admin/users`, user);
 
