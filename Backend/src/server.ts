@@ -11,11 +11,35 @@ import router from './routes/router';
 import bodyParser from 'body-parser';
 import http from "http";
 import { initializeSocket } from "./utils/socket"; 
+import path from 'path';
 
 const app = express();
+
+const buildPath = path.join(__dirname,'../../Frontend/dist')
+
+console.log(buildPath);
+
+
+app.use('/', express.static(buildPath));
+
+app.get("/*", function (req, res) {
+  console.log("user");
+  res.sendFile( 
+    path.join(__dirname, "../../Frontend/dist/index.html"),
+    function (err) {
+      if (err) {
+        res.status(500).send(err);
+      }
+    }
+  );
+});
+
 const server = http.createServer(app);
 
 initializeSocket(server);
+
+
+
 
 app.use(cors({
   origin: ['http://localhost:5173', "https://29g0hjwd-5173.inc1.devtunnels.ms"],

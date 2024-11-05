@@ -10,13 +10,16 @@ export default defineConfig({
     },
     build: {
         minify: false,
-        // Remove the rollupOptions.external configuration
+        chunkSizeWarningLimit: 500,  // Smaller limit to avoid memory spikes
+        rollupOptions: {
+            output: {
+                manualChunks: undefined,  // Reduces the number of chunks
+            },
+        },
     },
     resolve: {
-        // Add this to help Vite resolve packages
         dedupe: ['react', 'react-dom'],
         alias: {
-            // Add any aliases you might need
             '@': '/src'
         }
     }
