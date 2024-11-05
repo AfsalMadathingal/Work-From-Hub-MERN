@@ -20,7 +20,16 @@
     "declaration": true,
     "emitDeclarationOnly": true,
     "noEmit": false,
-    "noEmitOnError": false
+    "noEmitOnError": false,
+    "importHelpers": true,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "module": "ESNext",
+    "target": "ESNext",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+
   },
   "include": ["./src/**/*"]
 }

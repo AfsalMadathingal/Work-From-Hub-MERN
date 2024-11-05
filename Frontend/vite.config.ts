@@ -1,18 +1,23 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 
-// https://vitejs.dev/config/
 export default defineConfig({
     plugins: [react()],
     esbuild: {
         loader: "tsx",
-        include: /src\/.*\.tsx?$/, // Only apply on TypeScript files in src/
-        exclude: /node_modules/, // Exclude node_modules to speed up
+        include: /src\/.*\.tsx?$/,
+        exclude: /node_modules/,
     },
     build: {
-        rollupOptions: {
-            external: ['tslib']
-        },
-        minify: false
+        minify: false,
+        // Remove the rollupOptions.external configuration
+    },
+    resolve: {
+        // Add this to help Vite resolve packages
+        dedupe: ['react', 'react-dom'],
+        alias: {
+            // Add any aliases you might need
+            '@': '/src'
+        }
     }
 });
