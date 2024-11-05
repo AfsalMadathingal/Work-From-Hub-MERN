@@ -7,16 +7,20 @@
   "compilerOptions": {
     "jsx": "react-jsx",
     "skipLibCheck": true,
-    "types": ["vite/client"],
-    "typeRoots": ["./node_modules/@types", "./src/types"],
+    // Remove the explicit types entry and let it be inferred
+    // "types": ["vite/client"],
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ],
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "strict": false,
     "noImplicitAny": false,
     "declaration": true,
     "emitDeclarationOnly": true,
-    
-    
+    "noEmit": false,
+    "noEmitOnError": false
   },
   "include": ["./src/**/*"]
 }
