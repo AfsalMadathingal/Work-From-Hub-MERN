@@ -15,7 +15,7 @@ export interface IWorkspaceRepository {
   rejectWorkspace(id: string): Promise<IWorkspace | null>;
   getAllWorkspaces(): Promise<IWorkspace[] | null>;
   findById(id: string): Promise<IWorkspace | null>;
-  getWithFilters( query:string,filter:Partial<IFilters>  , page:number,limit:number):Promise<IWorkspace[] | null>;
+  getWithFilters( query:string,filter:Partial<IFilters>  , page:number,limit:number , sortOrder:{}):Promise<{ Workspaces: IWorkspace[]; totalPages: number; } | null>;
   searchWorkspace(query: string, page:number,limit:number): Promise<IWorkspace[] | null>;
   getTotalWorkspace():Promise<number>;
   findByOwnerId(id:string):Promise<IWorkspace[]| null>;

@@ -3,6 +3,8 @@ import { Request } from "express";
 import { GetPendingWorkspace } from "repositories/interface/IWorkspaceRepository";
 
 export interface IFilters {
+  all:boolean;
+  price:number ;
   ac: boolean;
   bathroom: boolean;
   powerBackup: boolean;
@@ -26,12 +28,16 @@ export interface IWorkspaceService {
   ): Promise<GetPendingWorkspace | null>;
   getAllWorkspaces(): Promise<IWorkspace[] | null>;
   getSingleWorkspace(id: string): Promise<IWorkspace | null>;
+  
   getWithFilters(
     filter: Partial<IFilters>,
     page: number,
     limit: number,
-    query: string
-  ): Promise<IWorkspace[] | null>;
+    query: string,
+    sortOrder : {}
+  ): Promise<{Workspaces:IWorkspace[] , totalPages:number }| null>;
+
+
   searchWorkspace(
     query: string,
     page: number,

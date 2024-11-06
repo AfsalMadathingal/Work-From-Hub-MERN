@@ -37,7 +37,8 @@ const Listings: React.FC<{ filters: Filters }> = ({ filters }) => {
       await new Promise((resolve) => setTimeout(resolve, 300));
       
       if (response?.status === 200) {
-        const newWorkspaces = response.data.data.approvedWorkspaces || response.data.data;
+
+        const newWorkspaces = response.data.data.Workspaces || response.data.data;
         const total = response.data.data.totalPages;
         
         setListings((prevListings) => {
@@ -66,11 +67,23 @@ const Listings: React.FC<{ filters: Filters }> = ({ filters }) => {
   };
 
   useEffect(() => {
-   
+
+    console.log(filters);
+    
+    const url = new URL(window.location.href);
+    const params = new URLSearchParams(url.search);
+
+    console.log(params);
+    
+
+    const changeInFilter: { [key: string]: string } = {};
+    params.forEach((value, key) => {
+      changeInFilter[key] = value;
+    });
     if (prevFiltersRef.current !== filters) {
       setCurrentPage(1);
       setListings([]);
-      fetchListings(filters, 1);
+      fetchListings(changeInFilter, 1);
     }
     prevFiltersRef.current = filters;
     

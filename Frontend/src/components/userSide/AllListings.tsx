@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import QuickFilters, { FilterState } from './QuickFilters';
 import Listings from './Listings';
+import toast from 'react-hot-toast';
 
 
 
@@ -12,6 +13,15 @@ const [filters, setFilters] = useState<Partial<FilterState>>({});
 
   // Function to update filters
   const handleFilterChange = (newFilters: Partial<FilterState>) => {
+console.log('======================newFilters==============');
+console.log(newFilters);
+console.log('====================================');
+  
+if(newFilters.search){
+
+  delete newFilters.all
+}
+    
     setFilters((prevFilters) => ({
       ...prevFilters,
       ...newFilters,
@@ -23,12 +33,17 @@ const [filters, setFilters] = useState<Partial<FilterState>>({});
    .join('&');
 
     window.history.pushState({}, '', `?${param}`);
+
+
+
   };
 
   // Set initial filters based on URL query params
   useEffect(() => {
+    
     const url = new URL(window.location.href);
     const params = new URLSearchParams(url.search);
+
 
     // Convert URLSearchParams to an object and set as initial filters
     // Convert URLSearchParams to an object and set as initial filters

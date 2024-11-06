@@ -6,11 +6,12 @@ interface QuickFiltersProps {
 }
 
 export interface FilterState {
+  all?: string;
   search?: string;
-  ac?: boolean;
-  restRoom?: boolean;
-  powerBackup?: boolean;
-  wifiAvailable?: boolean;
+  ac?: string;
+  restRoom?: string;
+  powerBackup?: string;
+  wifiAvailable?: string;
   rating?: string;
   price?: string;
 }
@@ -24,10 +25,10 @@ const amenities = [
 
 const QuickFilters: React.FC<QuickFiltersProps> = ({ onFilterChange }) => {
   const [filters, setFilters] = useState<Partial<FilterState>>({
-    ac: false,
-    restRoom: false,
-    powerBackup: false,
-    wifiAvailable: false,
+    ac: "",
+    restRoom: "",
+    powerBackup: "",
+    wifiAvailable: "",
     rating: '',
     price: '',
   });
@@ -67,7 +68,7 @@ const QuickFilters: React.FC<QuickFiltersProps> = ({ onFilterChange }) => {
                 <input
                   type="checkbox"
                   name={id}
-                  checked={filters[id as keyof FilterState] as boolean}
+                  checked={filters[id as keyof FilterState] ? true : false}
                   onChange={handleCheckboxChange}
                   className="peer h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600 dark:bg-gray-700"
                 />

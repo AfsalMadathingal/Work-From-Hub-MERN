@@ -49,7 +49,7 @@ class UserController {
     this.paymentService = new PaymentService();
     this.bookingService = new BookingService();
     this.reviewService = new reviewService();
-    }
+  }
 
   public editUser = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -89,13 +89,13 @@ class UserController {
           .json(new ApiError(400, "Upload Error", "No file to Upload"));
       }
 
-      const  file = req.file;
+      const file = req.file;
 
-      
+
 
 
       // console.log(fileUrl);
-      
+
 
       // const uploadResult = await this.uploadService.uploadSinglePhoto(
       //   req.file.path
@@ -178,84 +178,100 @@ class UserController {
     next: NextFunction
   ) => {
     try {
+      const {
+        all,
+        ac,
+        restRoom,
+        powerBackup,
+        wifiAvailable,
+        rating,
+        price,
+        page = 1, // Default to 1 if page is not provided
+        itemsPerPage = 10, // Default to 10 if itemsPerPage is not provided
+        search,
+      } = req.query;
+      let filter: IFilters = { approved: true } as IFilters;
+            // Apply search functionality
+            const query = search ? search.toString() : "";
+      console.log("Received query:", req.query);
+      const sortOrder: { pricePerSeat: number, createdAt: number } = { pricePerSeat: 1, createdAt: -1 };
+      // Handle sorting by price, assuming 1 for highToLow and -1 for lowToHigh
+      sortOrder.pricePerSeat = price  === "highToLow" ? -1 : 1;
 
-   
+      if(all){
 
-      const {ac,restRoom,powerBackup,wifiAvailable,rating,price , page , itemsPerPage , search} = req.query;
-
-      console.log(req.query);
-      
-
-      if (ac || restRoom || powerBackup || wifiAvailable || rating || price) {
-
-        let filter: IFilters = { approved: true  } as IFilters;
-    
-        if (restRoom === 'true') {
-            filter.bathroom = true; // Include only if restRoom is defined and true
-        }
-        if (ac === 'true') {
-            filter.ac = true; // Include only if ac is defined and true
-        }
-        if (powerBackup === 'true') {
-            filter.powerBackup = true; // Include only if powerBackup is defined and true
-        }
-        if (wifiAvailable === 'true') {
-            filter.wifiAvailable = true; // Include wifi filter
-        }
-   
-        const query = search ? search : ""
-    
-        console.log(filter);
-    
-        const filteredWorkspaces = await this.workspaceService.getWithFilters(filter , Number(page),Number(itemsPerPage),query?.toString());
-    
-        console.log(filteredWorkspaces);
-        return res
-            .status(200)
-            .json(new ApiResponse(200, { approvedWorkspaces: filteredWorkspaces }, "Fetched Successfully"));
-    
-    } 
-
-
-      if(search){
-        const workspace = await this.workspaceService.searchWorkspace(search.toString(), Number(page),Number(itemsPerPage))
-
+        filter.all = true
+        const workspace = await this.workspaceService.getWithFilters(
+          filter,
+          Number(page),
+          Number(itemsPerPage),
+          query,
+          sortOrder
+        );
 
         console.log('====================================');
         console.log(workspace);
         console.log('====================================');
-
-        if (!workspace) {
-          return res
-            .status(404)
-            .json(new ApiResponse(404, null, "Workspace not found"));
+  
+        if (!workspace ) {
+          return res.status(404).json(new ApiResponse(404, null, "Workspace not found"));
         }
 
-        return res
-        .status(200)
-        .json(new ApiResponse(200, workspace, "Fetched Successfully"));
+        return res.status(200).json(new ApiResponse(200, workspace, "success"));
+
+
       }
 
+            // If no specific filters or search, fetch default approved workspaces
+         
+
+ 
+
+      // Set the filters based on the query parameters
+      if (restRoom === "true") filter.bathroom = true;
+      if (ac === "true") filter.ac = true;
+      if (powerBackup === "true") filter.powerBackup = true;
+      if (wifiAvailable === "true") filter.wifiAvailable = true;
 
 
-      const workspace = await this.workspaceService.getApprovedWorkspaces(Number(page), Number(itemsPerPage));
 
 
-      if (!workspace) {
-        return res
-          .status(404)
-          .json(new ApiResponse(404, null, "Workspace not found"));
+
+      // Determine if any filtering parameters are set
+      const hasFilters =
+        ac || restRoom || powerBackup || wifiAvailable || rating || price;
+
+      if (hasFilters || search) {
+        // Fetch based on filters and search if any filters are applied
+        const filteredWorkspaces = await this.workspaceService.getWithFilters(
+          filter,
+          Number(page),
+          Number(itemsPerPage),
+          query,
+          sortOrder
+        );
+
+        console.log("Applied filters:", filter);
+
+        if (filteredWorkspaces) {
+          return res.status(200).json(
+            new ApiResponse(
+              200,
+              filteredWorkspaces,
+              "Fetched Applied Successfully"
+            )
+          );
+        } else {
+          return res.status(404).json(new ApiResponse(404, null, "No workspaces found"));
+        }
       }
-
-      return res
-        .status(200)
-        .json(new ApiResponse(200, workspace, "Fetched Successfully"));
 
 
     } catch (error) {
       next(error);
     }
   };
+
 
   public getSingleWorkspace = async (
     req: Request,
@@ -326,13 +342,13 @@ class UserController {
 
       const dateToCompare = new Date(date);
 
-  
-      const isBookedSameDate = booking.filter((value)=>value.date.getTime()==dateToCompare.getTime())
 
-      if(isBookedSameDate.length > 0 ){
+      const isBookedSameDate = booking.filter((value) => value.date.getTime() == dateToCompare.getTime())
+
+      if (isBookedSameDate.length > 0) {
         return res
-        .status(HttpStatus.FORBIDDEN)
-        .json(new ApiError(404, "cant book multiple seat same day booking", "booking not allowed"));
+          .status(HttpStatus.FORBIDDEN)
+          .json(new ApiError(404, "cant book multiple seat same day booking", "booking not allowed"));
 
       }
 
@@ -391,24 +407,24 @@ class UserController {
     try {
 
 
-      
+
       const { seatId, workspaceId, date } = req.params;
 
       const booking = await this.bookingService.getBookingsByUserId(req.user.id)
 
       const dateToCompare = new Date(date);
 
-  
-      const isBookedSameDate = booking.filter((value)=>value.date.getTime()==dateToCompare.getTime())
 
-      if(isBookedSameDate.length > 0 ){
+      const isBookedSameDate = booking.filter((value) => value.date.getTime() == dateToCompare.getTime())
+
+      if (isBookedSameDate.length > 0) {
         return res
-        .status(HttpStatus.FORBIDDEN)
-        .json(new ApiError(404, "cant book multiple seat same day booking", "booking not allowed"));
+          .status(HttpStatus.FORBIDDEN)
+          .json(new ApiError(404, "cant book multiple seat same day booking", "booking not allowed"));
 
       }
 
-    
+
       const workspace = await this.workspaceService.getSingleWorkspace(
         workspaceId
       );
@@ -483,7 +499,7 @@ class UserController {
         userId: user._id as string,
         seatId: bookingDetails.seatId as string,
         workspaceId: bookingDetails.workspaceId as string,
-        date: new Date(bookingDetails.date), 
+        date: new Date(bookingDetails.date),
         status: "success",
         paymentIntentId: stripeResponse.id as string,
         paymentStatus: paymentStatus.status as string,
@@ -498,10 +514,10 @@ class UserController {
 
 
 
-      if(!bookingCreated){
+      if (!bookingCreated) {
         return res
-        .status(404)
-        .json(new ApiResponse(404, null, "something Went Wrong"));
+          .status(404)
+          .json(new ApiResponse(404, null, "something Went Wrong"));
       }
 
       return res
@@ -517,7 +533,7 @@ class UserController {
 
     try {
 
-      const {userId}= req.params;
+      const { userId } = req.params;
 
       const bookings = await this.bookingService.getBookingsByUserId(userId)
 
@@ -531,7 +547,7 @@ class UserController {
   };
 
   public getSeatById = async (req: Request, res: Response, next: NextFunction) => {
-  
+
     try {
 
 
@@ -557,25 +573,25 @@ class UserController {
   };
 
 
-  public saveReview = async (req: Request   & Partial<{ user: {id:string} | jwt.JwtPayload , }>, res: Response, next: NextFunction) => {
+  public saveReview = async (req: Request & Partial<{ user: { id: string } | jwt.JwtPayload, }>, res: Response, next: NextFunction) => {
     try {
 
       const { workspaceId } = req.params;
-      const {  comment, rating } = req.body;
+      const { comment, rating } = req.body;
 
       const bookings = await this.bookingService.getBookingsByUserId(req.user?.id)
 
       console.log('====================================');
-      console.log(bookings );
+      console.log(bookings);
       console.log('====================================');
 
-      if(bookings.length<1){
+      if (bookings.length < 1) {
         return res
-        .status(HttpStatus.FORBIDDEN)
-        .json(new ApiResponse(HttpStatus.FORBIDDEN,null, "You cant write review for this workspace"))
+          .status(HttpStatus.FORBIDDEN)
+          .json(new ApiResponse(HttpStatus.FORBIDDEN, null, "You cant write review for this workspace"))
       }
 
-      const review = await this.reviewService.createReview(workspaceId,req.user?.id, comment, rating);
+      const review = await this.reviewService.createReview(workspaceId, req.user?.id, comment, rating);
 
       return res
         .status(201)
@@ -615,20 +631,20 @@ class UserController {
       console.log('====================================');
 
 
-      
+
       const booking = await this.bookingService.cancelBooking(bookingId);
 
 
-      if(!booking){
+      if (!booking) {
         throw new Error("You can't cancel this booking, because booking date is in the past or already canceled")
       }
-      
+
 
 
       const dateString = booking.date.toISOString().split('T')[0];
-      await this.seatService.makeAvailableByDate(booking.seatId,dateString)
+      await this.seatService.makeAvailableByDate(booking.seatId, dateString)
 
-      await this.paymentService.initiateRefund(booking.paymentIntentId,booking.amount)
+      await this.paymentService.initiateRefund(booking.paymentIntentId, booking.amount)
 
 
       return res
@@ -644,7 +660,7 @@ class UserController {
 
 
 
-  
+
 }
 
 

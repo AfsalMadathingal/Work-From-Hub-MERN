@@ -174,6 +174,10 @@ const BuildingForm: React.FC = () => {
     if (validationError) {
       dispatch(setError(validationError));
       dispatch(setLoading(false));
+
+      console.log('====================================');
+      console.log(validationError);
+      console.log('====================================');
       toast.error("Please fill all the required fields");
       return;
     }
@@ -242,7 +246,8 @@ const BuildingForm: React.FC = () => {
 
   useEffect(() => {
     dispatch(setError({}));
-  }, [dispatch, isLoaded]);
+
+  }, []);
 
 
 

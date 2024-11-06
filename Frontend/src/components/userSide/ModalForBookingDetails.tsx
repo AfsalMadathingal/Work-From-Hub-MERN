@@ -8,6 +8,7 @@ import { RootState } from "../../redux/store/store";
 import { Download, X } from "lucide-react";
 import { IBookingDetails } from "../../@types/bookingDetails";
 import { UserOptions } from "jspdf-autotable";
+import toast from "react-hot-toast";
 
 interface jsPDFWithPlugin extends jsPDF {
   autoTable: (options: UserOptions) => jsPDFWithPlugin;
@@ -33,6 +34,8 @@ const ModalForBookingDetails: React.FC<ModalProps> = ({
   if (!isOpen) return null;
 
   const handleDownload = () => {
+
+    toast.success("Downloading Invoice...");
     const doc = new jsPDF() as jsPDFWithPlugin;
 
     // Add a logo
@@ -77,7 +80,7 @@ const ModalForBookingDetails: React.FC<ModalProps> = ({
       body: [
         ["Workspace", workspace?.buildingName],
         ["Seat", `${seat?.tableNumber}-${seat?.seatNumber}`],
-        ["Date", booking.date.toISOString().split("T")[0]],
+        ["Date", booking.date.split("T")[0]],
         ["Amount", booking.amount],
         ["Status", booking.status],
       ],

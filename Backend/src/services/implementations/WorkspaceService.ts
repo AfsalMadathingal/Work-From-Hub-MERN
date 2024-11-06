@@ -194,17 +194,21 @@ export default class WorkspaceService implements IWorkspaceService {
     return response;
   }
 
+
+
   async getWithFilters(
     filter: Partial<IFilters>,
     page: number,
     limit: number,
-    query: string
-  ): Promise<IWorkspace[] | null> {
+    query: string,
+    sortOrder : {}
+  ): Promise<{ Workspaces: IWorkspace[]; totalPages: number; } | null> {
     const response = await this.workspaceRepository.getWithFilters(
       query,
       filter,
       page,
-      limit
+      limit,
+      sortOrder,
     );
 
     return response;

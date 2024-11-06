@@ -2,7 +2,7 @@ import {
   GetPendingWorkspace,
   IWorkspaceRepository,
 } from "../interface/IWorkspaceRepository";
-import { IWorkspace as Workspace } from "../../entities/workspace";
+import { IWorkspace, IWorkspace as Workspace } from "../../entities/workspace";
 import { ObjectId } from "mongodb";
 import { WorkspaceModel } from "../../models/workspace";
 import { IFilters } from "services/interface/IWorkSpaceService";
@@ -29,7 +29,7 @@ export class WorkspaceRepository implements IWorkspaceRepository {
       console.error(error);
       return null;
     }
-    
+
   }
 
   async create(workspace: Workspace): Promise<Workspace | null> {
@@ -143,11 +143,13 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
 
 
-  async getWithFilters(query: string, filter: Partial<IFilters>, page: number, limit: number): Promise<Workspace[] | null> {
+  async getWithFilters(query: string, filter: Partial<IFilters>, page: number, limit: number,sortOrder:{}):Promise<{ Workspaces: IWorkspace[]; totalPages: number; } | null>{
     try {
+      console.log("================from dbv====================");
+      console.log(query);
       console.log("====================================");
-      console.log(filter);
-      console.log("====================================");
+
+   
 
       const searchQuery = {
         $or: [
@@ -157,7 +159,6 @@ export class WorkspaceRepository implements IWorkspaceRepository {
           { state: { $regex: query, $options: "i" } },
         ],
       };
-
       // Combine search query with filters using $and operator
       const combinedQuery = {
         $and: [
@@ -166,14 +167,30 @@ export class WorkspaceRepository implements IWorkspaceRepository {
         ]
       };
 
+      console.log('====================================');
+      console.log(page,limit);
+      console.log('====================================');
+
+      const ct   = await this.collection
+      .find(filter.all ? {approved:true} : combinedQuery ).countDocuments()
+
+      console.log('====================================');
+      console.log(ct);
+      console.log('====================================');
+
       const workspaces = await this.collection
-        .find(combinedQuery)
+        .find(filter.all ? {approved:true} : combinedQuery )
         .skip((page - 1) * limit)
         .limit(limit)
-        .sort({ createdAt: -1 })
+        .sort(sortOrder)
+        const count = await this.collection
+        .find(filter.all ? {approved:true} : combinedQuery )
+        .countDocuments()
 
 
-      return workspaces;
+
+      return {Workspaces:workspaces, totalPages:count};
+
     } catch (error) {
       return null;
     }

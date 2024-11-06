@@ -54,7 +54,7 @@ export default function Header() {
           <NavbarItem isActive>
             <Link
               className="cursor-pointer"
-              onPress={() => navigate(`/workspace?search=`)}
+              onPress={() => window.location.href=`/workspace?all=true`}
               color="warning"
             >
               View all Workspace
