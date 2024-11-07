@@ -12,11 +12,11 @@ import bodyParser from 'body-parser';
 import http from "http";
 import { initializeSocket } from "./utils/socket"; 
 import path from 'path';
-import helmet from 'helmet';
+// import helmet from 'helmet';
 
 const app = express();
 
-app.use(helmet())
+// app.use(helmet())
 
 const buildPath = path.join(__dirname,'../../Frontend/dist')
 
