@@ -285,6 +285,8 @@ export default class BookingRepository implements IBookingRepository{
 
       const data = await BookingModel.find({ date: { $lte: tillDate } })
         .populate("userId", "-password")
+        .sort({paymentDate: -1})
+        .limit(7)
         .exec();
 
       if (!data) {

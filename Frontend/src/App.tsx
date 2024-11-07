@@ -44,7 +44,6 @@ const App: React.FC = () => {
         <Route path="/business/*" element={<BusinessUser />} />
         <Route path="/*" element={<UserRouter />} />
       </Routes>
-      {/* Render ChatBox only if it's a user route */}
       {!isUserRoute && <ChatBox />}
       {isBusinessRoute && <ChatBoxForBuser />}
     </MuiThemeProvider>

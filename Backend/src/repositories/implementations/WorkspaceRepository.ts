@@ -116,6 +116,28 @@ export class WorkspaceRepository implements IWorkspaceRepository {
     }
   }
 
+  async unHoldWorkspace(workspaceId: string): Promise<IWorkspace | null> {
+
+      try {
+
+         const workspace =  await this.collection.findById( workspaceId)
+        const updateResult = await this.collection.findByIdAndUpdate(
+          workspaceId,
+          {
+            isOnHold: !workspace.isOnHold,
+            holdingReason:"Property held by owner"
+          },
+          {
+            new: true,
+          }
+        );
+
+        return updateResult;
+      } catch (error) {
+        return null;
+      }
+  }
+
   async getAllWorkspaces(): Promise<Workspace[] | null> {
     try {
       const allWorkspaces = await this.collection

@@ -85,7 +85,7 @@ const Dashboard = () => {
     fetchDashboardData();
   }, []);
   return (
-    <div className="p-1 bg-gray-100 min-h-screen">
+    <div className="p-1 bg-gray-100 dark:bg-gray-800 min-h-screen">
     <div>
       <SummaryStatics summaryData={summaryData} />
     </div>

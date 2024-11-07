@@ -140,3 +140,16 @@ export const getDetailedReport = async (filters:URLSearchParams)=>{
     }
   }
 }
+
+export const manageHolding = async (workspaceId: string) => {
+  try {
+    const response = await api.patch(`/api/business/workspaces/unhold/${workspaceId}`);
+    return response;
+  } catch (error: unknown) {
+    if (error instanceof AxiosError) {
+      return error.response;
+    } else {
+      return null;
+    }
+  }
+};

@@ -8,11 +8,11 @@ interface SummaryCardProps {
 
 const SummaryCard: React.FC<SummaryCardProps> = ({ icon, label, value }) => {
   return (
-    <div className="bg-indigo-100 p-4 rounded-md shadow-md flex items-center space-x-4">
-      <div className="text-3xl text-indigo-600">{icon}</div>
+    <div className="bg-indigo-100 dark:bg-gray-700 p-4 rounded-md shadow-md dark:shadow-none flex items-center space-x-4">
+      <div className="text-3xl text-indigo-600 dark:text-indigo-400">{icon}</div>
       <div>
-        <p className="text-2xl font-bold text-indigo-800">{value}</p>
-        <p className="text-sm text-indigo-600">{label}</p>
+        <p className="text-2xl font-bold text-indigo-800 dark:text-indigo-500">{value}</p>
+        <p className="text-sm text-indigo-600 dark:text-indigo-400">{label}</p>
       </div>
     </div>
   );
@@ -49,7 +49,7 @@ interface SummaryStaticsProps {
 
 const SummaryStatics: React.FC<SummaryStaticsProps> = ({ summaryData }) => {
   return (
-    <div className="bg-white p-6 rounded-md shadow-lg">
+    <div className="bg-white dark:bg-gray-800 p-6 rounded-md shadow-lg dark:shadow-none">
       <Summary summaryData={summaryData} />
     </div>
   );

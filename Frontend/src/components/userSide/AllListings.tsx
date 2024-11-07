@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import SearchBar from './SearchBar';
 import QuickFilters, { FilterState } from './QuickFilters';
 import Listings from './Listings';
-import toast from 'react-hot-toast';
+
 
 
 

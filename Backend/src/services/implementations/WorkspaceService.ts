@@ -194,6 +194,18 @@ export default class WorkspaceService implements IWorkspaceService {
     return response;
   }
 
+  async unHoldWorkspace(workspaceId: string, ownerId: string): Promise<IWorkspace | null> {
+
+    const workspace = await this.workspaceRepository.findById(workspaceId)
+
+    if(workspace.ownerId.toString() != ownerId){
+      throw Error("This is not Owned by You")
+    }
+
+    const response = await this.workspaceRepository.unHoldWorkspace(workspaceId);
+    return response;
+  }
+
 
 
   async getWithFilters(

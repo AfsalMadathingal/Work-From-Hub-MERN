@@ -11,7 +11,6 @@ export interface FilterState {
   ac?: string;
   restRoom?: string;
   powerBackup?: string;
-  wifiAvailable?: string;
   rating?: string;
   price?: string;
 }
@@ -19,16 +18,13 @@ export interface FilterState {
 const amenities = [
   { id: 'ac', label: 'AC', icon: '❄️' },
   { id: 'restRoom', label: 'Rest Room', icon: '🚽' },
-  { id: 'powerBackup', label: 'Power Backup', icon: '⚡' },
-  { id: 'wifiAvailable', label: 'Wifi Available', icon: '📶' },
-];
+  { id: 'powerBackup', label: 'Power Backup', icon: '⚡' },];
 
 const QuickFilters: React.FC<QuickFiltersProps> = ({ onFilterChange }) => {
   const [filters, setFilters] = useState<Partial<FilterState>>({
     ac: "",
     restRoom: "",
     powerBackup: "",
-    wifiAvailable: "",
     rating: '',
     price: '',
   });

@@ -51,5 +51,6 @@ export interface IWorkspaceService {
   findApprovedByOwnerId(id:string,page: number,limit: number):Promise  <GetPendingWorkspace | null >;
   findBothById(workspaceId:string):Promise<IWorkspace | null > ;
   findByIdAndUpdate(workspaceId:string,data:IWorkspace):Promise<IWorkspace| null >;
+  unHoldWorkspace(workspaceId: string,ownerId:string): Promise<IWorkspace | null>;
   
 }

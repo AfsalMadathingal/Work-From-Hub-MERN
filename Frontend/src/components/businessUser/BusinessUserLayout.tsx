@@ -105,13 +105,18 @@ export default function ResponsiveDrawer(props: Props) {
             icon: <TicketIcon />,
           },
           {
-            text: "Workspace",
+            text: "Submit Workspace",
             link: "/business/workspace-manage",
             icon: <WorkflowIcon />,
           },
           {
-            text: "Approved Workspace",
+            text: "Listed Workspaces",
             link: "/business/workspace/approved",
+            icon: <Building />,
+          },
+          {
+            text: "Properties On Hold",
+            link: "/business/workspace/on-hold",
             icon: <Building />,
           },
         ].map((item) => (

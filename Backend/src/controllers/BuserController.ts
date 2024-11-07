@@ -235,9 +235,33 @@ try {
 }
 
 
+public unHoldWorkspace = async (req:Request & IDecode, res:Response,next:NextFunction) => {
+
+    try {
+        const workspaceId = req.params.workspaceId;
+        const ownerId = req.user.id;
+        console.log('====================================');
+        console.log(workspaceId,ownerId);
+        console.log('====================================');
+        const workspace = await this.workspaceService.unHoldWorkspace(workspaceId, ownerId);
+
+        if(!workspace){
+            throw new Error('something went wrong while unholding workspace')
+        }
+
+        res.status(HttpStatus.OK )
+        .json(new ApiResponse(HttpStatus.OK,workspace,"successfully unholded "))
+        
+    } catch (error) {
+        next(error)
+    }
+    
+
+
 
     
 }
 
+}
 
 export default  new BUserController();

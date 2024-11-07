@@ -9,6 +9,8 @@ import {
   FaTable,
   FaDollarSign,
 } from "react-icons/fa";
+import toast from "react-hot-toast";
+import { manageHolding } from "../../services/BuserService";
 
 const WorkspaceDetail = () => {
   const { state: { workspace } } = useLocation();
@@ -32,6 +34,22 @@ const WorkspaceDetail = () => {
     rejected,
     rejectionReason
   } = workspace;
+
+
+  const handleHold = async (workspaceId:string) => {
+    try {
+      const response = await manageHolding(workspaceId);
+
+      if (response?.status === 200) {
+        toast.success("Workspace is on hold");
+      } else {
+        toast.error("Something went wrong");
+      } 
+    } catch (error) {
+      console.log(error);
+      toast.error("An error occurred while holding the workspace");
+  };
+}
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
@@ -128,9 +146,20 @@ const WorkspaceDetail = () => {
       </div>
 
       {/* Footer */}
-      <div className="mt-6 text-xs text-gray-500 dark:text-gray-400">
-        Listed on {new Date(createdAt).toLocaleDateString()}
-      </div>
+      <div className="flex items-center justify-between mt-6 ">
+        <span className="text-xs text-gray-500 dark:text-gray-400">
+          Listed on {new Date(createdAt).toLocaleDateString()}
+        </span>
+
+        {!workspace.isOnHold && workspace.approved && (
+           <button
+           onClick={() => handleHold(workspace?._id)}
+           className="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600">
+             Unlist This Property
+           </button>
+      
+        )}
+          </div>
     </div>
   );
 };

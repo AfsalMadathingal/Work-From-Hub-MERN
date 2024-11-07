@@ -7,6 +7,7 @@ const WorkplaceManage = lazy(
 );
 import PublicRoute from "../components/auth/BUsesrPublicRoute";
 import PrivateRoute from "../components/auth/BUserPrivateRoute";
+import BUserOnHold from "../pages/Buser/BUserOnHold";
 const BBookingReportPage = lazy(
   () => import("../pages/Buser/BBookingReportPage")
 );
@@ -183,6 +184,22 @@ const BusinessUser = () => {
             }
           >
             <PrivateRoute element={ApprovedWorkspaces} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/workspace/on-hold"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={BUserOnHold} />
           </Suspense>
         }
       />
