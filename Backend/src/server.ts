@@ -25,17 +25,6 @@ console.log(buildPath);
 
 app.use('/', express.static(buildPath));
 
-app.get("/*", function (req, res) {
-  console.log("user");
-  res.sendFile( 
-    path.join(__dirname, "../../Frontend/dist/index.html"),
-    function (err) {
-      if (err) {
-        res.status(500).send(err);
-      }
-    }
-  );
-});
 
 const server = http.createServer(app);
 
@@ -76,6 +65,19 @@ app.use(
 
 app.use('/', router);
 
+
+
+app.get("/*", function (req, res) {
+  console.log("user");
+  res.sendFile( 
+    path.join(__dirname, "../../Frontend/dist/index.html"),
+    function (err) {
+      if (err) {
+        res.status(500).send(err);
+      }
+    }
+  );
+});
 
 app.use(errorHandler);
 
