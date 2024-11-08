@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import { IBUsers } from '../../@types/businessUser';
 
 
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_URL;
 
 const ChatBoxForBuser: React.FC = () => {
 

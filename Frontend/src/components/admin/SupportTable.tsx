@@ -45,7 +45,7 @@ const theme = createTheme({
   },
 });
 
-const SOCKET_URL = 'http://localhost:5000';
+const SOCKET_URL = import.meta.env.VITE_API_URL;
 
 const AdminChat: React.FC = () => {
   const [socket, setSocket] = useState<Socket | null>(null);
