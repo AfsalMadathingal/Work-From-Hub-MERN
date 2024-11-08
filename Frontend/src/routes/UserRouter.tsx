@@ -4,9 +4,9 @@ import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PrivateRoute from "../components/auth/PrivateRoute";
 import PublicRoute from "../components/auth/PublicRoute";
-import Bookings from "../pages/userSide/Bookings";
-import MembershipInfor from "../pages/userSide/MembershipInfo";
-import WalletPage from "../pages/userSide/WalletPage";
+const Bookings = lazy(() => import("../pages/userSide/Bookings"));
+const MembershipInfor = lazy(() => import("../pages/userSide/MembershipInfo"));
+const WalletPage = lazy(() => import("../pages/userSide/WalletPage"));
 const WorkspaceListingsPage = lazy(
   () => import("../pages/userSide/WorkspaceListings")
 );

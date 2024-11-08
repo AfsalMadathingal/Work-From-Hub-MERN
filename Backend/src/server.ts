@@ -12,11 +12,13 @@ import bodyParser from 'body-parser';
 import http from "http";
 import { initializeSocket } from "./utils/socket"; 
 import path from 'path';
+import limiter from './utils/rateLimiter';
 // import helmet from 'helmet';
 
 const app = express();
 
 // app.use(helmet())
+
 
 const buildPath = path.join(__dirname,'../../Frontend/dist')
 
@@ -62,6 +64,8 @@ app.use(
   })
 );
 
+
+app.use(limiter)
 
 app.use('/', router);
 

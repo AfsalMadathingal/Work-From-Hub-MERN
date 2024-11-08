@@ -7,7 +7,7 @@ const WorkplaceManage = lazy(
 );
 import PublicRoute from "../components/auth/BUsesrPublicRoute";
 import PrivateRoute from "../components/auth/BUserPrivateRoute";
-import BUserOnHold from "../pages/Buser/BUserOnHold";
+const BUserOnHold = lazy(() => import("../pages/Buser/BUserOnHold"));
 const BBookingReportPage = lazy(
   () => import("../pages/Buser/BBookingReportPage")
 );
