@@ -21,6 +21,6 @@ export interface IWorkspaceRepository {
   findByOwnerId(id:string):Promise<IWorkspace[]| null>;
   findApprovedByOwnerId(id:string,page:number,limit:number):Promise<GetPendingWorkspace| null >;
   findBothById(id: string): Promise<IWorkspace | null>;
-  findByIdAndUpdate(workspaceId: string, data: IWorkspace): Promise<IWorkspace | null>;
+  findByIdAndUpdate(workspaceId: string, data: Partial<IWorkspace>): Promise<IWorkspace | null>;
   unHoldWorkspace(workspaceId:string) :Promise <IWorkspace | null > ;
 }

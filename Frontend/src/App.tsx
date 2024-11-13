@@ -5,6 +5,7 @@ import { useEffect, Suspense, lazy } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "./redux/store/store";
 import { Toaster } from 'react-hot-toast';
+import LoadingPageWithReactLoading from "./components/loadingPage/Loading";
 
 // Lazy loading components
 const UserRouter = lazy(() => import("./routes/UserRouter"));
@@ -34,7 +35,7 @@ const App: React.FC = () => {
   return (
     <MuiThemeProvider>
       <Toaster />
-      <Suspense fallback={<div>Loading...</div>}>
+      <Suspense fallback={<LoadingPageWithReactLoading type="bars" color="white" height={100} width={100} />}>
         <Routes>
           <Route path="/admin/*" element={<AdminRouter />} />
           <Route path="/business/*" element={<BusinessUser />} />

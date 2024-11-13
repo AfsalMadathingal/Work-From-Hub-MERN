@@ -27,4 +27,5 @@ export interface IWorkspace extends Document {
   pricePerSeat?:number;
   timing?:string;
   workingDays?:string;
+  rating?:number;
 }

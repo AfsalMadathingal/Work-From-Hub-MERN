@@ -10,6 +10,7 @@ export interface IFilters {
   powerBackup: boolean;
   approved: boolean;
   wifiAvailable: boolean;
+  rating:Number;
 }
 
 export interface IWorkspaceService {

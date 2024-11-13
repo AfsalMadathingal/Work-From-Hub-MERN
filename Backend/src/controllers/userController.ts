@@ -186,63 +186,52 @@ class UserController {
         wifiAvailable,
         rating,
         price,
-        page = 1, // Default to 1 if page is not provided
-        itemsPerPage = 10, // Default to 10 if itemsPerPage is not provided
+        page = 1,
+        itemsPerPage = 10,
         search,
       } = req.query;
+  
       let filter: IFilters = { approved: true } as IFilters;
-            // Apply search functionality
-            const query = search ? search.toString() : "";
+      const query = search ? search.toString() : "";
+      const sortOrder = {
+        pricePerSeat: price === "highToLow" ? -1 : 1,
+        createdAt: -1,
+      };
+  
       console.log("Received query:", req.query);
-      const sortOrder: { pricePerSeat: number, createdAt: number } = { pricePerSeat: 1, createdAt: -1 };
-      // Handle sorting by price, assuming 1 for highToLow and -1 for lowToHigh
-      sortOrder.pricePerSeat = price  === "highToLow" ? -1 : 1;
-
-      if(all){
-
-        filter.all = true
-        const workspace = await this.workspaceService.getWithFilters(
+  
+      // If 'all' is true, skip other filters
+      if (all) {
+        filter.all = true;
+        const workspaces = await this.workspaceService.getWithFilters(
           filter,
           Number(page),
           Number(itemsPerPage),
           query,
           sortOrder
         );
-
-        console.log('====================================');
-        console.log(workspace);
-        console.log('====================================');
   
-        if (!workspace ) {
-          return res.status(404).json(new ApiResponse(404, null, "Workspace not found"));
+        if (!workspaces) {
+          return res
+            .status(404)
+            .json(new ApiResponse(404, null, "Workspace not found"));
         }
-
-        return res.status(200).json(new ApiResponse(200, workspace, "success"));
-
-
+  
+        return res
+          .status(200)
+          .json(new ApiResponse(200, workspaces, "success"));
       }
-
-            // If no specific filters or search, fetch default approved workspaces
-         
-
- 
-
+  
       // Set the filters based on the query parameters
       if (restRoom === "true") filter.bathroom = true;
       if (ac === "true") filter.ac = true;
       if (powerBackup === "true") filter.powerBackup = true;
       if (wifiAvailable === "true") filter.wifiAvailable = true;
-
-
-
-
-
-      // Determine if any filtering parameters are set
-      const hasFilters =
-        ac || restRoom || powerBackup || wifiAvailable || rating || price;
-
+      if(rating) filter.rating = Number(rating)
+  
+      const hasFilters = ac || restRoom || powerBackup || wifiAvailable || rating || price;
+  
       if (hasFilters || search) {
-        // Fetch based on filters and search if any filters are applied
         const filteredWorkspaces = await this.workspaceService.getWithFilters(
           filter,
           Number(page),
@@ -250,27 +239,24 @@ class UserController {
           query,
           sortOrder
         );
-
+  
         console.log("Applied filters:", filter);
-
-        if (filteredWorkspaces) {
-          return res.status(200).json(
-            new ApiResponse(
-              200,
-              filteredWorkspaces,
-              "Fetched Applied Successfully"
-            )
-          );
-        } else {
-          return res.status(404).json(new ApiResponse(404, null, "No workspaces found"));
+  
+        if (!filteredWorkspaces) {
+          return res
+            .status(404)
+            .json(new ApiResponse(404, null, "No workspaces found"));
         }
+  
+        return res
+          .status(200)
+          .json(new ApiResponse(200, filteredWorkspaces, "Fetched Applied Successfully"));
       }
-
-
     } catch (error) {
       next(error);
     }
   };
+  
 
 
   public getSingleWorkspace = async (
@@ -581,9 +567,6 @@ class UserController {
 
       const bookings = await this.bookingService.getBookingsByUserId(req.user?.id)
 
-      console.log('====================================');
-      console.log(bookings);
-      console.log('====================================');
 
       if (bookings.length < 1) {
         return res
@@ -592,6 +575,8 @@ class UserController {
       }
 
       const review = await this.reviewService.createReview(workspaceId, req.user?.id, comment, rating);
+
+      await this.reviewService.updateRating(workspaceId)
 
       return res
         .status(201)

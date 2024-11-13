@@ -29,6 +29,7 @@ const workspaceSchema = new Schema<IWorkspace>({
   listed:{type:Boolean,default:false},
   pricePerSeat:{type:Number, required: true},
   timing:{type:String,required:true},
+  rating:{type:Number, default:0},
   workingDays:{type:String,required:true},
 });
 

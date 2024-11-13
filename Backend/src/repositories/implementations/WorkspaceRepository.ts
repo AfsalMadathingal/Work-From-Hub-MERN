@@ -167,9 +167,12 @@ export class WorkspaceRepository implements IWorkspaceRepository {
 
   async getWithFilters(query: string, filter: Partial<IFilters>, page: number, limit: number,sortOrder:{}):Promise<{ Workspaces: IWorkspace[]; totalPages: number; } | null>{
     try {
-      console.log("================from dbv====================");
-      console.log(query);
-      console.log("====================================");
+
+       const newFilter = {...filter}
+
+      if(filter.rating){
+       newFilter.rating = { $gte: filter.rating } as any;
+      }
 
    
 
@@ -185,20 +188,17 @@ export class WorkspaceRepository implements IWorkspaceRepository {
       const combinedQuery = {
         $and: [
           searchQuery,
-          filter // This includes the filter conditions like ac, bathroom, etc.
+          newFilter // This includes the filter conditions like ac, bathroom, etc.
         ]
       };
 
-      console.log('====================================');
+      console.log('==============dfdfd======================');
       console.log(page,limit);
       console.log('====================================');
 
       const ct   = await this.collection
       .find(filter.all ? {approved:true} : combinedQuery ).countDocuments()
 
-      console.log('====================================');
-      console.log(ct);
-      console.log('====================================');
 
       const workspaces = await this.collection
         .find(filter.all ? {approved:true} : combinedQuery )

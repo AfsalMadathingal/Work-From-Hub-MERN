@@ -48,9 +48,9 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
               {listing.buildingName}
             </h3>
             <div className="flex items-center gap-2 mb-1">
-              {renderStars(4)}
+              {renderStars(listing.rating)}
               <span className="text-sm text-gray-600 dark:text-gray-400">
-                (4.0)
+                ({Number(listing.rating).toFixed(1)})
               </span>
             </div>
           </div>
