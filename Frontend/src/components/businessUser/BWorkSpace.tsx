@@ -173,9 +173,12 @@ const WorkspaceListing = () => {
                           >
                             <FaEye className="w-5 h-5" />
                           </Link>
-                          <button className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
+                          <Link
+                          to={'business/workspace-edit/' + workspace._id} 
+                    
+                          className="text-gray-400 hover:text-gray-500 dark:hover:text-gray-300">
                             <FaEdit className="w-5 h-5" />
-                          </button>
+                          </Link>
                           <button className="text-red-400 hover:text-red-500">
                             <FaTrash className="w-5 h-5" />
                           </button>

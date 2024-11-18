@@ -15,5 +15,6 @@ export interface IUserService {
     changePassword(password:string,email:string):Promise <IUsers| null>;
     findByEmail(email:string):Promise <IUsers | null > ;
     getTotalUsers(): Promise<any>;
+    findById(userId:string):Promise<IUsers| null>;
 
 }

@@ -102,12 +102,12 @@ const BApprovedWorkspaces = () => {
                         >
                           <FaEye className="h-4 w-4" />
                         </Link>
-                        <button
-                          onClick={() => handleEdit()}
+                        <Link
+                          to={`/business/workspace-edit/${workspace._id}`}
                           className="p-2 bg-emerald-600 text-white rounded-full hover:bg-emerald-700 transition-colors dark:bg-emerald-500 dark:hover:bg-emerald-600"
                         >
                           <FaEdit className="h-4 w-4" />
-                        </button>
+                        </Link>
                         <button
                           onClick={() => alert("Are you sure?")}
                           className="p-2 bg-red-600 text-white rounded-full hover:bg-red-700 transition-colors dark:bg-red-500 dark:hover:bg-red-600"

@@ -7,6 +7,8 @@ import paymentRouter from "./payment";
 
 const userPrivetRoute = Router();
 
+userPrivetRoute.use(userController.isBlocked)
+
 
 userPrivetRoute.patch('/', userController.editUser)
 userPrivetRoute.get('/validate-session', userController.validateSuccessResponse)

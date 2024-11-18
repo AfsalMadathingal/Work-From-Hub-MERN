@@ -56,6 +56,11 @@ userAxiosInstance.interceptors.response.use(
         }
       }
 
+      if(error.response.status == 403){
+        store.dispatch(resetUser())
+        toast.error("Your account is blocked by the site")
+      }
+
       if (error.response.status >= 500) {
         toast.error(error.response.data.message ||  'something went wrong');
       }

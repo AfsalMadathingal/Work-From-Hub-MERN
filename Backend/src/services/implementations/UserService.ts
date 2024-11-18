@@ -91,4 +91,17 @@ export default class UserService implements IUserService {
 
 
 
+
+async findById(userId: string): Promise<IUsers | null> {
+    
+    const userFound = await this.userRepository.findById(userId)
+
+    if(userFound){
+      return userFound
+    }
+
+    return null
+}
+
+
 }

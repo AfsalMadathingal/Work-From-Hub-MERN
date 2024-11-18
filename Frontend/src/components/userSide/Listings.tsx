@@ -97,6 +97,7 @@ const Listings: React.FC<{ filters: Filters }> = ({ filters }) => {
           <div className="grid gap-4 md:gap-6 animate-pulse">
             <ListingCardSkeleton />
             <ListingCardSkeleton />
+            <ListingCardSkeleton />
           </div>
         </div>
       )}
@@ -113,6 +114,8 @@ const Listings: React.FC<{ filters: Filters }> = ({ filters }) => {
         {/* Listings Grid */}
         <div className="grid gap-4 md:gap-6">
           {listings?.map((listing) => (
+
+            
             <div 
               key={listing.id}
               className="transform transition-all duration-300 hover:-translate-y-1 hover:shadow-lg"

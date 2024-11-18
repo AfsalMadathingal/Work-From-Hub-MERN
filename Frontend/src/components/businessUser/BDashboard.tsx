@@ -67,11 +67,17 @@ const BUserDashboard = () => {
         return acc;
       }, {});
 
+      
+
       const lastSevenDays = getLastSevenDays();
 
       const finalResult = lastSevenDays.map((date) => {
         return groupedBookings[date] || { date, bookings: 0 };
       });
+
+
+      console.log(finalResult);
+      
 
       setChartData(finalResult);
       setSummaryData(summary);

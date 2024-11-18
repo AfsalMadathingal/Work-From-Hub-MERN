@@ -643,6 +643,30 @@ class UserController {
   };
 
 
+  public isBlocked = async (req: Request & IDecode, res: Response, next: NextFunction) => {
+    try {
+      const userDecode= req.user;
+
+      const user = await this.userService.findById(userDecode.id)
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      if (user.isBlocked) {
+        return res
+          .status(HttpStatus.FORBIDDEN)
+          .json(new ApiResponse(HttpStatus.FORBIDDEN, null, "User is not allowed"));
+      }
+
+
+      next();
+
+    } catch (error) {
+      next(error);
+    }
+  };
+
+
 
 
 

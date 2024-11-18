@@ -25,6 +25,11 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
     );
   };
 
+
+  console.log('===================isOnHold=================');
+  console.log(listing.isOnHold);
+  console.log('====================================');
+
   return (
     <div className="group relative overflow-hidden bg-white dark:bg-gray-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300">
       {/* Image Container */}
@@ -93,15 +98,17 @@ const ListingCard: React.FC<ListingCardProps> = ({ listing }) => {
               to={`/workspace/${listing._id}/book`}
               className="flex-1"
             >
-              <button className="w-full px-4 py-2.5 bg-gradient-to-r from-orange-500 to-orange-600 
-                hover:from-orange-600 hover:to-orange-700 
+              <button
+              disabled={listing.isOnHold}
+              className={`w-full px-4 py-2.5 
+                ${listing.isOnHold ? "bg-gray-500 hover:bg-gray-600" : "bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700"} 
                 text-white font-medium rounded-lg
                 transform transition-all duration-300 
                 hover:shadow-md active:scale-[0.98]
                 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:ring-offset-2
-                dark:focus:ring-offset-gray-800"
+                dark:focus:ring-offset-gray-800`}
               >
-                Book Now
+                {listing.isOnHold ? "Not Available" : "Book Now"}
               </button>
             </Link>
             <Link 

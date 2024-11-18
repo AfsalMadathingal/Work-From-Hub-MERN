@@ -16,25 +16,25 @@ const Navbar: React.FC = () => {
         <img className="h-14" src="/logo.png" alt="Company Logo" />
         <nav className="hidden md:flex space-x-6">
           <a
-            href="#"
+            href="/login"
             className="text-gray-700 hover:text-orange-500 dark:text-gray-300 dark:hover:text-white"
           >
             Work Spaces
           </a>
           <a
-            href="#"
+            href="/login"
             className="text-gray-700 hover:text-orange-500 dark:text-gray-300 dark:hover:text-white"
           >
             Pricing
           </a>
           <a
-            href="#"
+            href="/about"
             className="text-gray-700 hover:text-orange-500 dark:text-gray-300 dark:hover:text-white"
           >
             About Us
           </a>
           <a
-            href="#"
+            href="/login"
             className="text-gray-700 hover:text-orange-500 dark:text-gray-300 dark:hover:text-white"
           >
             Login/Register
@@ -42,10 +42,14 @@ const Navbar: React.FC = () => {
         </nav>
         <div className="hidden md:flex space-x-4">
           <ThemeToggle />
-          <button className="bg-orange-500 text-white px-4 py-2 rounded dark:bg-gray-800 dark:text-white dark:hover:bg-gray-900">
+          <button 
+          onClick={() => {window.location.href = "/login"}}
+          className="bg-orange-500 text-white px-4 py-2 rounded dark:bg-gray-800 dark:text-white dark:hover:bg-gray-900">
             Book a Seat
           </button>
-          <button className="border border-orange-500 text-orange-500 px-4 py-2 rounded dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600">
+          <button 
+          onClick={() => window.open("tel:+1234567890")}
+          className="border border-orange-500 text-orange-500 px-4 py-2 rounded dark:border-gray-700 dark:text-gray-300 dark:hover:border-gray-600">
             Call Us
           </button>
         </div>

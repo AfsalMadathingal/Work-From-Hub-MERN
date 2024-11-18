@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import {
   FaMapMarkerAlt,
   FaPhone,
@@ -11,9 +11,20 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import { manageHolding } from "../../services/BuserService";
+import { useEffect, useState } from "react";
+import { getWorkspaceById } from "../../services/adminService";
 
 const WorkspaceDetail = () => {
-  const { state: { workspace } } = useLocation();
+
+  const [workspace, setWorkspace] = useState({});
+
+
+const {workspaceId } = useParams();
+
+
+  // const { state: { workspace } } = useLocation();
+
+
   const {
     buildingName,
     state,
@@ -36,12 +47,25 @@ const WorkspaceDetail = () => {
   } = workspace;
 
 
+  const fetchWorkspaceData = async () => {
+    try {
+      const response = await getWorkspaceById(workspaceId as string);
+
+      console.log(response?.data.data);
+      
+      setWorkspace(response?.data.data);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+
   const handleHold = async (workspaceId:string) => {
     try {
       const response = await manageHolding(workspaceId);
 
       if (response?.status === 200) {
-        toast.success("Workspace is on hold");
+        toast.success("Requested to hold the workspace");
       } else {
         toast.error("Something went wrong");
       } 
@@ -50,6 +74,16 @@ const WorkspaceDetail = () => {
       toast.error("An error occurred while holding the workspace");
   };
 }
+
+
+useEffect(() => {
+
+  console.log('====================================');
+  console.log(workspaceId);
+
+  console.log('====================================');
+  fetchWorkspaceData();
+}, []);
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-white dark:bg-gray-800 rounded-lg shadow">
@@ -151,11 +185,20 @@ const WorkspaceDetail = () => {
           Listed on {new Date(createdAt).toLocaleDateString()}
         </span>
 
+        {workspace.isOnHold && (
+          <button
+          onClick={() => handleHold(workspace?._id)}
+          className="px-4 py-2 bg-green-500 text-white font-semibold rounded hover:bg-green-600">
+            Release This Property
+          </button>
+        )}
+
+
         {!workspace.isOnHold && workspace.approved && (
            <button
            onClick={() => handleHold(workspace?._id)}
            className="px-4 py-2 bg-red-500 text-white font-semibold rounded hover:bg-red-600">
-             Unlist This Property
+             Hold This Property
            </button>
       
         )}
