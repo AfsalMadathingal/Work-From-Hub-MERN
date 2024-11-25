@@ -20,6 +20,13 @@ const app = express();
 // app.use(helmet())
 
 
+app.use(limiter)
+
+app.use((req, res, next) => {
+  logger.info(`Request from ${req.ip}`);
+  next();
+})
+
 const buildPath = path.join(__dirname,'../../Frontend/dist')
 
 console.log(buildPath);
@@ -65,7 +72,6 @@ app.use(
 );
 
 
-app.use(limiter)
 
 app.use('/', router);
 
