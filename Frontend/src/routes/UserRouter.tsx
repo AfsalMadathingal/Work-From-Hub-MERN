@@ -4,6 +4,7 @@ import LoadingPageWithReactLoading from "../components/loadingPage/Loading";
 import { PRIMARY_COLOR } from "../constant/colors";
 import PrivateRoute from "../components/auth/PrivateRoute";
 import PublicRoute from "../components/auth/PublicRoute";
+import NotFound from "../components/NotFound";
 const Bookings = lazy(() => import("../pages/userSide/Bookings"));
 const MembershipInfor = lazy(() => import("../pages/userSide/MembershipInfo"));
 const WalletPage = lazy(() => import("../pages/userSide/WalletPage"));
@@ -214,6 +215,23 @@ const UserRouter = () => {
             }
           >
             <PrivateRoute element={WalletPage} />
+          </Suspense>
+        }
+      />
+      <Route
+        path="/*"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PublicRoute element={NotFound} />
+            
           </Suspense>
         }
       />
