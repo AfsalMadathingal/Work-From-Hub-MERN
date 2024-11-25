@@ -6,6 +6,7 @@ const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
   max: 5, // Limit each IP to 5 requests per windowMs
   handler: (req: Request, res: Response) => {
+    console.log(`Rate limit exceeded: ${req.method} ${req.url}`)
     res.status(429).json({
       message: `Oh, trying to grab some files, are we? Go ahead, keep flooding the app—I'm sure that'll work out perfectly for you!`,
     });
