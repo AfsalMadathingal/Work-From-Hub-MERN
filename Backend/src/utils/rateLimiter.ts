@@ -8,7 +8,7 @@ const limiter = rateLimit({
   handler: (req: Request, res: Response) => {
     console.log(`Rate limit exceeded: ${req.method} ${req.url}`)
     res.status(429).json({
-      message: `Oh, trying to grab some files, are we? Go ahead, keep flooding the app—I'm sure that'll work out perfectly for you!`,
+      message: `this is a boot camp project ur on the wrong place`,
     });
   },
 });
