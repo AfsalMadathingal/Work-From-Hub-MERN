@@ -27,6 +27,11 @@ app.use((req, res, next) => {
   next();
 })
 
+app.use((req, res) => {
+  const filePath = path.join(__dirname, 'assets', 'hecker.webp');
+  res.sendFile(filePath);
+});
+
 const buildPath = path.join(__dirname,'../../Frontend/dist')
 
 console.log(buildPath);
