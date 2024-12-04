@@ -31,7 +31,7 @@ app.use((req, res, next) => {
 
 const buildPath = path.join(__dirname,'../../Frontend/dist')
 
-console.log(buildPath);
+
 
 
 app.use('/', express.static(buildPath));

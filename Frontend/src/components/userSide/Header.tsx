@@ -51,7 +51,7 @@ export default function Header() {
               Complaints
             </Link>
           </NavbarItem>
-          <NavbarItem isActive>
+          <NavbarItem >
             <Link
               className="cursor-pointer"
               onPress={() => window.location.href=`/workspace?all=true`}

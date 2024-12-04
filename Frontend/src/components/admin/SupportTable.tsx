@@ -228,94 +228,92 @@ const AdminChat: React.FC = () => {
       {/* Chat Box */}
    {/* Chat Box */}
    <div className="absolute bottom-0 right-0">
-        {isChatOpen && selectedUser && (
-          <div
-            ref={chatWindowRef}
-            className="fixed bottom-0 right-0 w-96 bg-white border border-gray-300 shadow-lg z-50 mb-12"
-            style={{ 
-              minWidth: '300px',
-              height: '500px',
-              maxWidth: '600px'
-            }}
+  {isChatOpen && selectedUser && (
+    <div
+      ref={chatWindowRef}
+      className="fixed bottom-0 right-0 w-96 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-lg rounded-lg z-50 mb-12"
+      style={{ minWidth: '300px', maxWidth: '600px', height: '500px' }}
+    >
+      <div className="flex flex-col h-full">
+        {/* Chat Header */}
+        <div className="bg-gradient-to-r from-orange-500 to-orange-400 text-white dark:text-gray-100 p-3 rounded-t-lg flex justify-between items-center">
+          <span className="font-medium text-lg">Chat with {selectedUser.name}</span>
+          <button
+            onClick={() => setIsChatOpen(false)}
+            className="text-white bg-red-600 dark:bg-red-700 hover:bg-red-700 dark:hover:bg-red-800 px-4 py-2 rounded-md text-sm"
           >
-            <div className="flex flex-col h-full ">
-              {/* Chat Header */}
-              <div className="bg-orange-500 text-white p-2 flex justify-between items-center">
-                <span>Chat With {selectedUser.name}</span>
-                <button
-                  onClick={() => setIsChatOpen(false)}
-                  className="text-sm bg-red-500 px-2 py-1 rounded hover:bg-red-600"
-                >
-                  Close
-                </button>
-              </div>
+            Close
+          </button>
+        </div>
 
-              {/* Chat Body */}
-              <div className="flex flex-col flex-grow h-full">
-                {!isChatStarted ? (
-                  <div className="flex justify-center items-center h-full">
-                    <button
-                      onClick={handleStartChat}
-                      className="bg-orange-500 text-white py-2 px-4 rounded-md"
-                    >
-                      Start Chat
-                    </button>
-                  </div>
-                ) : (
-                  <div className="flex flex-col h-full">
-                    {/* Messages Container */}
-                    <div
-                      ref={messageListRef}
-                      className="flex-grow overflow-y-auto p-4 space-y-2"
-                      style={{ maxHeight: 'calc(100% - 60px)' }} // Reserve space for input
-                    >
-                      {messages.length ? (
-                        messages
-                          .filter((msg) => msg.userId === selectedUser.id)
-                          .map((msg, index) => (
-                            <div
-                              key={index}
-                              className={`flex ${msg.isAdmin ? 'justify-end' : 'justify-start'}`}
-                            >
-                              <div
-                                className={`max-w-[70%] p-2 rounded-md ${
-                                  msg.isAdmin ? 'bg-orange-100' : 'bg-blue-200'
-                                }`}
-                              >
-                                {msg.message}
-                              </div>
-                            </div>
-                          ))
-                      ) : (
-                        <div className="text-center text-gray-500">No messages yet</div>
-                      )}
-                    </div>
-
-                    {/* Chat Input - Fixed at bottom */}
-                    <div className="p-2 bg-white border-t border-gray-200">
-                      <form onSubmit={sendMessage} className="flex">
-                        <input
-                          type="text"
-                          value={message}
-                          onChange={(e) => setMessage(e.target.value)}
-                          placeholder="Type a message"
-                          className="flex-grow border border-gray-300 rounded-l-md p-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
-                        />
-                        <button
-                          type="submit"
-                          className="bg-orange-500 text-white px-4 rounded-r-md"
+        {/* Chat Body */}
+        <div className="flex flex-col flex-grow overflow-hidden">
+          {!isChatStarted ? (
+            <div className="flex justify-center items-center h-full">
+              <button
+                onClick={handleStartChat}
+                className="bg-orange-500 dark:bg-orange-600 hover:bg-orange-600 dark:hover:bg-orange-700 text-white py-2 px-4 rounded-md font-medium"
+              >
+                Start Chat
+              </button>
+            </div>
+          ) : (
+            <div className="flex flex-col h-full">
+              {/* Messages Container */}
+              <div
+                ref={messageListRef}
+                className="flex-grow overflow-y-auto p-4 space-y-2 dark:bg-gray-900"
+                style={{ maxHeight: 'calc(100% - 100px)' }}
+              >
+                {messages.length ? (
+                  messages
+                    .filter((msg) => msg.userId === selectedUser.id)
+                    .map((msg, index) => (
+                      <div
+                        key={index}
+                        className={`flex ${msg.isAdmin ? 'justify-end' : 'justify-start'}`}
+                      >
+                        <div
+                          className={`max-w-[70%] p-3 rounded-lg shadow-sm dark:shadow-gray-700 ${
+                            msg.isAdmin
+                              ? 'bg-orange-100 dark:bg-orange-600 text-orange-700 dark:text-gray-100'
+                              : 'bg-blue-100 dark:bg-blue-600 text-blue-700 dark:text-gray-100'
+                          }`}
                         >
-                          Send
-                        </button>
-                      </form>
-                    </div>
-                  </div>
+                          {msg.message}
+                        </div>
+                      </div>
+                    ))
+                ) : (
+                  <div className="text-center text-gray-500 dark:text-gray-400 py-8">No messages yet</div>
                 )}
               </div>
+
+              {/* Chat Input - Fixed at bottom */}
+              <div className="p-4 border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                <form onSubmit={sendMessage} className="flex">
+                  <input
+                    type="text"
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
+                    placeholder="Type a message..."
+                    className="flex-grow border border-gray-300 dark:border-gray-600 rounded-lg p-2 mr-2 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400"
+                  />
+                  <button
+                    type="submit"
+                    className="bg-orange-500 dark:bg-orange-600 hover:bg-orange-600 dark:hover:bg-orange-700 text-white px-4 py-2 rounded-lg font-medium"
+                  >
+                    Send
+                  </button>
+                </form>
+              </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
+    </div>
+  )}
+</div>
     </>
   );
 };
