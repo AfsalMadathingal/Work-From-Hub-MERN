@@ -29,6 +29,7 @@ const LoginPage: React.FC = () => {
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [forgotPassword, setForgotPassword] = useState(false);
+  const [loadingImage,setLoadingImage] = useState(false)
   const { loading} = useSelector(
     (state: RootState) => state.user
   );
@@ -217,111 +218,121 @@ const LoginPage: React.FC = () => {
         />
       )}
 
-      <div className="flex h-screen bg-[#fcefe7] dark:bg-gray-900 transition-all duration-300">
-        <div className="m-auto bg-white dark:bg-gray-800 rounded-lg shadow-2xl flex max-w-3xl relative overflow-hidden">
-          <div className="p-8">
-            <h2 className="text-2xl text-center font-bold mb-4 dark:text-white">
-              WELCOME BACK
-            </h2>
-            <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
-              Welcome back! Please enter your details.
-            </p>
-            <form onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label htmlFor="email" className="block text-gray-700 dark:text-gray-200 mb-2">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-all duration-300"
-                  placeholder="Enter your email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-                {error?.email && (
-                  <p className="text-red-500 text-sm mt-1">{error.email}</p>
-                )}
-              </div>
-              <div className="mb-6">
-                <label htmlFor="password" className="block text-gray-700 dark:text-gray-200 mb-2">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  id="password"
-                  className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-all duration-300"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-                {error?.password && (
-                  <p className="text-red-500 text-sm mt-1">{error.password}</p>
-                )}
-              </div>
-              <div className="flex items-center justify-between mb-6">
-                <label className="flex items-center">
-                  <input
-                    type="checkbox"
-                    className="mr-2"
-                    checked={rememberMe}
-                    onChange={(e) => setRememberMe(e.target.checked)}
-                  />
-                  <span className="text-sm text-gray-600 dark:text-gray-300">Remember me</span>
-                </label>
-                <p
-                  onClick={() => setForgotPassword(true)}
-                  className="text-sm text-blue-500 hover:underline cursor-pointer"
-                >
-                  Forgot password?
-                </p>
-              </div>
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 shadow-lg flex justify-center transition-all duration-300"
-              >
-                {loading ? (
-                  <ReactLoading
-                    type="spin"
-                    height={24}
-                    width={24}
-                    color="#ffffff"
-                  />
-                ) : (
-                  "Sign in"
-                )}
-              </button>
-            </form>
-            <div className="mt-6 shadow-lg">
-              <button
-                onClick={handleGoogleSignIn}
-                className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-md flex items-center justify-center transition-all duration-300 dark:bg-gray-700"
-              >
-                <img
-                  src="/google.png"
-                  alt="Google"
-                  className="w-5 h-5 mr-2"
-                />
-                Sign in with Google
-              </button>
-            </div>
-            <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-300">
-              Don't have an account?{" "}
-              <Link to="/sign-up" className="text-blue-500 hover:underline">
-                Sign up for free
-              </Link>
-            </p>
-          </div>
-          <div className="w-1/2 hidden lg:block relative">
-            <Image
-              className="object-cover h-full w-full rounded-r-lg opacity-90 transition-opacity duration-300"
-              alt="Login page image"
-              src="/loginpageimage.webp"
-            />
-          </div>
+<div className="flex h-screen bg-[#fcefe7] dark:bg-gray-900 transition-all duration-300">
+  <div className="m-auto bg-white dark:bg-gray-800 rounded-lg shadow-2xl flex max-w-3xl relative overflow-hidden">
+    {/* Left Form Section */}
+    <div className="p-8 flex-1">
+      <h2 className="text-2xl text-center font-bold mb-4 dark:text-white">
+        WELCOME BACK
+      </h2>
+      <p className="text-gray-600 dark:text-gray-300 text-center mb-6">
+        Welcome back! Please enter your details.
+      </p>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-gray-700 dark:text-gray-200 mb-2">
+            Email
+          </label>
+          <input
+            type="email"
+            id="email"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-all duration-300"
+            placeholder="Enter your email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+          />
+          {error?.email && (
+            <p className="text-red-500 text-sm mt-1">{error.email}</p>
+          )}
         </div>
+        <div className="mb-6">
+          <label htmlFor="password" className="block text-gray-700 dark:text-gray-200 mb-2">
+            Password
+          </label>
+          <input
+            type="password"
+            id="password"
+            className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-white rounded-md transition-all duration-300"
+            placeholder="••••••••"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+          />
+          {error?.password && (
+            <p className="text-red-500 text-sm mt-1">{error.password}</p>
+          )}
+        </div>
+        <div className="flex items-center justify-between mb-6">
+          <label className="flex items-center">
+            <input
+              type="checkbox"
+              className="mr-2"
+              checked={rememberMe}
+              onChange={(e) => setRememberMe(e.target.checked)}
+            />
+            <span className="text-sm text-gray-600 dark:text-gray-300">Remember me</span>
+          </label>
+          <p
+            onClick={() => setForgotPassword(true)}
+            className="text-sm text-blue-500 hover:underline cursor-pointer"
+          >
+            Forgot password?
+          </p>
+        </div>
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-orange-500 text-white py-2 px-4 rounded-md hover:bg-orange-600 shadow-lg flex justify-center transition-all duration-300"
+        >
+          {loading ? (
+            <ReactLoading
+              type="spin"
+              height={24}
+              width={24}
+              color="#ffffff"
+            />
+          ) : (
+            "Sign in"
+          )}
+        </button>
+      </form>
+      <div className="mt-6 shadow-lg">
+        <button
+          onClick={handleGoogleSignIn}
+          className="w-full border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 py-2 px-4 rounded-md flex items-center justify-center transition-all duration-300 dark:bg-gray-700"
+        >
+          <img
+            src="/google.png"
+            alt="Google"
+            className="w-5 h-5 mr-2"
+          />
+          Sign in with Google
+        </button>
       </div>
+      <p className="text-center mt-6 text-sm text-gray-600 dark:text-gray-300">
+        Don't have an account?{" "}
+        <Link to="/sign-up" className="text-blue-500 hover:underline">
+          Sign up for free
+        </Link>
+      </p>
+    </div>
+
+    {/* Right Image Section */}
+    <div className="w-1/2 hidden lg:block relative">
+      {/* Placeholder while image loads */}
+      {loadingImage ? (
+        <div className="h-full bg-gray-300 dark:bg-gray-700 animate-pulse" />
+      ) : (
+        <Image
+          className="object-cover h-full w-full rounded-r-lg opacity-90 transition-opacity duration-300"
+          alt="Login page image"
+          src="/loginpageimage.webp"
+          onLoad={() => setLoadingImage(false)} // Ensure loading state is removed once the image loads
+        />
+      )}
+    </div>
+  </div>
+</div>
+
     </AnimatedPage>
     </>
   );
