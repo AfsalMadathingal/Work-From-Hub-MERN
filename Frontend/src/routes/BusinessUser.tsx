@@ -9,6 +9,7 @@ import PublicRoute from "../components/auth/BUsesrPublicRoute";
 import PrivateRoute from "../components/auth/BUserPrivateRoute";
 import BworkspaceEdit from "../pages/BusinessUserAuth/BworkspaceEdit";
 import NotFound from "../components/NotFound";
+import Profile from "../pages/Buser/Profile";
 const BUserOnHold = lazy(() => import("../pages/Buser/BUserOnHold"));
 const BBookingReportPage = lazy(
   () => import("../pages/Buser/BBookingReportPage")
@@ -250,6 +251,22 @@ const BusinessUser = () => {
             }
           >
             <PrivateRoute element={BUserBookingHistory} />
+          </Suspense>
+        }
+      />
+        <Route
+        path="/Profile"
+        element={
+          <Suspense
+            fallback={
+              <LoadingPageWithReactLoading
+                transparent={false}
+                type="bars"
+                color={PRIMARY_COLOR}
+              />
+            }
+          >
+            <PrivateRoute element={Profile} />
           </Suspense>
         }
       />

@@ -242,6 +242,9 @@ const BuildingForm: React.FC = () => {
       console.log(error);
       toast.error("Something went wrong");
     }
+    finally{
+      dispatch(setLoading(false));
+    }
   };
 
   useEffect(() => {
@@ -559,125 +562,161 @@ const BuildingForm: React.FC = () => {
             </form>
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto p-6 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 rounded-md shadow-md mt-4">
-            <form
-              className="grid grid-cols-1 md:grid-cols-2 gap-4"
-              onSubmit={handleSubmit}
-            >
-              {/* Photos upload section with previews */}
-              <div className="col-span-full md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Add Photos
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    name="photos"
-                    onChange={handleChange}
-                    multiple
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                  <button className="mt-1 flex items-center justify-center w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-green-400 dark:bg-green-600 text-white font-semibold hover:bg-green-600 dark:hover:bg-green-700 transition duration-150 ease-in-out">
-                    <FaImage className="h-5 w-5 mr-2" />
-                    Choose Photos
-                  </button>
-                </div>
-                {/* Photo previews */}
-                {previews.photos.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {previews.photos.map((preview, index) => (
-                      <div key={index} className="relative">
-                        <img 
-                          src={preview} 
-                          alt={`Preview ${index + 1}`} 
-                          className="w-24 h-24 object-cover rounded"
-                        />
-                        <button
-                          type="button"
-                          onClick={() => removePreview('photos', index)}
-                          className="absolute top-0 right-0 bg-red-500 text-white p-1 rounded-full"
-                        >
-                          <FaTrash className="w-3 h-3" />
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                )}
-                {error?.imageAdded && (
-                  <p className="mt-2 text-sm text-red-600">
-                    {error?.imageAdded}
-                  </p>
-                )}
-              </div>
+<div className="max-w-4xl mx-auto p-8 bg-white dark:bg-gray-800 rounded-xl shadow-lg space-y-8">
+    <form onSubmit={handleSubmit} className="space-y-6">
+      {/* Photos Upload Section */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <label className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            Upload Photos
+          </label>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            Add multiple photos
+          </span>
+        </div>
+        
+        <div className="relative group">
+          <input
+            type="file"
+            name="photos"
+            onChange={handleChange}
+            multiple
+            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+          />
+          <div className="p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-green-500 dark:hover:border-green-500 transition-colors duration-200">
+            <div className="flex flex-col items-center space-y-3">
+              <FaImage className="w-10 h-10 text-gray-400 dark:text-gray-500 group-hover:text-green-500 transition-colors duration-200" />
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                Drag photos here or click to browse
+              </span>
+            </div>
+          </div>
+        </div>
 
-              {/* Video upload section with preview */}
-              <div className="col-span-full md:col-span-2">
-                <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                  Add Video
-                </label>
-                <div className="relative">
-                  <input
-                    type="file"
-                    name="video"
-                    onChange={handleChange}
-                    accept="video/*"
-                    className="absolute inset-0 opacity-0 cursor-pointer"
-                  />
-                  <button className="mt-1 flex items-center justify-center w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg shadow-sm bg-blue-400 dark:bg-blue-600 text-white font-semibold hover:bg-blue-600 dark:hover:bg-blue-700 transition duration-150 ease-in-out">
-                    <FaFilm className="h-5 w-5 mr-2" />
-                    Choose Video
-                  </button>
-                </div>
-                {/* Video preview */}
-                {previews.video && (
-                  <div className="relative mt-2">
-                    <video 
-                      src={previews.video} 
-                      controls 
-                      className="w-full max-h-64 rounded"
-                    />
-                    <button
-                      type="button"
-                      onClick={() => removePreview('video')}
-                      className="absolute top-2 right-2 bg-red-500 text-white p-2 rounded-full"
-                    >
-                      <FaTrash className="w-4 h-4" />
-                    </button>
-                  </div>
-                )}
-                {error?.videoAdded && (
-                  <p className="text-red-500 mt-1">{error?.videoAdded}</p>
-                )}
-              </div>
-
-              {/* Navigation buttons */}
-              <div className="col-span-full flex justify-between mt-4">
+        {/* Photo Previews */}
+        {previews.photos.length > 0 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 mt-4">
+            {previews.photos.map((preview, index) => (
+              <div key={index} className="relative group">
+                <img 
+                  src={preview} 
+                  alt={`Preview ${index + 1}`} 
+                  className="w-full h-32 object-cover rounded-lg shadow-md"
+                />
                 <button
                   type="button"
-                  onClick={() => setSecondStep(false)}
-                  className="px-6 py-2 bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold rounded hover:bg-gray-300 dark:hover:bg-gray-500"
+                  onClick={() => removePreview('photos', index)}
+                  className="absolute top-2 right-2 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
                 >
-                  Back
-                </button>
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="px-6 py-2 bg-orange-500 dark:bg-orange-600 text-white font-semibold rounded hover:bg-orange-600 dark:hover:bg-orange-700"
-                >
-                  {loading ? (
-                    <ReactLoading
-                      type="bars"
-                      color="white"
-                      height={20}
-                      width={20}
-                    />
-                  ) : (
-                    "SUBMIT FOR REVIEW"
-                  )}
+                  <FaTrash className="w-3 h-3" />
                 </button>
               </div>
-            </form>
+            ))}
           </div>
+        )}
+        
+        {error?.imageAdded && (
+          <p className="text-sm text-red-500 mt-2">{error.imageAdded}</p>
+        )}
+      </div>
+
+      {/* Video Upload Section */}
+      <div className="space-y-4 pt-6 border-t border-gray-200 dark:border-gray-700">
+        <div className="flex items-center justify-between">
+          <label className="text-lg font-semibold text-gray-700 dark:text-gray-200">
+            Upload Video
+          </label>
+          <span className="text-sm text-gray-500 dark:text-gray-400">
+            Add a single video
+          </span>
+        </div>
+
+        <div className="relative group">
+          <input
+            type="file"
+            name="video"
+            onChange={handleChange}
+            accept="video/*"
+            className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
+          />
+          <div className="p-8 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg hover:border-blue-500 dark:hover:border-blue-500 transition-colors duration-200">
+            <div className="flex flex-col items-center space-y-3">
+              <FaFilm className="w-10 h-10 text-gray-400 dark:text-gray-500 group-hover:text-blue-500 transition-colors duration-200" />
+              <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                Drag video here or click to browse
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Video Preview */}
+        {previews.video && (
+          <div className="relative group mt-4">
+            <video 
+              src={previews.video} 
+              controls 
+              className="w-full rounded-lg shadow-md"
+            />
+            <button
+              type="button"
+              onClick={() => removePreview('video')}
+              className="absolute top-4 right-4 p-2 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-red-600"
+            >
+              <FaTrash className="w-4 h-4" />
+            </button>
+          </div>
+        )}
+
+        {error?.videoAdded && (
+          <p className="text-sm text-red-500 mt-2">{error.videoAdded}</p>
+        )}
+      </div>
+
+      {/* Navigation Buttons */}
+      <div className="flex justify-between pt-6 border-t border-gray-200 dark:border-gray-700">
+        <button
+          type="button"
+          onClick={() => setSecondStep(false)}
+          className="px-6 py-2.5 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-200 font-medium rounded-lg hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors duration-200"
+        >
+          Back
+        </button>
+        {!loading? (  <button
+          type="submit"
+          disabled={loading}
+          className="px-8 py-2.5 bg-orange-500 dark:bg-orange-600 text-white font-medium rounded-lg hover:bg-orange-600 dark:hover:bg-orange-700 transition-colors duration-200 disabled:opacity-70 flex items-center justify-center min-w-[160px]"
+        >
+          {loading ? (
+            <ReactLoading
+              type="bars"
+              color="white"
+              height={24}
+              width={24}
+            />
+          ) : (
+            "Submit for Review"
+          )}
+        </button>):(
+          <button
+          type="submit"
+          disabled={loading}
+          className="px-8 py-2.5 bg-gray-300 dark:bg-gray-600 text-white font-medium rounded-lg opacity-70 flex items-center justify-center min-w-[160px]"
+          >
+            
+              <ReactLoading
+                type="bars"
+                color="white"
+                height={24}
+                width={24}
+              />
+            
+          </button>
+        )
+        }
+      
+      </div>
+    </form>
+  </div>
         )}
       </AnimatedPage>
     </div>
