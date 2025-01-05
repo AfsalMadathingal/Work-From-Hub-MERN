@@ -8,8 +8,8 @@ import { ApiError } from "../middleware/errorHandler";
 import ApiResponse from "../utils/ApiResponse";
 import { HttpStatus } from "../enums/HttpStatus";
 import { IBookingService } from "../services/interface/IBookingService";
-import BookingService from "../services/implementations/BookingServices";
 import { IDecode } from "entities/decode";
+import BookingService from "../services/implementations/BookingServices";
 
 class BUserController {
 
@@ -114,14 +114,19 @@ class BUserController {
         }
     }
 
-    public getAllWorkspaces = async (req:Request , res:Response , next:NextFunction)=> {
+    public getAllWorkspaces = async (req:Request & IDecode , res:Response , next:NextFunction)=> {
 
         try {
+
+            const  user = req.user as IBusinessUser;
+
+            console.log(user);
+            
 
             const page = parseInt(req.query.page as string) || 1;
             const limit = parseInt(req.query.limit as string) || 5;
 
-            const response = await this.workspaceService.getAllWorkspaces();
+            const response = await this.workspaceService.getWorkspaceByOwnerId(user.id);
 
             console.log(response);
             

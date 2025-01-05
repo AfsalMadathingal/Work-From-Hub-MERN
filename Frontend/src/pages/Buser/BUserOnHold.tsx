@@ -11,7 +11,7 @@ const BUserOnHold = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    dispatch(setPageTitle("Approved Workspaces"));
+    dispatch(setPageTitle("On Hold Workspaces"));
   }, [dispatch]);
 
 

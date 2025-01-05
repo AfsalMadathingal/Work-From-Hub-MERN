@@ -108,7 +108,7 @@ export default class AuthService implements IAuthService {
         refreshToken
       );
       const { password, ...userWithoutPassword } = userFound.toObject();
-      return { accessToken, refreshToken, userFound: userWithNewToken };
+      return { accessToken, refreshToken, userFound: userWithoutPassword };
     }
 
     return null;

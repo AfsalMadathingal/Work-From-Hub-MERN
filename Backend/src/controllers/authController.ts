@@ -4,15 +4,18 @@ import ApiResponse from "../utils/ApiResponse";
 import { ApiError } from "../middleware/errorHandler";
 import OTPService from "../services/implementations/OTPService";
 import UserService from "../services/implementations/UserService";
-import { accessTokenForReset, generateAccessToken } from "../utils/jwt";
 import { IAuthService } from "../services/interface/IAuthService";
-import { emit } from "process";
 import { IUserService } from "services/interface/IUserService";
+import axios from 'axios';
+import { IUploadService } from "../services/interface/IUploadService";
+import UploadService from "../services/implementations/UploadService";
+import { IUsers } from "entities/UserEntity";
 
 class AuthController {
   private authService: IAuthService;
   private OTPService: OTPService;
   private UserService: IUserService;
+  private UploadService :IUploadService;
 
   options = {
     httpOnly: true,
@@ -25,10 +28,19 @@ class AuthController {
     this.authService = new AuthService();
     this.OTPService = new OTPService();
     this.UserService = new UserService();
+    this.UploadService = new UploadService();
   }
 
   public login = async (req: Request, res: Response) => {
-    const loginData = await this.authService.login(req.body);
+    let loginData = await this.authService.login(req.body);
+
+    console.log("============logindata========");
+    
+    console.log(loginData);
+    console.log("============logindata========");
+
+   
+    
 
     if (loginData?.userFound?.isBlocked) {
       return res
@@ -37,6 +49,24 @@ class AuthController {
     }
 
     if (loginData) {
+
+      const photoURL = loginData.userFound.profilePic;
+
+      if(loginData.userFound.profilePic.includes('google')){
+    
+        const response = await axios.get(photoURL as string, { responseType: 'arraybuffer' });
+      const imageBuffer = Buffer.from(response.data, 'binary');
+
+      const s3UrlFromGoogleImage = await this.UploadService.uploadSinglePhotoToS3(imageBuffer)
+
+      loginData.userFound.profilePic = s3UrlFromGoogleImage
+      loginData.userFound.id = loginData.userFound._id.toString();
+      const userAfterImageChnage =  await this.UserService.editUser(loginData.userFound)
+      loginData.userFound = userAfterImageChnage as IUsers
+
+      console.log(loginData.userFound);
+      
+      }
       return res
         .status(200)
         .cookie("refreshToken", loginData.refreshToken, this.options)
@@ -93,10 +123,16 @@ class AuthController {
     try {
       const { displayName, email, photoURL } = req.body;
 
+      // Fetch the image from the photoURL and get the buffer
+      const response = await axios.get(photoURL, { responseType: 'arraybuffer' });
+      const imageBuffer = Buffer.from(response.data, 'binary');
+
+      const s3UrlFromGoogleImage = await this.UploadService.uploadSinglePhotoToS3(imageBuffer)
+
       const userAfterAuth = await this.authService.googleSignIn({
         fullName: displayName,
-        email: email,
-        profilePic: photoURL,
+        email: email, 
+        profilePic: s3UrlFromGoogleImage,
       });
 
       console.log('====================================');

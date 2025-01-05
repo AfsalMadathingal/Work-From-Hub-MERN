@@ -160,6 +160,9 @@ export default class UserRepository implements IUserRepository {
       
   
       if (emailExists && emailExists._id.toString() !== user.id) {
+
+        console.log(emailExists._id, user.id);
+        
         return { emailExists: true };
       }
   
