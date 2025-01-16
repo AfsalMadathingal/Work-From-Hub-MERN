@@ -48,15 +48,26 @@ const OTPForm: React.FC = () => {
     try {
       const apiResponse = await register(formData, { otp: OTPSubmited });
 
+      console.log(apiResponse);
+
+      if(!apiResponse){
+        toast.error("something went wrong")
+        return
+      }
+      
+
       if (apiResponse?.alert) {
         dispatch(setLoading(false));
         return toast.error(apiResponse.message);
       }
 
       if (apiResponse?.data) {
+
+        console.log(apiResponse.data);
+        
         const { user, accessToken } = apiResponse.data;
         setVerified(true);
-
+        localStorage.setItem("accessToken", accessToken);
         await new Promise((resolve) => setTimeout(() => resolve("wait for animation"), 3000));
         dispatch(setModal(false));
         dispatch(setLoading(false));
@@ -65,9 +76,7 @@ const OTPForm: React.FC = () => {
         dispatch(setAccessToken(accessToken));
         dispatch(setFormData({}))
         toast.success("Registered successfully");
-        navigate("/u/home/");
       } else {
-        ;
         dispatch(setLoading(false));
         dispatch(setError(apiResponse));
       }
