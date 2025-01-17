@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import { WebhookController } from '../../controllers/webhookController';
+import webhookController from '../../controllers/webhookController';
 import { stripeMiddleware } from '../../middleware/stripeMiddleware';
 
 const webhookRoute = Router();
-const webhookController = new WebhookController();
 
-webhookRoute.post('/', stripeMiddleware, webhookController.handleWebhook);
+
+
+webhookRoute.use('/', stripeMiddleware , webhookController.handleWebhook)
+// webhookRoute.post('/', stripeMiddleware, webhookController.handleWebhook);
 
 export default webhookRoute;

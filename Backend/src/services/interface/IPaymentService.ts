@@ -11,6 +11,6 @@ export interface IPaymentService{
     checkPaymentStatus(paymentIntentId:string):Promise<Stripe.PaymentIntent | null>
     getInvoice(invoice:string): Promise <Stripe.Invoice| null> ;
     initiateRefund(paymentIntentId:string,amount:number) :Promise<Stripe.Refund | null>
-    
+    constructEvent(payload: Buffer, signature:string) : Promise<Stripe.Event > 
     
 }

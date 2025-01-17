@@ -21,6 +21,7 @@ export default class PaymentService implements IPaymentService {
 
 
 
+
     constructor() {
         this.userRepository = new UserRepository();
         this.subscriptionRepository = new SubscriptionRepository();
@@ -182,6 +183,16 @@ export default class PaymentService implements IPaymentService {
             throw error;
         }
         
+    }
+
+
+    async constructEvent(payload: Buffer, signature:string) {
+
+        const webhookSecret = process.env.STRIPE_WEBSECRET
+
+        console.log("Reached constructEvent");
+        return stripe.webhooks.constructEvent(payload, signature, webhookSecret);
+
     }
 
     

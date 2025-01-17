@@ -1,21 +1,31 @@
 import { Request, Response } from 'express';
 import { StripeService } from '../services/implementations/stripeService';
+import PaymentService from '../services/implementations/PaymentService';
+import { IPaymentService } from 'services/interface/IPaymentService';
 
-export class WebhookController {
+class WebhookController {
   private stripeService: StripeService;
+  private paymentService: IPaymentService;
 
   constructor() {
     this.stripeService = new StripeService();
+    this.paymentService = new PaymentService();
+
   }
 
-  async handleWebhook(req: Request, res: Response) {
+  public handleWebhook = async (req: Request, res: Response) =>{
     try {
-        console.log('==========dfgdfgfdg==========================');
-        console.log(req.rawBody);
-        console.log('====================================');
+     
+      const event = await this.paymentService.constructEvent(req.rawBody,req.sig)
+
+      if(event.type =="payment_intent.succeeded" ){
+        console.log(event.data);
+        
+      }
+      
+        // this.stripeService.handleEvent(event);
+
         res.sendStatus(200);
-      const event = this.stripeService.constructWebhookEvent(req);
-      this.stripeService.handleEvent(event);
       
     } catch (error) {
       console.error(`⚠️  Webhook signature verification failed.`, error.message);
@@ -23,3 +33,5 @@ export class WebhookController {
     }
   }
 }
+
+export default new WebhookController();
