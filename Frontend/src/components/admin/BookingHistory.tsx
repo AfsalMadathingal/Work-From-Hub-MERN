@@ -4,11 +4,24 @@ import { getAllBookings } from "../../services/adminService";
 import { IUsers } from "../../@types/user";
 import { ISeat } from "../../@types/seat";
 import { IWorkspace } from "../../@types/workspace";
-import ReactLoading from "react-loading";
 import BookingDetailsModal from "./BookingDetailsModal";
-import jsPDF from "jspdf"; // Import jsPDF
-import "jspdf-autotable"; // Optional: for table support
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 import { UserOptions } from 'jspdf-autotable';
+import { 
+  FileText, 
+  Eye, 
+  Building2, 
+  User, 
+  Calendar,
+  DollarSign,
+  CheckCircle2,
+  XCircle,
+  ChevronLeft,
+  ChevronRight,
+  Loader2
+} from "lucide-react";
+
 interface Booking {
   workspaceName: string;
   userId: IUsers;
@@ -29,6 +42,7 @@ interface jsPDFWithPlugin extends jsPDF {
   autoTable: (options: UserOptions) => jsPDFWithPlugin;
   lastAutoTable: { finalY: number };
 }
+
 const AdminBookingHistory: React.FC = () => {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -163,84 +177,83 @@ const AdminBookingHistory: React.FC = () => {
   };
 
   return (
-    <>
-    <BookingDetailsModal
-      isOpen={isModalOpen}
-      booking={selectedBooking !== null ? selectedBooking : {} as Booking}
-      onClose={() => setIsModalOpen(false)}
-    />
+    <div className="p-6 max-w-7xl mx-auto">
+      <BookingDetailsModal
+        isOpen={isModalOpen}
+        booking={selectedBooking !== null ? selectedBooking : {} as Booking}
+        onClose={() => setIsModalOpen(false)}
+      />
 
-      <div className="container mx-auto px-4">
-        <div className="overflow-x-auto rounded-lg border dark:border-gray-700">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
+        <div className="p-6 border-b border-gray-200 dark:border-gray-700">
+          <h2 className="text-xl font-semibold text-gray-800 dark:text-gray-200">
+            Booking History
+          </h2>
+          <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
+            Manage and view all workspace bookings
+          </p>
+        </div>
+
+        <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
             <thead className="bg-gray-50 dark:bg-gray-800">
               <tr>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                >
-                  Workspace
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <Building2 className="w-4 h-4" />
+                    Workspace
+                  </div>
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                >
-                  User
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4" />
+                    User
+                  </div>
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                >
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
                   Seat
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                >
-                  Date
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4" />
+                    Date
+                  </div>
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                >
-                  Amount
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4" />
+                    Amount
+                  </div>
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                >
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
                   Status
                 </th>
-                <th
-                  scope="col"
-                  className="px-6 py-3 text-left text-xs font-medium tracking-wider text-gray-500 uppercase dark:text-gray-400"
-                >
+                <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider dark:text-gray-400">
                   Actions
                 </th>
               </tr>
             </thead>
-            {loading ? (
-              <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+            <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
+              {loading ? (
                 <tr>
-                  <td colSpan={7} className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center justify-center w-full h-20">
-                      <ReactLoading
-                        type="spin"
-                        color="#f97316"
-                        height={20}
-                        width={20}
-                      />
+                  <td colSpan={7} className="px-6 py-8">
+                    <div className="flex items-center justify-center gap-2">
+                      <Loader2 className="w-5 h-5 animate-spin text-orange-500" />
+                      <span className="text-sm text-gray-500 dark:text-gray-400">Loading bookings...</span>
                     </div>
                   </td>
                 </tr>
-              </tbody>
-            ) : (
-              <tbody className="bg-white divide-y divide-gray-200 dark:bg-gray-900 dark:divide-gray-700">
-                {bookings.map((booking, index) => (
-                  <tr
-                    key={index}
-                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors"
-                  >
+              ) : bookings.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="px-6 py-8">
+                    <div className="text-center text-gray-500 dark:text-gray-400">
+                      No bookings found
+                    </div>
+                  </td>
+                </tr>
+              ) : (
+                bookings.map((booking, index) => (
+                  <tr key={index} className="hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
                       {booking.workspaceId?.buildingName}
                     </td>
@@ -251,67 +264,79 @@ const AdminBookingHistory: React.FC = () => {
                       {booking.seatId?.seatNumber}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {new Date(booking.date).toDateString()}
+                      {new Date(booking.date).toLocaleDateString()}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-300">
-                      {booking.amount}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-medium
-                  ${
-                    booking.status === "success"
-                      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                      : "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200"
-                  }`}
-                      >
-                        {booking.status}
-                      </span>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
+                      ${booking.amount}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex space-x-3">
+                      <div className="flex items-center gap-2">
+                        {booking.status === "success" ? (
+                          <CheckCircle2 className="w-4 h-4 text-green-500" />
+                        ) : (
+                          <XCircle className="w-4 h-4 text-red-500" />
+                        )}
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            booking.status === "success"
+                              ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400"
+                              : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"
+                          }`}
+                        >
+                          {booking.status}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center gap-3">
                         <button
                           onClick={() => handleViewDetailsModal(booking)}
-                          className="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium transition-colors"
+                          className="flex items-center gap-1 text-gray-600 hover:text-orange-500 dark:text-gray-400 dark:hover:text-orange-400 transition-colors"
                         >
-                          View
+                          <Eye className="w-4 h-4" />
+                          <span className="text-sm">View</span>
                         </button>
                         <button
                           onClick={() => handleDownloadInvoice(booking)}
-                          className="text-orange-500 hover:text-orange-600 dark:text-orange-400 dark:hover:text-orange-300 font-medium transition-colors"
+                          className="flex items-center gap-1 text-gray-600 hover:text-orange-500 dark:text-gray-400 dark:hover:text-orange-400 transition-colors"
                         >
-                          Invoice
+                          <FileText className="w-4 h-4" />
+                          <span className="text-sm">Invoice</span>
                         </button>
                       </div>
                     </td>
                   </tr>
-                ))}
-              </tbody>
-            )}
+                ))
+              )}
+            </tbody>
           </table>
         </div>
 
-        <div className="flex items-center justify-between mt-4">
-          <button
-            onClick={handlePreviousPage}
-            disabled={currentPage === 1}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Previous
-          </button>
-          <span className="text-sm text-gray-700 dark:text-gray-300">
-            Page {currentPage} of {totalPages}
-          </span>
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
-          >
-            Next
-          </button>
+        <div className="px-6 py-4 border-t border-gray-200 dark:border-gray-700">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={handlePreviousPage}
+              disabled={currentPage === 1}
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              <ChevronLeft className="w-4 h-4" />
+              Previous
+            </button>
+            <span className="text-sm text-gray-700 dark:text-gray-300">
+              Page {currentPage} of {totalPages}
+            </span>
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md dark:bg-gray-800 dark:border-gray-600 dark:text-gray-300 hover:bg-gray-50 dark:hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            >
+              Next
+              <ChevronRight className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

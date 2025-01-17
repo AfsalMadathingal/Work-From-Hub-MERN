@@ -54,8 +54,7 @@ const renderCell = React.useCallback((item: INewUser, columnKey: Key) => {
 }, []);
 
   return (
-    <div className="bg-white dark:bg-gray-800 p-6  rounded-md shadow-md mb-8 dark:shadow-none">
-      <h2 className="text-lg font-semibold mb-4 dark:text-gray-200">New Users</h2>
+
       <Table aria-label="Example table with custom cells">
         <TableHeader>
           <TableColumn key="fullName">Name</TableColumn>
@@ -69,7 +68,6 @@ const renderCell = React.useCallback((item: INewUser, columnKey: Key) => {
         )}
       </TableBody>
       </Table>
-    </div>
   );
 };
 

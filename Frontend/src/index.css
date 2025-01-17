@@ -30,3 +30,22 @@
     --text-color: #ffffff;
   }
    */
+
+   /* src/index.css or src/App.css */
+* {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+body {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.MuiTypography-root,
+.MuiButton-root,
+.MuiInputBase-root,
+.MuiMenuItem-root,
+.MuiListItem-root,
+.MuiAppBar-root,
+.MuiToolbar-root {
+  font-family: 'Poppins', -apple-system, BlinkMacSystemFont, sans-serif !important;
+}

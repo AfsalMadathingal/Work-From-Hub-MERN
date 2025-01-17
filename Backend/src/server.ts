@@ -13,6 +13,7 @@ import http from 'http';
 import { initializeSocket } from './utils/socket';
 import path from 'path';
 import limiter from './utils/rateLimiter';
+import proxy from 'express-http-proxy'
 
 const app = express();
 
@@ -34,8 +35,8 @@ app.use(
     origin: [
       'http://localhost:5173',
       'http://68.183.90.31',
-      'https://29g0hjwd-5173.inc1.devtunnels.ms',
     ],
+    methods: ['GET', 'POST', 'PUT','PATCH','DELETE'],
     credentials: true,
   })
 );

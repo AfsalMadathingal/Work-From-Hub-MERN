@@ -3,14 +3,14 @@ import { Link } from "react-router-dom";
 import { getAllApprovedWorkspaces } from "../../services/adminService";
 import { logout } from "../../services/adminAuth";
 import { IWorkspace } from "../../@types/workspace";
-import { FaEye, FaMapMarkerAlt } from "react-icons/fa";
+import { MapPin, Eye, Building2, ChevronLeft, ChevronRight, Grid } from "lucide-react";
 import toast from "react-hot-toast";
 
 const ApprovedWorkspaces = () => {
   const [workspaces, setWorkspaces] = useState<IWorkspace[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [limit] = useState(5);
+  const [limit] = useState(6);
 
   useEffect(() => {
     const fetchWorkspaces = async (page: number, limit: number) => {
@@ -39,102 +39,96 @@ const ApprovedWorkspaces = () => {
   };
 
   return (
-    <div className="container mx-auto py-10 px-4">
-      <h1 className="text-md font-bold mb-2">Approved Workspaces</h1>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto">
+        <div className="flex items-center justify-between mb-8">
+          <div className="flex items-center space-x-3">
+            <Grid className="w-6 h-6 text-orange-500" />
+            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Approved Workspaces</h1>
+          </div>
+        </div>
 
-      <div className="overflow-x-auto bg-white dark:bg-gray-800 shadow-lg rounded-lg">
-        <table className="min-w-full table-auto">
-          <thead>
-            <tr className="bg-gray-50 dark:bg-gray-700">
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Image
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Building Name
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Location
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200 dark:divide-gray-600">
-            {workspaces.map((workspace) => (
-              <tr key={workspace._id} className="hover:bg-gray-50 dark:hover:bg-gray-700">
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <img
-                    className="h-16 w-16 object-cover rounded"
-                    src={workspace?.photos?.[0]?.toString() || "https://picsum.photos/200/300"}
-                    alt={workspace.buildingName}
-                  />
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
-                  {workspace.buildingName}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {workspaces.map((workspace) => (
+            <div
+              key={workspace._id}
+              className="bg-white dark:bg-gray-800 rounded-xl shadow-lg overflow-hidden transform transition-all duration-300 hover:scale-105"
+            >
+              <div className="relative h-48">
+                <img
+                  className="w-full h-full object-cover"
+                  src={workspace?.photos?.[0]?.toString() || "https://picsum.photos/200/300"}
+                  alt={workspace.buildingName}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              </div>
+
+              <div className="p-6">
+                <div className="flex items-center space-x-2 mb-4">
+                  <Building2 className="w-5 h-5 text-orange-500" />
+                  <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                    {workspace.buildingName}
+                  </h3>
+                </div>
+
+                <div className="flex items-center justify-between mt-4">
                   <button
-                    className="flex items-center justify-center bg-gray-200 dark:bg-gray-700 hover:bg-gray-300 dark:hover:bg-gray-600 text-gray-700 dark:text-gray-300 font-medium py-2 px-4 rounded-md transition-colors"
                     onClick={() => {
                       const url = `https://www.google.com/maps/search/?api=1&query=${workspace.location}`;
                       window.open(url, "_blank");
                     }}
+                    className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400 transition-colors"
                   >
-                    <FaMapMarkerAlt className="mr-2" /> Open in Google Maps
+                    <MapPin className="w-4 h-4" />
+                    <span className="text-sm">View Location</span>
                   </button>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  <Link to={`/admin/workspace-view/${workspace._id}`}>
-                    <button className="flex items-center justify-center bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 text-white font-medium py-2 px-4 rounded-md transition-colors">
-                      <FaEye className="mr-2" /> View
-                    </button>
+
+                  <Link 
+                    to={`/admin/workspace-view/${workspace._id}`}
+                    className="flex items-center space-x-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg transition-colors"
+                  >
+                    <Eye className="w-4 h-4" />
+                    <span className="text-sm font-medium">View Details</span>
                   </Link>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
-      <div className="flex justify-center mt-8 space-x-2">
-        <button
-          onClick={() => handleChangePage(currentPage - 1)}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-md ${
-            currentPage === 1
-              ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
-              : "bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 text-white"
-          } transition-colors`}
-        >
-          Previous
-        </button>
-
-        {Array.from({ length: totalPages }, (_, index) => (
+        <div className="flex justify-center items-center mt-8 space-x-2">
           <button
-            key={index}
-            onClick={() => handleChangePage(index + 1)}
-            className={`px-4 py-2 rounded-md transition-colors ${
-              currentPage === index + 1
-                ? "bg-orange-500 dark:bg-orange-600 text-white"
-                : "bg-gray-200 hover:bg-gray-300 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white"
-            }`}
+            onClick={() => handleChangePage(currentPage - 1)}
+            disabled={currentPage === 1}
+            className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
-            {index + 1}
+            <ChevronLeft className="w-5 h-5" />
           </button>
-        ))}
 
-        <button
-          onClick={() => handleChangePage(currentPage + 1)}
-          disabled={currentPage === totalPages}
-          className={`px-4 py-2 rounded-md ${
-            currentPage === totalPages
-              ? "bg-gray-300 dark:bg-gray-600 cursor-not-allowed"
-              : "bg-orange-500 hover:bg-orange-600 dark:bg-orange-600 dark:hover:bg-orange-700 text-white"
-          } transition-colors`}
-        >
-          Next
-        </button>
+          <div className="flex items-center space-x-1">
+            {Array.from({ length: totalPages }, (_, index) => (
+              <button
+                key={index}
+                onClick={() => handleChangePage(index + 1)}
+                className={`px-4 py-2 rounded-lg transition-colors ${
+                  currentPage === index + 1
+                    ? "bg-orange-500 text-white"
+                    : "bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+
+          <button
+            onClick={() => handleChangePage(currentPage + 1)}
+            disabled={currentPage === totalPages}
+            className="p-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );
