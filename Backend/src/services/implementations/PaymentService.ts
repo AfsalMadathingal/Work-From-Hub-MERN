@@ -186,7 +186,7 @@ export default class PaymentService implements IPaymentService {
     }
 
 
-    async constructEvent(payload: Buffer, signature:string) {
+    async constructEvent(payload: string, signature:string) {
 
         const webhookSecret = process.env.STRIPE_WEBSECRET
 

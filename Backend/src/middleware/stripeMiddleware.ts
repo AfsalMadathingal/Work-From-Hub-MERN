@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 
 declare module 'express-serve-static-core' {
   interface Request {
-    rawBody?: Buffer;
+    rawBody?: string;
     sig?: string;
   }
 }
