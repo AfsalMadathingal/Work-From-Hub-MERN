@@ -1,0 +1,37 @@
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const adminAuthRoute_1 = __importDefault(require("./adminAuthRoute"));
+const planController_1 = __importDefault(require("../../controllers/planController"));
+const adminValidator_1 = require("../../validator/adminValidator");
+const authMiddleware_1 = require("../../middleware/authMiddleware");
+const adminController_1 = __importDefault(require("../../controllers/adminController"));
+const adminRouter = (0, express_1.Router)();
+adminRouter.use('/auth', adminAuthRoute_1.default);
+adminRouter.get('/validate-session', authMiddleware_1.authenticate, adminController_1.default.validateSuccessResponse);
+adminRouter.post('/plan', authMiddleware_1.authenticate, adminValidator_1.validatePlanDetails, planController_1.default.createPlan);
+adminRouter.get('/plan', authMiddleware_1.authenticate, planController_1.default.getPlans);
+adminRouter.patch('/plan', authMiddleware_1.authenticate, planController_1.default.editPlan);
+adminRouter.get('/active-plan', authMiddleware_1.authenticate, planController_1.default.getActivePlan);
+adminRouter.get('/users', authMiddleware_1.authenticate, adminController_1.default.getAllUser);
+adminRouter.patch('/users', authMiddleware_1.authenticate, adminController_1.default.editUser);
+adminRouter.patch('/users/block-and-unblock/:id', authMiddleware_1.authenticate, adminController_1.default.blockUsers);
+adminRouter.get('/business-users', authMiddleware_1.authenticate, adminController_1.default.getBusinessUsers);
+adminRouter.get('/business-user/:id', authMiddleware_1.authenticate, adminController_1.default.getBusinessUser);
+adminRouter.patch('/business-users', authMiddleware_1.authenticate, adminController_1.default.editBUser);
+adminRouter.patch('/business-user/block-and-unblock/:id', authMiddleware_1.authenticate, adminController_1.default.blockBUseres);
+adminRouter.get('/workspace/:workspaceId', authMiddleware_1.authenticate, adminController_1.default.getWorkspace);
+adminRouter.get('/workspace-submission', authMiddleware_1.authenticate, adminController_1.default.getWorkspaceSubmission);
+adminRouter.patch('/approve-workspace/:id', authMiddleware_1.authenticate, adminController_1.default.approveWorkspace);
+adminRouter.patch('/reject-workspace/:id', authMiddleware_1.authenticate, adminController_1.default.rejectWorkspace);
+adminRouter.get('/approved-workspaces', authMiddleware_1.authenticate, adminController_1.default.getApprovedWorkspaces);
+adminRouter.get('/approved-workspace/:id', authMiddleware_1.authenticate, adminController_1.default.approvedWorkspaceById);
+adminRouter.get('/bookings', authMiddleware_1.authenticate, adminController_1.default.getBookings);
+adminRouter.get('/dashboard', authMiddleware_1.authenticate, adminController_1.default.dashboard);
+adminRouter.get('/booking-data', authMiddleware_1.authenticate, adminController_1.default.getBookingsForDashboard);
+adminRouter.get('/booking-report', authMiddleware_1.authenticate, adminController_1.default.getBookingsReport);
+exports.default = adminRouter;
+//# sourceMappingURL=adminRoute.js.map
