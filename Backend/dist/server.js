@@ -29,7 +29,7 @@ app.use('/', express_1.default.static(buildPath));
 // CORS setup
 app.use((0, cors_1.default)({
     origin: [
-        '*',
+        'https://bookingapp.afsalmadathingal.online',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
