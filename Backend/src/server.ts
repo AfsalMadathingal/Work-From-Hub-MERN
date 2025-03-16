@@ -24,7 +24,7 @@ const server = http.createServer(app);
 initializeSocket(server);
 
 // Middleware for rate limiting
-app.use(limiter);
+// app.use(limiter);
 
 // Serve static files
 app.use('/', express.static(buildPath));
@@ -33,8 +33,7 @@ app.use('/', express.static(buildPath));
 app.use(
   cors({
     origin: [
-      'http://localhost:5173',
-      'http://68.183.90.31',
+      '*',
     ],
     methods: ['GET', 'POST', 'PUT','PATCH','DELETE'],
     credentials: true,

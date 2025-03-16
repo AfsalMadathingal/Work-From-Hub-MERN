@@ -17,21 +17,19 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const http_1 = __importDefault(require("http"));
 const socket_1 = require("./utils/socket");
 const path_1 = __importDefault(require("path"));
-const rateLimiter_1 = __importDefault(require("./utils/rateLimiter"));
 const app = (0, express_1.default)();
 // Server setup
 const buildPath = path_1.default.join(__dirname, '../../Frontend/dist');
 const server = http_1.default.createServer(app);
 (0, socket_1.initializeSocket)(server);
 // Middleware for rate limiting
-app.use(rateLimiter_1.default);
+// app.use(limiter);
 // Serve static files
 app.use('/', express_1.default.static(buildPath));
 // CORS setup
 app.use((0, cors_1.default)({
     origin: [
-        'http://localhost:5173',
-        'http://68.183.90.31',
+        '*',
     ],
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
